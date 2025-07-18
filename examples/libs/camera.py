@@ -3,7 +3,7 @@
 # License: BSD 3 clause
 
 import numpy as np
-from gsp import glm
+from gsp import glm, core
 import matplotlib.pyplot as plt
 
 class Camera():
@@ -93,10 +93,10 @@ class Camera():
             update(self.viewport, self.model, self.view, self.proj)
 
 
-    def connect(self, viewport, event, update):
+    def connect(self, viewport: core.Viewport, event, update):
         """
-        axes : matplotlib.Axes
-           Axes where to connect this camera to
+        viewport: core.Viewport
+           The viewport to connect the camera to
 
         event: string
            Which event to connect to (motion, scroll, press, release)
