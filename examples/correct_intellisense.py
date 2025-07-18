@@ -1,6 +1,7 @@
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform
+from gsp import core, transform, visual, glm
 import matplotlib.pyplot as plt
+import numpy as np
 
 import gsp
 gsp.use("matplotlib")
