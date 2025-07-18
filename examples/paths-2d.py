@@ -9,7 +9,8 @@ This example shows the Paths visual where a curve is split into
 segments that are colored using a colormap.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
+from gsp import transform
 import matplotlib.pyplot as plt
 import numpy as np
 

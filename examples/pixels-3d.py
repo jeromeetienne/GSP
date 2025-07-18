@@ -10,7 +10,7 @@ randomly inside a cube that can be rotated and zoomed using the mouse
 and a perspective camera.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
 

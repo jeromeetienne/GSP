@@ -10,7 +10,7 @@ increasing line widths is displayed. Some code is commented to show
 the different ways to specify path sizes.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
 

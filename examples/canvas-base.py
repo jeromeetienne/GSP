@@ -12,7 +12,8 @@ some units (centimeter) and how t enter the event loop (matplotlib).
 import matplotlib.pyplot as plt
 import numpy as np
 
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
+from gsp import transform
 import gsp
 gsp.use("matplotlib")
 

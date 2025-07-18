@@ -8,7 +8,7 @@ Polygon visual (2D)
 This example shows the Polygons visual where a set of 2D regular polygons.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
 

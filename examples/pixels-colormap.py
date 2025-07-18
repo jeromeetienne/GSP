@@ -8,7 +8,8 @@ Pixels visual (colormap)
 This example shows the Pixels visual where pixels are colored according to screen coordinates (x,y) and depth (z) using a colormap.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
+from gsp import transform
 import matplotlib.pyplot as plt
 import numpy as np
 

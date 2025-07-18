@@ -9,7 +9,9 @@ This example shows several star markers placed on the surface of a
 sphere. It can be zoomed and rotated.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
+from gsp import transform
+import numpy as np
 
 import gsp
 gsp.use("matplotlib")

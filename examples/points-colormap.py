@@ -11,7 +11,8 @@ This results in dynamic colors where most front points are alwyas
 painted with the same color.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
+from gsp import transform
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -30,5 +31,5 @@ points = visual.Points(positions, 25.0, fill_colors, gsp.black, 0.25)
 from libs.camera import Camera
 camera = Camera("perspective", theta=-50, phi=-40)
 camera.connect(viewport, "motion",  points.render)
-# camera.save("output/points-colormap.png")
+camera.save("output/points-colormap.png")
 camera.run()

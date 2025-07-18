@@ -6,7 +6,7 @@ This example show the Pixels visual where pixels are spread
 randomly inside a cube that can be rotated using the mouse.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
 

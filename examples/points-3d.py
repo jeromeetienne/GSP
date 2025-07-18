@@ -10,7 +10,7 @@ roated and zoomed using the mouse and a perspective camera. Points
 size is updated accordin to zoom level.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
 

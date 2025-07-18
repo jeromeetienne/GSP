@@ -9,7 +9,7 @@ This example shows the Segment visual where a set of 2D segments with
 increasing line widths are displayed.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
 

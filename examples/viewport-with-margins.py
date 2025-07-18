@@ -9,7 +9,7 @@ This example show how to specify margins expressed in pixels (or
 inches, centimeters, etc) when creating a viewport.
 """
 # Experiment to handle intellisense in VSCode
-from gsp import core, transform, visual, glm
+from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
 
