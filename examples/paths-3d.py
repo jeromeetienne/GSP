@@ -10,6 +10,11 @@ width and color are dependent on the depth. The cube can be rotated
 and zoomed using the mouse and a perspective camera.
 
 """
+# Experiment to handle intellisense in VSCode
+from gsp import core, transform, visual, glm
+import matplotlib.pyplot as plt
+import numpy as np
+
 import gsp
 gsp.use("matplotlib")
 
@@ -35,7 +40,7 @@ paths = visual.Paths(P, I,
                      line_joins = gsp.core.LineJoin.round,
                      line_caps = gsp.core.LineCap.round)
 
-from camera import Camera
+from libs.camera import Camera
 camera = Camera("perspective", theta=50, phi=50, zoom = 1.25)
 camera.connect(viewport, "motion",  paths.render)
 # camera.save("output/paths-3d.png")

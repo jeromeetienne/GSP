@@ -8,6 +8,11 @@ Markers visual (2D)
 This example shows the Markers visual with different sizes can be zoomed
 using the mouse and an orthographic camera.
 """
+# Experiment to handle intellisense in VSCode
+from gsp import core, transform, visual, glm
+import matplotlib.pyplot as plt
+import numpy as np
+
 import gsp
 gsp.use("matplotlib")
 
@@ -29,7 +34,7 @@ sizes[...] = np.linspace(0.05, 12.0,n)**2
 types = core.Marker.star
 markers = visual.Markers(P, types, sizes, None, angles, black, white, 0.5)
 
-from camera import Camera
+from libs.camera import Camera
 camera = Camera("ortho")
 camera.connect(viewport, "motion",  markers.render)
 camera.save("output/markers-2d.png")

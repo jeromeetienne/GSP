@@ -9,6 +9,11 @@ This example shows the Pixels visual where pixels are spread
 randomly inside a cube that can be rotated and zoomed using the mouse
 and a perspective camera.
 """
+# Experiment to handle intellisense in VSCode
+from gsp import core, transform, visual, glm
+import matplotlib.pyplot as plt
+import numpy as np
+
 import gsp
 gsp.use("matplotlib")
 
@@ -18,7 +23,7 @@ n = 250_000
 P = glm.as_vec3(np.random.uniform(-1, +1, (n,3)))
 pixels = visual.Pixels(P, colors=[0,0,0,1])
 
-from camera import Camera
+from libs.camera import Camera
 camera = Camera("perspective", theta=50, phi=50)
 camera.connect(viewport, "motion",  pixels.render)
 camera.save("output/pixels-3d.png")

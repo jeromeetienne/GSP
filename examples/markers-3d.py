@@ -8,6 +8,9 @@ Markers visual (3D)
 This example shows several star markers placed on the surface of a
 sphere. It can be zoomed and rotated.
 """
+# Experiment to handle intellisense in VSCode
+from gsp import core, transform, visual, glm
+
 import gsp
 gsp.use("matplotlib")
 
@@ -33,7 +36,7 @@ markers = visual.Markers(P,
                          line_colors = white,
                          line_widths = 0.0)
 
-from camera import Camera
+from libs.camera import Camera
 camera = Camera("perspective")
 camera.connect(viewport, "motion",  markers.render)
 camera.save("output/markers-3d.png")

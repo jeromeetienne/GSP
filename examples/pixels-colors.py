@@ -8,6 +8,11 @@ Pixels visual (colors)
  This example show the Pixels visual where pixels are spread randomly
  inside a cube and colored according to their position.
 """
+# Experiment to handle intellisense in VSCode
+from gsp import core, transform, visual, glm
+import matplotlib.pyplot as plt
+import numpy as np
+
 import gsp
 gsp.use("matplotlib")
 
@@ -18,7 +23,7 @@ P = glm.as_vec3(np.random.uniform(-1, +1, (n,3)))
 C = (P+1)/2
 pixels = visual.Pixels(P, C)
 
-from camera import Camera
+from libs.camera import Camera
 camera = Camera("perspective", theta=50, phi=50)
 camera.connect(viewport, "motion",  pixels.render)
 camera.save("output/pixels-colors.png")

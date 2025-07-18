@@ -8,6 +8,11 @@ Segments visual (2D)
 This example shows the Segment visual that can be zoomed using the
 mouse and an orthographic camera.
 """
+# Experiment to handle intellisense in VSCode
+from gsp import core, transform, visual, glm
+import matplotlib.pyplot as plt
+import numpy as np
+
 import gsp
 gsp.use("matplotlib")
 
@@ -42,9 +47,9 @@ S2 = visual.Segments(P * pixel,
                      line_widths=0.5)
 
 
-from camera import Camera
+from libs.camera import Camera
 camera = Camera("ortho")
 camera.connect(viewport, "motion",  S1.render)
 camera.connect(viewport, "motion",  S2.render)
-# camera.save("output/segments-fixed-size.png")
+camera.save("output/segments-fixed-size.png")
 camera.run()

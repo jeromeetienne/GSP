@@ -10,6 +10,10 @@ according to their depth (screen coordinate) and a colormap (magma).
 This results in dynamic colors where most front points are alwyas
 painted with the same color.
 """
+# Experiment to handle intellisense in VSCode
+from gsp import core, transform, visual, glm
+import matplotlib.pyplot as plt
+import numpy as np
 
 import gsp
 gsp.use("matplotlib")
@@ -23,7 +27,7 @@ positions[...] = np.random.uniform(-1, +1, (len(positions),3))
 fill_colors = colormap(depth)
 points = visual.Points(positions, 25.0, fill_colors, gsp.black, 0.25)
 
-from camera import Camera
+from libs.camera import Camera
 camera = Camera("perspective", theta=-50, phi=-40)
 camera.connect(viewport, "motion",  points.render)
 # camera.save("output/points-colormap.png")

@@ -8,6 +8,10 @@ Segments visual (2D)
 This example shows the Segment visual where a set of 2D segments with
 increasing line widths are displayed.
 """
+# Experiment to handle intellisense in VSCode
+from gsp import core, transform, visual, glm
+import matplotlib.pyplot as plt
+import numpy as np
 
 import gsp
 gsp.use("matplotlib")
@@ -27,8 +31,8 @@ segments = visual.Segments(P,
                            line_colors = black,
                            line_widths=line_widths)
 
-from camera import Camera
+from libs.camera import Camera
 camera = Camera("ortho")
 camera.connect(viewport, "motion",  segments.render)
-# camera.save("output/segments-2d.png")
+camera.save("output/segments-2d.png")
 camera.run()
