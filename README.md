@@ -3,10 +3,27 @@
 
 The Graphic Server Protocol (GSP) defines the protocol used between a visualization library or a visualization software a language server that provides graphical features.
 
-## How to launch examples
+# Installation
+## How to install repository
+
+Create a virtual environment and install the package:
 
 ```bash
-cd examples
+python3 -m venv gcp_env
+source gcp_env/bin/activate
+```
+
+Then install the package:
+
+```bash
+pip install -e .
+```
+
+## How to launch examples
+
+From the root of the repository, navigate to the examples directory:
+```bash
+cd ./examples
 ```
 
 To List all examples
@@ -16,5 +33,5 @@ ls -l *.py
 
 To launch one example
 ```
-python points-3d.py
+python ./points-3d.py
 ```
