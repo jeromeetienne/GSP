@@ -4,19 +4,19 @@
 The Graphic Server Protocol (GSP) defines the protocol used between a visualization library or a visualization software a language server that provides graphical features.
 
 # Installation
-## How to install repository
+## How to install repository for development
 
-Create a virtual environment and install the package:
+Create a virtual environment and install the packages:
 
 ```bash
 python3 -m venv gcp_env
 source gcp_env/bin/activate
 ```
 
-Then install the package:
+Then install the packages:
 
 ```bash
-pip install -e .
+pip install .
 ```
 
 ## How to run tests
