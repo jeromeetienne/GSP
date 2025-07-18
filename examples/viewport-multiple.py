@@ -24,5 +24,5 @@ core.Viewport(canvas, 0.0, 0.5, 0.5, 0.5, (0,1,0,1))
 core.Viewport(canvas, 0.5, 0.0, 0.5, 0.5, (0,0,1,1))
 core.Viewport(canvas, 0.5, 0.5, 0.5, 0.5, (1,1,0,1))
 
-canvas.render("viewport-multiple.png")
+canvas.render("output/viewport-multiple.png")
 plt.show()

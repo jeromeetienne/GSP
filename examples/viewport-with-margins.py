@@ -19,5 +19,5 @@ viewport = core.Viewport(canvas, x = 10*pixel,
                                  width = 1.0 - 20*pixel,
                                  height = 1.0 - 20*pixel,
                                  color = (1,1,1,1))
-canvas.render("viewport-with-margins.png")
+canvas.render("output/viewport-with-margins.png")
 plt.show()
