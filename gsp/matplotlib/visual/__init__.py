@@ -2,6 +2,10 @@
 # Authors: Nicolas P .Rougier <nicolas.rougier@gmail.com>
 # License: BSD 3 clause
 
+"""
+visual matplotlib backend for GSP - inherits from gsp.visual
+"""
+
 from . pixels import Pixels
 from . points import Points
 from . markers import Markers

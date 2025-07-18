@@ -2,6 +2,11 @@
 # Authors: Nicolas P .Rougier <nicolas.rougier@gmail.com>
 # License: BSD 3 clause
 
+"""
+GSP core module
+"""
+
+
 from . data import Data
 from . list import List
 from . buffer import Buffer
