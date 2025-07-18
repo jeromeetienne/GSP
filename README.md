@@ -19,6 +19,24 @@ Then install the package:
 pip install -e .
 ```
 
+## How to run tests
+
+```bash
+pip install pytest
+```
+
+how to run tests
+```
+cd tests
+pytest
+```
+
+how to run tests in verbose mode
+```
+cd tests
+pytest -v
+```
+
 ## How to launch examples
 
 From the root of the repository, navigate to the examples directory:
