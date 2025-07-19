@@ -29,7 +29,8 @@ def measure_fps(render_count=3, log_enabled=True):
         pixels.render(viewport)
     end_time = time.time()
     total_render_time = end_time - start_time
-    fps = render_count / total_render_time
+    render_time_one = render_count / total_render_time
+    fps = 1 / render_time_one
     if log_enabled:
         print(f'Rendered {len(point_positions)} points in {total_render_time / render_count:.2f} seconds.')
     return fps
