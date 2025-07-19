@@ -5,7 +5,11 @@
 import numpy as np
 
 def cube():
-    """ Cube """
+    """ 
+    TODO implement a size of cube ? like with sphere
+    
+    Cube shape
+    """
 
     verts = [(0,  0,  0), ( 1,  0,  0), (1, 0, 1), (0, 0, 1),
              (0,  1,  0), ( 1,  1,  0), (1, 1, 1), (0, 1, 1)]
@@ -15,6 +19,9 @@ def cube():
     return verts, faces
 
 def sphere(radius=1.0, slices=32, stacks=32):
+    """
+    Sphere shape with radius, slices and stacks.
+    """
     slices += 1
     stacks += 1
     n = slices*stacks
@@ -43,31 +50,33 @@ def sphere(radius=1.0, slices=32, stacks=32):
 
 
 def tetrahedron():
-    """ Tetrahedron with 4 faces, 6 edges and 4 verts """
+    """
+    Tetrahedron with 4 faces, 6 edges and 4 verts
+    """
 
     a = 2*np.pi/3
-    verts = [ (0,.5,0),
+    vertices = [ (0,.5,0),
                  (.5*np.cos(0*a), -.25, .5*np.sin(0*a)),
                  (.5*np.cos(1*a), -.25, .5*np.sin(1*a)),
                  (.5*np.cos(2*a), -.25, .5*np.sin(2*a))]
     faces = [(1,2,3), (1,2,0), (2,3,0), (3,1,0)]
-    return np.array(verts, dtype=np.float32), np.array(faces, dtype=np.uint32)
+    return np.array(vertices, dtype=np.float32), np.array(faces, dtype=np.uint32)
 
 def octahedron():
     """ Octahedron with 8 faces, 12 edges and 6 verts """
 
     r = 0.5 * 1/np.sqrt(2)
-    verts = [(0,.5,0), (0,-.5,0), (-r,0,-r),
+    vertices = [(0,.5,0), (0,-.5,0), (-r,0,-r),
                 (r,0,-r), (r,0,r), (-r,0,r)]
     faces = [(2,3,0), (3,4,0), (4,5,0), (5,2,0),
              (3,2,1), (4,3,1), (5,4,1), (2,5,1)]
-    return np.array(verts, dtype=np.float32), np.array(faces, dtype=np.uint32)
+    return np.array(vertices, dtype=np.float32), np.array(faces, dtype=np.uint32)
 
 def dodecahedron():
     """ Regular dodecahedron with 12 faces, 30 edges and 20 verts """
 
     r = (1 + np.sqrt(5)) / 2
-    verts = [ (-1, -1, +1), (r, 1/r, 0), (r, -1/r, 0), (-r, 1/r, 0),
+    vertices = [ (-1, -1, +1), (r, 1/r, 0), (r, -1/r, 0), (-r, 1/r, 0),
                  (-r, -1/r, 0), (0, r,1/r), (0, r, -1/r), (1/r, 0, -r),
                  (-1/r, 0, -r), (0, -r, -1/r), (0, -r, 1/r), (1/r, 0, r),
                  (-1/r, 0, r), (+1, +1, -1), (+1, +1, +1), (-1, +1, -1),
@@ -88,15 +97,15 @@ def dodecahedron():
     #          (13, 17, 4, 5, 1), (7, 16, 4, 17, 6), (6, 15, 2, 14, 7),
     #          (10, 18, 3, 19, 11), (11, 1, 5, 20, 10), (20, 9, 8, 18, 10),
     #          (9, 16, 7, 14, 8), (12, 15, 6, 17, 13), (13, 1, 11, 19, 12)]
-    verts = np.array(verts, dtype=np.float32)/np.sqrt(3)/2
+    vertices = np.array(vertices, dtype=np.float32)/np.sqrt(3)/2
     faces = np.array(faces, dtype=np.uint32)-1
-    return verts, faces
+    return vertices, faces
 
 def icosahedron():
     """ Regular icosahedron with 20 faces, 30 edges and 12 verts """
 
     a = (1 + np.sqrt(5)) / 2
-    verts = [ (-1,  a,  0), ( 1,  a,  0), (-1, -a,  0),
+    vertices = [ (-1,  a,  0), ( 1,  a,  0), (-1, -a,  0),
               ( 1, -a,  0), ( 0, -1,  a), ( 0,  1,  a),
               ( 0, -1, -a), ( 0,  1, -a), ( a,  0, -1),
               ( a,  0,  1), (-a,  0, -1), (-a,  0,  1) ]
@@ -104,6 +113,6 @@ def icosahedron():
               [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
               [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
               [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1] ]
-    verts = np.array(verts, dtype=np.float32)/np.sqrt(a+2)/2
-    faces = np.array(faces, dtype=uint32)
-    return verts, faces
+    vertices = np.array(vertices, dtype=np.float32)/np.sqrt(a+2)/2
+    faces = np.array(faces, dtype=np.uint32)
+    return vertices, faces
