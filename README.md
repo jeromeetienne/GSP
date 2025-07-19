@@ -81,3 +81,11 @@ Generate the documentation in the ```./site``` directory
 mkdocs build  
 ```
 
+## How to download the examples data
+
+Download the data from https://github.com/datoviz/data/tree/main
+
+```
+make download_examples_data
+```
+
