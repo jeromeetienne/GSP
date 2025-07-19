@@ -219,7 +219,7 @@ def as_vec3(other, dtype = None):
         return V.astype(dtype).view(ndarray.vec3)
 
 def to_vec3(other, dtype = None):
-    """ Convert other to a vec3 with followign convention:
+    """ Convert other to a vec3 with following convention:
 
     - v    -> vec3 : v[::3]  -> v[i],v[i+1],v[i+2]
     - vec2 -> vec3 : x,y     -> x,y,0
