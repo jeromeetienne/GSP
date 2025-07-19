@@ -66,3 +66,18 @@ Run the tests in verbose mode
 ```
 make test-verbose
 ```
+
+## How to generate documentation
+
+Install the mkdocs-material package
+
+```
+pip install mkdocs-material
+pip install "markdown-exec[ansi]"
+```
+
+Generate the documentation in the ```./site``` directory
+```
+mkdocs build  
+```
+
