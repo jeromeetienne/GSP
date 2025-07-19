@@ -53,3 +53,15 @@ To launch one example
 ```
 python ./points-3d.py
 ```
+
+## How to use Makefile
+
+Run the test
+```
+make test
+```
+
+Run the tests in verbose mode
+```
+make test-verbose
+```
