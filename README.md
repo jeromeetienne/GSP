@@ -6,7 +6,7 @@ The Graphic Server Protocol (GSP) defines the protocol used between a visualizat
 # Installation
 ## How to install repository for development
 
-Create a virtual environment and install the packages:
+Create a virtual environment:
 
 ```bash
 python3 -m venv gcp_env
@@ -21,6 +21,7 @@ pip install .
 
 ## How to run tests
 
+Install pytest package
 ```bash
 pip install pytest
 ```
