@@ -37,10 +37,10 @@ gsp.log.warning(f"Loaded LIDAR data with {len(point_positions)} points.")
 point_positions, point_colors = point_cloud_lib.geometry_crop(
     point_positions=point_positions,
     point_colors=point_colors,
-    x_min=-0.2,
-    x_max=0.2,
-    z_min=-0.2,
-    z_max=0.2,
+    x_min=-0.1,
+    x_max=0.1,
+    z_min=-0.1,
+    z_max=0.1,
 )
 
 print(f"Loaded LIDAR data with {len(point_positions)} points.")
@@ -54,7 +54,7 @@ point_positions, point_colors = point_cloud_lib.downsample(
     point_colors=point_colors,
     # wished_point_count=5_000_000
     # wished_point_count=400_000
-    wished_point_count=50_000,
+    wished_point_count=10_000,
 )
 
 print(f"Downsampling - Keeping {len(point_positions)} points after downsampling.")
@@ -68,3 +68,4 @@ point_cloud_lib.print_geometry_info(point_positions)
 # Display the point cloud
 #
 point_cloud_display.display_gsp(point_positions, point_colors)
+# point_cloud_display.display_gsp_dual_resolution(point_positions, point_colors)

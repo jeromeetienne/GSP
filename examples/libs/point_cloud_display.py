@@ -15,13 +15,13 @@ def display_gsp(point_positions: np.ndarray, point_colors: np.ndarray, canvas_wi
     viewport = core.Viewport(canvas, 0, 0, canvas_width, canvas_height, [1,1,1,1])
 
     # Create a Pixels visual
-    pixels = visual.Pixels(point_positions, colors=gsp.black)
-    # pixels = visual.Pixels(point_positions, colors=point_colors)
+    # pixels = visual.Pixels(point_positions, colors=gsp.black)
+    pixels = visual.Pixels(point_positions, colors=point_colors)
 
     # display in points
     # sizes = glm.float(len(point_positions))
     # sizes[...] = 40
-    # pixels = visual.Points(point_positions, sizes, gsp.grey, gsp.black, [0])
+    # pixels = visual.Points(point_positions, sizes, gsp.grey, gsp.black, [0.5])
     # pixels = visual.Points(point_positions, sizes, point_colors, gsp.black, [0])
 
     # Connect the camera to the viewport
@@ -72,6 +72,7 @@ def display_gsp_dual_resolution(point_positions: np.ndarray, point_colors: np.nd
             return
         nonlocal mode_low_res
         mode_low_res = True
+        # update(viewport, camera.model, camera.view, camera.proj)
         print(f'Low resolution mode: {mode_low_res}')
 
     def on_key_release(event):
@@ -80,6 +81,7 @@ def display_gsp_dual_resolution(point_positions: np.ndarray, point_colors: np.nd
             return
         nonlocal mode_low_res
         mode_low_res = False
+        # update(viewport, camera.model, camera.view, camera.proj)
         print(f'Low resolution mode: {mode_low_res}')
 
     camera.figure.canvas.mpl_connect('key_press_event', on_key_press)
