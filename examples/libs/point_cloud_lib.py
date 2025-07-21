@@ -1,9 +1,10 @@
 # Experiment to handle intellisense in VSCode
-from gsp.matplotlib import core, visual, glm
-import matplotlib.pyplot as plt
 import numpy as np
 
-def load_lidar(point_cloud_npz_filename: str) -> tuple[np.ndarray, np.ndarray]:
+from gsp.matplotlib import core, visual, glm
+import gsp as gsp
+
+def load_npz_point_cloud(point_cloud_npz_filename: str) -> tuple[np.ndarray, np.ndarray]:
     """
     Load the LIDAR data from a .npz file.
 
@@ -71,3 +72,24 @@ def geometry_crop(
            (point_positions[:, 1] > y_min) & (point_positions[:, 1] < y_max) & \
            (point_positions[:, 2] > z_min) & (point_positions[:, 2] < z_max)
     return point_positions[mask], point_colors[mask]
+
+def downsample(point_positions: np.ndarray, point_colors: np.ndarray, wished_point_count: int = None) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Downsample the point cloud to a specific number of points.
+
+    Args:
+        point_positions (np.ndarray): The 3D positions of the points.
+        point_colors (np.ndarray): The colors of the points.
+        point_count (int): The target number of points.
+
+    Returns:
+        tuple: Downsampled point positions and colors.
+    """
+
+    # If the point count is already below the wished count, return as is
+    if wished_point_count is None or len(point_positions) <= wished_point_count:
+        return point_positions, point_colors
+
+    # Randomly select indices to keep
+    indices = np.random.choice(len(point_positions), size=wished_point_count, replace=False)
+    return point_positions[indices], point_colors[indices]
