@@ -35,14 +35,14 @@ download_lidar_data:
 # Documentation targets
 #
 
-build_doc:
+doc_build:
 	# Build the documentation using MkDocs
 	mkdocs build
 
-open_doc: build_doc
+doc_open: doc_build
 	# Open the documentation in the default web browser
 	open site/index.html
 
-serve_doc:
+doc_serve:
 	# Serve the documentation locally - useful for development - open in browser with http://localhost:8000
 	mkdocs serve
