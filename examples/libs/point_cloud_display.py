@@ -1,29 +1,30 @@
 # Experiment to handle intellisense in VSCode
 import numpy as np
 
+from . camera import Camera
 from gsp.matplotlib import core, visual, glm
 import gsp as gsp
 
-def display_gsp(point_positions: np.ndarray, point_colors: np.ndarray):
+
+def display_gsp(point_positions: np.ndarray, point_colors: np.ndarray, canvas_width=1024, canvas_height=1024):
     """
     Display the point cloud using GSP's visual.Pixels.
     """
     # Create a canvas and viewport
-    canvas = core.Canvas(256, 256, 100.0)
-    viewport = core.Viewport(canvas, 0, 0, 256, 256, [1,1,1,1])
+    canvas = core.Canvas(canvas_width, canvas_height, 100.0)
+    viewport = core.Viewport(canvas, 0, 0, canvas_width, canvas_height, [1,1,1,1])
 
     # Create a Pixels visual
-    pixels = visual.Pixels(point_positions, colors=gsp.grey)
+    pixels = visual.Pixels(point_positions, colors=gsp.black)
     # pixels = visual.Pixels(point_positions, colors=point_colors)
 
     # display in points
     # sizes = glm.float(len(point_positions))
-    # sizes[...] = 30
+    # sizes[...] = 40
     # pixels = visual.Points(point_positions, sizes, gsp.grey, gsp.black, [0])
     # pixels = visual.Points(point_positions, sizes, point_colors, gsp.black, [0])
 
     # Connect the camera to the viewport
-    from libs.camera import Camera
     camera = Camera("perspective", theta=-30, phi=0, log_fps_enabled=True, scale=5.0)
 
     camera.connect(viewport, "motion", pixels.render)
@@ -51,7 +52,6 @@ def display_gsp_dual_resolution(point_positions: np.ndarray, point_colors: np.nd
     # pixels = visual.Points(point_positions, sizes, point_colors, gsp.black, [0])
 
     # Connect the camera to the viewport
-    from libs.camera import Camera
     camera = Camera("perspective", theta=-30, phi=0, log_fps_enabled=True)
 
     def update(viewport, model, view, proj):

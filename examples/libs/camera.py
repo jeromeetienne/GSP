@@ -41,7 +41,7 @@ class Camera():
         scale: float
           scale factor
 
-        log_fps: bool
+        log_fps_enabled: bool
           If True, log the frames per second (FPS) during rendering. Good for performance monitoring.
         """
 
