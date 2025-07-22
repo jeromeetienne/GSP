@@ -16,17 +16,18 @@ import gsp
 
 import libs.point_cloud_lib as point_cloud_lib
 import libs.point_cloud_display as point_cloud_display
+import libs.download as download
 
 # Set up gsp.logging
 import logging
+
 gsp.log.setLevel(logging.INFO)
 
 ###############################################################################
 # Load the LIDAR data
 #
-point_cloud_npz_filename = f"{os.path.dirname(__file__)}/data/lidar.npz"
 point_positions, point_colors = point_cloud_lib.load_npz_point_cloud(
-    point_cloud_npz_filename
+    download.download_data("misc/lidar.npz")
 )
 print(f"Loaded LIDAR data with {len(point_positions)} points.")
 gsp.log.warning(f"Loaded LIDAR data with {len(point_positions)} points.")
@@ -53,8 +54,8 @@ point_positions, point_colors = point_cloud_lib.downsample(
     point_positions=point_positions,
     point_colors=point_colors,
     # wished_point_count=5_000_000
-    # wished_point_count=400_000
-    wished_point_count=10_000,
+    wished_point_count=400_000,
+    # wished_point_count=10_000,
 )
 
 print(f"Downsampling - Keeping {len(point_positions)} points after downsampling.")
