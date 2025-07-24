@@ -5,6 +5,9 @@ from . camera import Camera
 from gsp.matplotlib import core, visual, glm
 import gsp as gsp
 
+"""
+Library to display point clouds using GSP.
+"""
 
 def display_gsp(point_positions: np.ndarray, point_colors: np.ndarray, canvas_width=1024, canvas_height=1024):
     """

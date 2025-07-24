@@ -85,3 +85,5 @@ mkdocs build
 - https://glumpy.github.io/gallery.html
 - https://github.com/vispy/GSP
 - https://datoviz.org/
+  - https://github.com/datoviz/data
+- https://github.com/rougier/numpy-100/

@@ -2,15 +2,20 @@
 from datoviz library - https://datoviz.org/gallery/showcase/lidar/
 """
 
-import os
+# import matplotlib
+# matplotlib.use('QtAgg')  # Use QtAgg backend for interactive plotting
+
+import gsp
 
 # Experiment to handle intellisense in VSCode
 from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Display matplotlib backend
+print(f"Matplotlib backend: {plt.get_backend()}")
 
-import gsp
+
 
 # gsp.use("matplotlib")
 
@@ -54,7 +59,8 @@ point_positions, point_colors = point_cloud_lib.downsample(
     point_positions=point_positions,
     point_colors=point_colors,
     # wished_point_count=5_000_000
-    wished_point_count=400_000,
+    # wished_point_count=400_000,
+    wished_point_count=200_000,
     # wished_point_count=10_000,
 )
 
