@@ -1,4 +1,5 @@
 # Experiment to handle intellisense in VSCode
+import matplotlib.figure
 import numpy as np
 
 from . camera import Camera
@@ -94,3 +95,4 @@ def display_gsp_dual_resolution(point_positions: np.ndarray, point_colors: np.nd
     # Render the pixels visual
     print('Rendering pixels visual...')
     camera.run()
+
