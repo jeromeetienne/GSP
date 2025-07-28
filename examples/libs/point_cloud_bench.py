@@ -25,7 +25,7 @@ def display_benchmark_pure_matplotlib(figure=matplotlib.figure.Figure, log_enabl
     """
     plt.show(block=False)
     if log_enabled:
-        print(f"Starting Matplotlib rendering benchmark for {max_bench_delay_seconds} seconds...")
+        print(f"Starting Matplotlib rendering benchmark for a maximum {max_bench_delay_seconds} seconds...")
     bench_count = 0
 
     max_bench_count = 1000

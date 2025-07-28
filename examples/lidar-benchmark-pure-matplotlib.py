@@ -11,17 +11,25 @@ from libs.transformation_matrix import translate, xrotate, yrotate
 import matplotlib.pyplot as plt
 import numpy as np
 
-# display matplotlib backend
-print(f"Matplotlib backend: {plt.get_backend()}")
-
 import os
-
 # define __dirname__ to the directory of this script
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
-import matplotlib.style as mplstyle
+# Redirect stdout to a file
+import sys
+write_report_to_file = False  # Set to True to write the report to a file
+if write_report_to_file:
+    print(f"Writing report to {os.path.join(__dirname__, 'lidar-benchmark-report.txt')}")
+    sys.stdout = open(os.path.join(__dirname__, 'output/lidar-benchmark-report.txt'), 'w')
 
-# mplstyle.use('fast')
+
+print("********** LIDAR Point Cloud Benchmark with Matplotlib *********")
+# display matplotlib backend
+print(f"Matplotlib backend: {plt.get_backend()}")
+
+figsize = (6, 6)  # Size of the figure in inches
+max_bench_delay_seconds = 30.0  # Maximum time to wait for the benchmark in seconds
+wished_point_count = 200_000  # Number of points to keep after downsampling
 
 ###############################################################
 # Load the LIDAR data
@@ -41,13 +49,13 @@ point_cloud_lib.print_geometry_info(point_positions)
 point_positions, point_colors = point_cloud_lib.geometry_crop(
     point_positions=point_positions,
     point_colors=point_colors,
-    x_min=-0.1,
-    x_max=0.1,
-    z_min=-0.1,
-    z_max=0.1,
+    x_min=-0.2,
+    x_max=0.2,
+    z_min=-0.2,
+    z_max=0.2,
 )
 
-print(f"Loaded LIDAR data with {len(point_positions)} points.")
+print(f"Cropped LIDAR data to {len(point_positions)} points.")
 
 ###############################################################################
 # Downsample the point cloud
@@ -56,12 +64,7 @@ print(f"Loaded LIDAR data with {len(point_positions)} points.")
 point_positions, point_colors = point_cloud_lib.downsample(
     point_positions=point_positions,
     point_colors=point_colors,
-    # wished_point_count=5_000_000
-    #     wished_point_count=2_000_000,
-    # wished_point_count=500_000,
-    wished_point_count=200_000,
-    # wished_point_count=50_000,
-    # wished_point_count=10_000,
+    wished_point_count=wished_point_count,
 )
 
 print(f"Downsampling - Keeping {len(point_positions)} points after downsampling.")
@@ -87,34 +90,7 @@ point_positions = (
 point_positions /= point_positions[:, 3].reshape(-1, 1)
 
 ###############################################################################
-# Compose figure
-#
-
-# figure = plt.figure(figsize=(3, 3))
-# # axes = figure.add_subplot(projection='3d')
-# axe = figure.add_subplot()
-# # hide axis
-
-# axe.scatter(point_positions[:, 0], point_positions[:, 1], color=[1,0,0,1], s=1, rasterized=True)
-# # ax.scatter(point_positions[:, 0], point_positions[:, 1], color=point_colors, s=1, rasterized=True)
-# # axes.scatter(point_positions[:, 0], point_positions[:, 1], marker='.', color=point_colors)
-
-# # axes.set_pro
-# # axes.scatter(
-# #     point_positions[:, 0],
-# #     point_positions[:, 1],
-# #     point_positions[:, 2],
-# #     color=[1,0,0,1],
-# #     # color=point_colors,
-# #     s=1,
-# #     rasterized=True,
-# # )
-
-# # disable the grid
-# axe.axis("off")
-
-###############################################################################
-# Rendering 
+# Rendering on screen - good for debugging
 #
 
 measure_rendering_time = True  # Set to True to measure rendering time
@@ -126,16 +102,29 @@ if measure_rendering_time is False:
     plt.show(block=True)
     exit()
 
+##########################################################################
+# Benchmark rendering performance - with native 3D projection from matplotlib
+if True:
+    print(f"\n********* Benchmarking rendering performance with Matplotlib... {len(point_positions)} points with projection 3d from matplotlib")
+    figure = plt.figure(figsize=figsize)
+    axe = figure.add_subplot(projection='3d')
+    axe.axis("off")  # Hide the axis
+    axe.scatter(point_positions[:, 0], point_positions[:, 1], point_positions[:, 2], color=point_colors, s=1, rasterized=True)
 
-figsize = (3, 3)  # Size of the figure in inches
-max_bench_delay_seconds = 10.0  # Maximum time to wait for the benchmark in seconds
+    rendering_time = point_cloud_bench.display_benchmark_pure_matplotlib(figure=figure, log_enabled=True, max_bench_delay_seconds=max_bench_delay_seconds)
+    print(f"Average rendering time: {rendering_time:.6f} seconds per rendering.")
+
+    # Close the figure
+    plt.close(figure)
+
+exit()
 
 ##########################################################################
-# Benchmark rendering performance with monochrome points
+# Benchmark rendering performance with monochrome points and manually defined projection
 #
 
 if True:
-    print("Rendering the point cloud with Matplotlib... monochrome")
+    print(f"\n********* Rendering the point cloud with Matplotlib... {len(point_positions)} points - monochrome")
     figure = plt.figure(figsize=figsize)
     axe = figure.add_subplot()
     axe.axis("off")  # Hide the axis
@@ -147,10 +136,10 @@ if True:
     plt.close(figure)
 
 ############################################################################
-# Render the point cloud with colors
+# Render the point cloud with colors  and manually defined projection
 #
 if True:
-    print("Rendering the point cloud with Matplotlib... colored")
+    print(f"\n********* Rendering the point cloud with Matplotlib... {len(point_positions)} points - colored")
     figure = plt.figure(figsize=figsize)
     axe = figure.add_subplot()
     axe.axis("off")  # Hide the axis
@@ -163,11 +152,11 @@ if True:
 
 
 ###############################################################################
-# benchmark rendering performance with monochrome markers
+# benchmark rendering performance with monochrome markers and manually defined projection
 #
 
 if True:
-    print("Rendering the point cloud with Matplotlib... monochrome markers")
+    print(f"\n********* Rendering the point cloud with Matplotlib... {len(point_positions)} points - monochrome markers")
     figure = plt.figure(figsize=figsize)
     axe = figure.add_subplot()
     axe.axis("off")  # Hide the axis
@@ -179,14 +168,14 @@ if True:
     plt.close(figure)
 
 ###############################################################################
-# benchmark rendering performance with colored markers
+# benchmark rendering performance with colored markers and manually defined projection
 #
 if True:
-    print("Rendering the point cloud with Matplotlib... colored markers")
+    print(f"\n********* Rendering the point cloud with Matplotlib... {len(point_positions)} points - colored markers")
     figure = plt.figure(figsize=figsize)
     axe = figure.add_subplot()
     axe.axis("off")  # Hide the axis
-    axe.scatter(point_positions[:, 0], point_positions[:, 1], marker='.', color=point_colors, s=1, rasterized=True)
+    axe.scatter(point_positions[:, 0], point_positions[:, 1], marker='o', color=point_colors, s=1, rasterized=True)
     rendering_time = point_cloud_bench.display_benchmark_pure_matplotlib(figure=figure, log_enabled=True, max_bench_delay_seconds=max_bench_delay_seconds)
     print(f"Average rendering time: {rendering_time:.6f} seconds per rendering.")
 
