@@ -32,15 +32,15 @@ def display_benchmark_pure_matplotlib(figure=matplotlib.figure.Figure, log_enabl
 
     start_time = time.perf_counter()
     for _ in range(max_bench_count):
-        # Render the figure
-        figure.canvas.draw()
-        figure.canvas.flush_events()
-
         # count the number of renderings
         bench_count += 1
         if log_enabled:
             # print a dot without a newline
             print(".", end="", flush=True)
+
+        # Render the figure
+        figure.canvas.draw()
+        figure.canvas.flush_events()
 
         # break of the loop after max_bench_delay_seconds
         if time.perf_counter() - start_time > max_bench_delay_seconds:

@@ -38,9 +38,9 @@ def print_geometry_info(point_positions: np.ndarray):
         point_positions (np.ndarray): The 3D positions of the points.
     """
     print(f"Point cloud size: {len(point_positions)} points")
-    print(f"Point positions shape: {point_positions.shape}")
-    print(f"Point positions min: {point_positions.min(axis=0)}")
-    print(f"Point positions max: {point_positions.max(axis=0)}")
+    print(f'Point positions x range: {point_positions[:, 0].min():0.4f} to {point_positions[:, 0].max():0.4f}')
+    print(f'Point positions y range: {point_positions[:, 1].min():0.4f} to {point_positions[:, 1].max():0.4f}')
+    print(f'Point positions z range: {point_positions[:, 2].min():0.4f} to {point_positions[:, 2].max():0.4f}')
 
 
 def geometry_crop(

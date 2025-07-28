@@ -28,7 +28,7 @@ print("********** LIDAR Point Cloud Benchmark with Matplotlib *********")
 print(f"Matplotlib backend: {plt.get_backend()}")
 
 figsize = (6, 6)  # Size of the figure in inches
-max_bench_delay_seconds = 30.0  # Maximum time to wait for the benchmark in seconds
+max_bench_delay_seconds = 20.0  # Maximum time to wait for the benchmark in seconds
 wished_point_count = 200_000  # Number of points to keep after downsampling
 
 ###############################################################
@@ -102,33 +102,17 @@ if measure_rendering_time is False:
     plt.show(block=True)
     exit()
 
-##########################################################################
-# Benchmark rendering performance - with native 3D projection from matplotlib
-if True:
-    print(f"\n********* Benchmarking rendering performance with Matplotlib... {len(point_positions)} points with projection 3d from matplotlib")
-    figure = plt.figure(figsize=figsize)
-    axe = figure.add_subplot(projection='3d')
-    axe.axis("off")  # Hide the axis
-    axe.scatter(point_positions[:, 0], point_positions[:, 1], point_positions[:, 2], color=point_colors, s=1, rasterized=True)
-
-    rendering_time = point_cloud_bench.display_benchmark_pure_matplotlib(figure=figure, log_enabled=True, max_bench_delay_seconds=max_bench_delay_seconds)
-    print(f"Average rendering time: {rendering_time:.6f} seconds per rendering.")
-
-    # Close the figure
-    plt.close(figure)
-
-exit()
 
 ##########################################################################
 # Benchmark rendering performance with monochrome points and manually defined projection
 #
 
 if True:
-    print(f"\n********* Rendering the point cloud with Matplotlib... {len(point_positions)} points - monochrome")
+    print(f"\n********* Rendering the point cloud with Matplotlib... {len(point_positions)} points - monochrome - markers '.'")
     figure = plt.figure(figsize=figsize)
     axe = figure.add_subplot()
     axe.axis("off")  # Hide the axis
-    axe.scatter(point_positions[:, 0], point_positions[:, 1], color=[1,0,0,1], s=1, rasterized=True)
+    axe.scatter(point_positions[:, 0], point_positions[:, 1], color=[1,0,0,1], marker='.', s=1, rasterized=False)
     rendering_time = point_cloud_bench.display_benchmark_pure_matplotlib(figure=figure, log_enabled=True, max_bench_delay_seconds=max_bench_delay_seconds)
     print(f"Average rendering time: {rendering_time:.6f} seconds per rendering.")
 
@@ -139,11 +123,11 @@ if True:
 # Render the point cloud with colors  and manually defined projection
 #
 if True:
-    print(f"\n********* Rendering the point cloud with Matplotlib... {len(point_positions)} points - colored")
+    print(f"\n********* Rendering the point cloud with Matplotlib... {len(point_positions)} points - colored - markers '.'")
     figure = plt.figure(figsize=figsize)
     axe = figure.add_subplot()
     axe.axis("off")  # Hide the axis
-    axe.scatter(point_positions[:, 0], point_positions[:, 1], color=point_colors, s=1, rasterized=True)
+    axe.scatter(point_positions[:, 0], point_positions[:, 1], color=point_colors, marker='.', s=1, rasterized=True)
     rendering_time = point_cloud_bench.display_benchmark_pure_matplotlib(figure=figure, log_enabled=True, max_bench_delay_seconds=max_bench_delay_seconds)
     print(f"Average rendering time: {rendering_time:.6f} seconds per rendering.")
 
@@ -160,7 +144,7 @@ if True:
     figure = plt.figure(figsize=figsize)
     axe = figure.add_subplot()
     axe.axis("off")  # Hide the axis
-    axe.scatter(point_positions[:, 0], point_positions[:, 1], marker='o', color=[1,0,0,1], s=1, rasterized=True)
+    axe.scatter(point_positions[:, 0], point_positions[:, 1], marker='o', color=[1,0,0,1], s=2, rasterized=True)
     rendering_time = point_cloud_bench.display_benchmark_pure_matplotlib(figure=figure, log_enabled=True, max_bench_delay_seconds=max_bench_delay_seconds)
     print(f"Average rendering time: {rendering_time:.6f} seconds per rendering.")
 
@@ -175,7 +159,22 @@ if True:
     figure = plt.figure(figsize=figsize)
     axe = figure.add_subplot()
     axe.axis("off")  # Hide the axis
-    axe.scatter(point_positions[:, 0], point_positions[:, 1], marker='o', color=point_colors, s=1, rasterized=True)
+    axe.scatter(point_positions[:, 0], point_positions[:, 1], marker='o', color=point_colors, s=2, rasterized=True)
+    rendering_time = point_cloud_bench.display_benchmark_pure_matplotlib(figure=figure, log_enabled=True, max_bench_delay_seconds=max_bench_delay_seconds)
+    print(f"Average rendering time: {rendering_time:.6f} seconds per rendering.")
+
+    # Close the figure
+    plt.close(figure)
+
+##########################################################################
+# Benchmark rendering performance - with native 3D projection from matplotlib
+if True:
+    print(f"\n********* Benchmarking rendering performance with Matplotlib... {len(point_positions)} points with projection 3d from matplotlib")
+    figure = plt.figure(figsize=figsize)
+    axe = figure.add_subplot(projection='3d')
+    axe.axis("off")  # Hide the axis
+    axe.scatter(point_positions[:, 0], point_positions[:, 1], point_positions[:, 2], color=point_colors, s=1, rasterized=True)
+
     rendering_time = point_cloud_bench.display_benchmark_pure_matplotlib(figure=figure, log_enabled=True, max_bench_delay_seconds=max_bench_delay_seconds)
     print(f"Average rendering time: {rendering_time:.6f} seconds per rendering.")
 

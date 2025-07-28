@@ -1,9 +1,6 @@
 """
-from datoviz library - https://datoviz.org/gallery/showcase/lidar/
+inspired from datoviz library - https://datoviz.org/gallery/showcase/lidar/
 """
-
-# import matplotlib
-# matplotlib.use('QtAgg')  # Use QtAgg backend for interactive plotting
 
 import gsp
 
@@ -54,7 +51,6 @@ print(f"Loaded LIDAR data with {len(point_positions)} points.")
 ###############################################################################
 # Downsample the point cloud
 #
-
 point_positions, point_colors = point_cloud_lib.downsample(
     point_positions=point_positions,
     point_colors=point_colors,
