@@ -11,6 +11,11 @@ from libs.transformation_matrix import translate, xrotate, yrotate
 import matplotlib.pyplot as plt
 import numpy as np
 
+# import argparse
+# arg_parser = argparse.ArgumentParser(description='Perform a LIDAR point cloud benchmark.')
+# arg_parser.add_argument('-o', '--output', help='Output file')
+# arg_parser.add_argument('--verbose', action='store_true', help='Enable verbose mode')
+
 import os
 # define __dirname__ to the directory of this script
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
