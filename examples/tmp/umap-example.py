@@ -1,0 +1,20 @@
+# from https://umap-learn.readthedocs.io/en/latest/parameters.html
+ 
+import numpy as np
+import matplotlib.pyplot as plt
+# from mpl_toolkits.mplot3d import Axes3D
+# import seaborn as sns
+import umap
+
+# sns.set(style='white', context='poster', rc={'figure.figsize':(14,10)})
+
+print("UMAP version:", umap.__version__)
+np.random.seed(42)
+data = np.random.rand(80, 4)
+
+fit = umap.UMAP()
+u = fit.fit_transform(data)
+
+plt.scatter(u[:,0], u[:,1], c=data)
+plt.title('UMAP embedding of random colours');
+plt.show(block=True)
