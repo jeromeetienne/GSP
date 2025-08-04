@@ -7,13 +7,13 @@ Experiementation to measure the rendering time of the point cloud in matplotlib
 import libs.point_cloud_lib as point_cloud_lib
 import libs.point_cloud_bench as point_cloud_bench
 import libs.download as download
-from libs.projection_matrix import frustum, perspective
-from libs.transformation_matrix import translate, xrotate, yrotate
 
 
 # Experiment to handle intellisense in VSCode
 import matplotlib.pyplot as plt
 import numpy as np
+
+from gsp.matplotlib import glm
 
 # define __dirname__ to the directory of this script
 import os
@@ -80,9 +80,9 @@ print(f"Downsampling - Keeping {len(point_positions)} points after downsampling.
 #
 
 # Compute the model-view-projection matrix
-matrix_model = xrotate(20) @ yrotate(0)
-matrix_view = translate(0, 0, -3.5)
-matrix_projection = perspective(25, 1, 0.1, 100)
+matrix_model = glm.xrotate(theta=20) @ glm.yrotate(theta=0)
+matrix_view = glm.translate((0, 0, -3.5))
+matrix_projection = glm.perspective(25, 1, 0.1, 100)
 matrix_model_view_projection = matrix_projection @ matrix_view @ matrix_model
 
 # convert to homogeneous coordinates and apply the MVP matrix

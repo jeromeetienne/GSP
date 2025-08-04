@@ -14,6 +14,7 @@ def display_gsp(point_positions: np.ndarray, point_colors: np.ndarray, canvas_wi
     """
     Display the point cloud using GSP's visual.Pixels.
     """
+
     # Create a canvas and viewport
     canvas = core.Canvas(canvas_width, canvas_height, 100.0)
     viewport = core.Viewport(canvas, 0, 0, canvas_width, canvas_height, [1,1,1,1])
@@ -40,7 +41,10 @@ def display_gsp(point_positions: np.ndarray, point_colors: np.ndarray, canvas_wi
 def display_gsp_dual_resolution(point_positions: np.ndarray, point_colors: np.ndarray):
     """
     Display the point cloud using GSP's visual.Pixels.
+
+    TODO: it is halfbacked. not yet finished
     """
+
     # Create a canvas and viewport
     canvas = core.Canvas(256, 256, 100.0)
     viewport = core.Viewport(canvas, 0, 0, 256, 256, [1,1,1,1])
