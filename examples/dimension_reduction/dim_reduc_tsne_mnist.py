@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 
 import libs.dim_reduct_data as dim_reduct_data
 import libs.dim_reduc_fitting_tsne as dim_reduc_fitting_tsne
-import examples.dimension_reduction.libs.dim_reduc_display_matplotlib as dim_reduc_display_matplotlib
 
 import os
 
@@ -34,20 +33,31 @@ tsne_points_fitted = dim_reduc_fitting_tsne.fit(tsne_points_original, perplexity
 # display the results
 #
 
-# Plot the t-SNE results
-dim_reduc_display_matplotlib.display_matplotlib_scatter_plot(tsne_points_fitted, tsne_colors)
+display_type='plain_matplotlib'
+# display_type='gsp_matplotlib'
 
-# add the label in the middle all the points
-dim_reduc_display_matplotlib.display_matplotlib_point_labels(tsne_points_fitted, tsne_digits_original)
-
-# Set the title and labels
-plt.title(f"dimension reduction: t-SNE on MNIST Dataset (Perplexity={tsne_perplexity})")
-
-###############################################################################
-# Save the plot to a file
-#
 image_filename = os.path.join(__dirname__, '../output/dim_reduc_tsne_mnist.png')
-plt.savefig(image_filename, dpi=300)
 
-# Show the plot
-plt.show()
+if display_type=='gsp_matplotlib':
+    import libs.dim_reduc_display_gsp as dim_reduc_display_gsp
+
+    # display 
+    dim_reduc_display_gsp.display_gsp_scatter_plot(points_fitted=tsne_points_fitted, points_colors=tsne_colors, image_filename=image_filename)
+else:
+    import libs.dim_reduc_display_matplotlib as dim_reduc_display_matplotlib
+    # Plot the t-SNE results
+    dim_reduc_display_matplotlib.display_matplotlib_scatter_plot(tsne_points_fitted, tsne_colors)
+
+    # add the label in the middle all the points
+    dim_reduc_display_matplotlib.display_matplotlib_point_labels(tsne_points_fitted, tsne_digits_original)
+
+    # Set the title and labels
+    plt.title("dimension reduction: t-SNE on MNIST Dataset")
+
+    ###############################################################################
+    # Save the plot to a file
+    # 
+    plt.savefig(image_filename, dpi=300)
+
+    # Show the plot
+    plt.show()

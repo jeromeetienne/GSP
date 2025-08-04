@@ -10,7 +10,13 @@ gsp.use("matplotlib")
 import os
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
-def display_gsp_scatter_plot(points_fitted: np.ndarray, points_colors: np.ndarray):
+def display_gsp_scatter_plot(points_fitted: np.ndarray, points_colors: np.ndarray, image_filename: str = None):
+
+    # Normalize umap_points_fitted to -1 to 1 range for better visualization
+    point_min = -0.25
+    point_max = 0.25
+    points_fitted = (points_fitted - points_fitted.min(axis=0)) / (points_fitted.max(axis=0) - points_fitted.min(axis=0)) * (point_max - point_min) + point_min
+
 
     canvas = core.Canvas(512, 512, 100.0)
     viewport = core.Viewport(canvas, 0, 0, 512, 512, [1,1,1,1])
@@ -19,6 +25,7 @@ def display_gsp_scatter_plot(points_fitted: np.ndarray, points_colors: np.ndarra
     from libs.camera import Camera
     camera = Camera("ortho")
     camera.connect(viewport, "motion",  pixels.render)
-    camera.save(f"{__dirname__}/../../output/dim_reduc_umap_mnist.png")
+    if image_filename is not None:
+        camera.save(image_filename)
     camera.run()
 
