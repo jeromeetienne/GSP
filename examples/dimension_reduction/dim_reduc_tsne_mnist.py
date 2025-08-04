@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 import libs.dim_reduct_data as dim_reduct_data
 import libs.dim_reduc_fitting_tsne as dim_reduc_fitting_tsne
-import libs.dim_reduc_display as dim_reduc_display
+import examples.dimension_reduction.libs.dim_reduc_display_matplotlib as dim_reduc_display_matplotlib
 
 import os
 
@@ -35,10 +35,10 @@ tsne_points_fitted = dim_reduc_fitting_tsne.fit(tsne_points_original, perplexity
 #
 
 # Plot the t-SNE results
-dim_reduc_display.display_matplotlib_scatter_plot(tsne_points_fitted, tsne_colors)
+dim_reduc_display_matplotlib.display_matplotlib_scatter_plot(tsne_points_fitted, tsne_colors)
 
 # add the label in the middle all the points
-dim_reduc_display.display_matplotlib_point_labels(tsne_points_fitted, tsne_digits_original)
+dim_reduc_display_matplotlib.display_matplotlib_point_labels(tsne_points_fitted, tsne_digits_original)
 
 # Set the title and labels
 plt.title(f"dimension reduction: t-SNE on MNIST Dataset (Perplexity={tsne_perplexity})")

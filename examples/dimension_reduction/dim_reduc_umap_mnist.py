@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 import libs.dim_reduct_data as dim_reduct_data
 import libs.dim_reduc_fitting_umap as dim_reduc_fitting_umap
-import libs.dim_reduc_display as dim_reduc_display
+import examples.dimension_reduction.libs.dim_reduc_display_matplotlib as dim_reduc_display_matplotlib
 
 import os
 
@@ -29,15 +29,22 @@ umap_points_original, umap_digits_original, umap_colors = dim_reduct_data.mnist_
 
 umap_points_fitted = dim_reduc_fitting_umap.fit(umap_points_original)
 
+
+# Normalize umap_points_fitted to -1 to 1 range for better visualization
+umap_points_fitted = (umap_points_fitted - umap_points_fitted.min(axis=0)) / (umap_points_fitted.max(axis=0) - umap_points_fitted.min(axis=0)) * 2 - 1
+
+# import libs.dim_reduc_display_gsp as dim_reduc_display_gsp
+# dim_reduc_display_gsp.display_gsp_scatter_plot(umap_points_fitted, umap_colors)
+
 ##########################################################################
 # display the results
 #
 
 # Plot the UMAP results
-dim_reduc_display.display_matplotlib_scatter_plot(umap_points_fitted, umap_colors)
+dim_reduc_display_matplotlib.display_matplotlib_scatter_plot(umap_points_fitted, umap_colors)
 
 # add the label in the middle all the points
-dim_reduc_display.display_matplotlib_point_labels(umap_points_fitted, umap_digits_original)
+dim_reduc_display_matplotlib.display_matplotlib_point_labels(umap_points_fitted, umap_digits_original)
 
 # Set the title and labels
 plt.title("dimension reduction: UMAP on MNIST Dataset")

@@ -1,10 +1,7 @@
 import time
 import numpy as np
-
-load_time_start = time.time()
+# NOTE: this takes 2.5 seconds to import ... so we import it here
 import umap
-load_time_elapsed = time.time() - load_time_start
-print(f"UMAP library loaded in {load_time_elapsed:.2f} seconds")
 
 
 def fit(points_original: np.ndarray) -> np.ndarray:
