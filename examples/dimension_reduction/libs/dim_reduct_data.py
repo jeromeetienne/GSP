@@ -42,7 +42,7 @@ def mnist_data_load() -> tuple:
 
 def mnist_data_prepare_fitting(
     mnist_x_train: np.ndarray, mnist_y_train: np.ndarray,
-    max_element_count: int = 10000
+    max_element_count: int = None
 ) -> tuple:
     """
     Prepare MNIST data for fitting (umap, etc...).
@@ -54,7 +54,11 @@ def mnist_data_prepare_fitting(
     Returns:
         tuple: (umap_points_original, umap_digits_original, umap_colors)
     """
-    umap_element_count = min(len(mnist_x_train), max_element_count)
+    if max_element_count is None:
+        umap_element_count = mnist_x_train.shape[0]
+    else:
+        umap_element_count = min(max_element_count, mnist_x_train.shape[0])
+
     umap_points_original = np.empty((umap_element_count, mnist_x_train[0].flatten().shape[0]))
     umap_digits_original = np.empty((umap_element_count, 1))
     umap_colors = np.empty((umap_element_count, 4))

@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 
 import libs.dim_reduct_data as dim_reduct_data
 import libs.dim_reduc_fitting_umap as dim_reduc_fitting_umap
+# import examples.dimension_reduction.libs.dim_reduc_display_matplotlib as dim_reduc_display_matplotlib
 
 import os
 # define __dirname__ to the directory of this script
@@ -18,7 +19,7 @@ mnist_x_train, mnist_y_train, mnist_x_test, mnist_y_test = dim_reduct_data.mnist
 # - Flatten the images to 1D arrays for UMAP
 # - Each image is 28x28 pixels, so we will have 784 features per image
 
-umap_points_original, umap_digits_original, umap_colors = dim_reduct_data.mnist_data_prepare_fitting(mnist_x_train, mnist_y_train)
+umap_points_original, umap_digits_original, umap_colors = dim_reduct_data.mnist_data_prepare_fitting(mnist_x_train, mnist_y_train, max_element_count=1000)
 
 ##########################################################################
 # Fit UMAP to the MNIST data
