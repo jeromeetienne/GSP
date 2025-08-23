@@ -92,8 +92,9 @@ if downsample_fraction < 1.0:
     downsample_count = int(
         len(embedding_vectors) * downsample_fraction
     )  # Number of samples to keep
-    embedding_vectors = embedding_vectors[:downsample_count]
-    label_vectors = label_vectors[:downsample_count]
+    random_indices = np.random.choice(len(embedding_vectors), downsample_count, replace=False)
+    embedding_vectors = embedding_vectors[random_indices]
+    label_vectors = label_vectors[random_indices]
     print(
         f"Downsampled dataset factor: {downsample_fraction} current size: {embedding_vectors.shape}"
     )

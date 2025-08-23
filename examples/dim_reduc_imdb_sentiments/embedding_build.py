@@ -38,7 +38,7 @@ __dirname__ = os.path.dirname(os.path.abspath(__file__))
 #
 
 dataset_filename = os.path.join(
-    __dirname__, "./input/imdb-dataset-sentiment-analysis-in-csv-format/Train.csv"
+    __dirname__, "./input/Train.csv"
 )
 train_dataset_df = pd.read_csv(dataset_filename)
 
