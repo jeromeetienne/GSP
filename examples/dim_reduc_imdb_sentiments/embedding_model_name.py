@@ -1,7 +1,7 @@
 # from sentence_transformers import SentenceTransformer
-from enum import Enum
+from enum import StrEnum
 
-class ModelNameEnum(str, Enum):
+class ModelNameEnum( StrEnum):
     ALL_MINILM_L6_V2 = "all-MiniLM-L6-v2"
     ROBERTA_BASE_NLI_STSB_MEAN_TOKENS = "roberta-base-nli-stsb-mean-tokens"
     DISTILBERT_BASE_NLI_STSB_MEAN_TOKENS = "distilbert-base-nli-stsb-mean-tokens"

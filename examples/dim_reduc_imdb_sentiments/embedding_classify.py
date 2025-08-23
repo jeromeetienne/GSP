@@ -18,7 +18,7 @@ cmdline_argparser = argparse.ArgumentParser(
 cmdline_argparser.add_argument(
     "--downsample_fraction",
     type=float,
-    default=1.0,
+    default=0.1,
     help="Downsample fraction - 1.0 means no downsampling = 0.1 means keep only 10%% of the data",
 )
 cmdline_argparser.add_argument(
