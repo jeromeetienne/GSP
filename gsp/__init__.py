@@ -69,6 +69,7 @@ def use(backend):
         from . import core
         from . import transform
 
+    # jerome- globals may not be a good idea
     inspect.stack()[1][0].f_globals["np"] = np
     inspect.stack()[1][0].f_globals["glm"] = glm
     inspect.stack()[1][0].f_globals["core"] = core

@@ -7,12 +7,14 @@ from gsp import glm
 from gsp import visual
 from gsp.io.command import command
 from gsp.transform import Transform
-from gsp.core import Viewport, Buffer, Color
+from gsp.core import Viewport, Buffer, Color, Matrix
+
 
 class Pixels(visual.Pixels):
 
-    __doc__ = (visual.Pixels.__doc__ +
-    """
+    __doc__ = (
+        visual.Pixels.__doc__
+        + """
     !!! Notes "Notes on matplotlib implementation"
 
         Even with antialias off, marker coverage leaks on neighbouring
@@ -22,15 +24,22 @@ class Pixels(visual.Pixels):
         whose coverage is more or less guaranteed to be one
         pixel. However, this size seems to be wrong on Windows,
         depending on the screen size.
-    """)
+    """
+    )
 
     @command("visual.Pixels")
-    def __init__(self, positions : Transform | Buffer,
-                       colors : Transform | Buffer | Color):
-        super().__init__(positions, colors, __no_command__ = True)
+    def __init__(
+        self, positions: Transform | Buffer, colors: Transform | Buffer | Color
+    ):
+        super().__init__(positions, colors, __no_command__=True)
 
-
-    def render(self, viewport, model=None, view=None, proj=None):
+    def render(
+        self,
+        viewport: Viewport,
+        model: Matrix = None,
+        view: Matrix = None,
+        proj: Matrix = None,
+    ):
 
         super().render(viewport, model, view, proj)
         model = model if model is not None else self._model
@@ -44,8 +53,8 @@ class Pixels(visual.Pixels):
 
         # Create the collection if necessary
         if viewport not in self._viewports:
-            size = 0.25*(72/viewport._canvas._dpi)**2
-            collection = viewport._axes.scatter( [],[], size)
+            size = 0.25 * (72 / viewport._canvas._dpi) ** 2
+            collection = viewport._axes.scatter([], [], size)
             collection.set_antialiaseds(True)
             collection.set_linewidths(0)
             self._viewports[viewport] = collection
@@ -54,8 +63,7 @@ class Pixels(visual.Pixels):
             # This is necessary for measure transforms that need to be
             # kept up to date with canvas size
             canvas = viewport._canvas._figure.canvas
-            canvas.mpl_connect('resize_event',
-                               lambda event: self.render(viewport))
+            canvas.mpl_connect("resize_event", lambda event: self.render(viewport))
 
         # If render has been called without model/view/proj, we don't
         # render Such call is only used to declare that this visual is
@@ -69,8 +77,8 @@ class Pixels(visual.Pixels):
         positions = self.eval_variable("positions")
         # positions = positions.reshape(-1,3)
         positions = glm.to_vec3(glm.to_vec4(positions) @ self._transform.T)
-        sort_indices = np.argsort(positions[:,2])
-        collection.set_offsets(positions[sort_indices,:2])
+        sort_indices = np.argsort(positions[:, 2])
+        collection.set_offsets(positions[sort_indices, :2])
 
         self.set_variable("screen[positions]", positions)
 
@@ -80,7 +88,6 @@ class Pixels(visual.Pixels):
                 collection.set_facecolors(colors[sort_indices])
             else:
                 collection.set_facecolors(colors)
-
 
         # Restore tracking
         glm.ndarray.tracked.__tracker_class__ = tracker
