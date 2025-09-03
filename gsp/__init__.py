@@ -14,8 +14,8 @@ from . import transform
 
 # minimal version of python is 3.13 - check it is respected, if not exit with an error message
 import sys
-if sys.version_info < (3, 13):
-    print("Python 3.13 or higher is required.")
+if sys.version_info < (3, 11):
+    print("Python 3.11 or higher is required.")
     sys.exit(1)
 
 @io.register("str", "memoryview")
