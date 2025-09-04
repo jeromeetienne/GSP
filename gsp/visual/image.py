@@ -9,13 +9,16 @@ from gsp.core import Buffer, Color
 from gsp.transform import Transform
 from gsp.io.command import command
 
+
 class Image(Visual):
     """
     TODO to write
     """
 
     @command("visual.Image")
-    def __init__(self, positions : Transform | Buffer):
+    def __init__(
+        self, positions: Transform | Buffer, image_data: np.ndarray, image_extent: tuple
+    ):
         """
         TODO to write
         """
@@ -24,8 +27,10 @@ class Image(Visual):
 
         # These variables are available prior to rendering
         self._in_variables = {
-            "positions" : positions,
-            "viewport" : None,
+            "positions": positions,
+            "image_data": image_data,
+            "image_extent": image_extent,
+            "viewport": None,
         }
 
         # These variables exists only during rendering and are
@@ -33,5 +38,5 @@ class Image(Visual):
         # sure they are not tracked.
         n = len(positions)
         self._out_variables = {
-            "screen[positions]" : np.empty((n,3), np.float32),
+            "screen[positions]": np.empty((n, 3), np.float32),
         }

@@ -19,14 +19,14 @@ class Image(visual.Image):
     def __init__(
         self,
         positions: Transform | Buffer,
-        image_data: np.ndarray,
+        image_path: str,
         image_extent: tuple = (-1, 1, -1, 1),
     ):
-        super().__init__(positions,image_data, image_extent,__no_command__=True)
+        super().__init__(positions, __no_command__=True)
 
-        self._positions = positions
-        self._image_data = image_data
+        self._image_data = mpl_img.imread(image_path)
         self._image_extent = image_extent
+        self._positions = positions
 
     def render(
         self,
@@ -35,8 +35,8 @@ class Image(visual.Image):
         view: Matrix = None,
         proj: Matrix = None,
     ):
-        super().render(viewport, model, view, proj)
 
+        super().render(viewport, model, view, proj)
         model = model if model is not None else self._model
         view = view if view is not None else self._view
         proj = proj if proj is not None else self._proj
@@ -50,12 +50,12 @@ class Image(visual.Image):
         if viewport not in self._viewports:
             axe_image = mpl_img.AxesImage(
                 viewport._axes,
-                # extent=[-1, 1, -1, 1],
-                # origin="upper",
-                # clip_on=True,
-                # interpolation="nearest",
-                # zorder=0,
-                data=self._image_data,
+                extent=[-1, 1, -1, 1],
+                origin="upper",
+                clip_on=True,
+                interpolation="nearest",
+                zorder=0,
+                data=self._image,
             )
             self._viewports[viewport] = axe_image
             viewport._axes.add_image(axe_image)
@@ -73,21 +73,31 @@ class Image(visual.Image):
             glm.ndarray.tracked.__tracker_class__ = tracker
             return
 
+        #     axe_image = self._viewports[viewport]
+        #     positions = glm.to_vec3(glm.to_vec4(self._positions) @ self._transform.T)
+        #     image_extent = (positions[0,0]-0.5, positions[0,0]+0.5, positions[0,1]-0.5, positions[0,1]+0.5)
+        #     axe_image.set_extent(image_extent)
+        #     # print(image_extent)
+        #     # plt.imshow(self._image, extent=imshow_extent)
+
+        #     # plt.imshow(self._image, extent=(-0.5, 0.5, -0.5, 0.5))
+
+        #     print('ddd')
 
         axe_image = self._viewports[viewport]
-        positions4d = glm.to_vec4(self._positions) @ self._transform.T
-        positions3d = glm.to_vec3(positions4d)
-        # FIXME here image_extent is divided by W after rotation
-        # but there is nothing to compensate for the camera z
-        projected_extent = (
-            positions3d[0, 0] + self._image_extent[0]/positions4d[0, 3],
-            positions3d[0, 0] + self._image_extent[1]/positions4d[0, 3],
-            positions3d[0, 1] + self._image_extent[2]/positions4d[0, 3],
-            positions3d[0, 1] + self._image_extent[3]/positions4d[0, 3],
+        positions = self.eval_variable("positions")
+        # positions = positions.reshape(-1,3)
+        positions = glm.to_vec3(glm.to_vec4(positions) @ self._transform.T)
+        image_extent = (
+            positions[0, 0] - 0.5,
+            positions[0, 0] + 0.5,
+            positions[0, 1] - 0.5,
+            positions[0, 1] + 0.5,
         )
-        axe_image.set_extent(projected_extent)
+        # image_extent = [-1, 1, -1, 1]
+        axe_image.set_extent(image_extent)
 
-        self.set_variable("screen[positions]", positions3d)
+        self.set_variable("screen[positions]", positions)
 
         # Restore tracking
         glm.ndarray.tracked.__tracker_class__ = tracker

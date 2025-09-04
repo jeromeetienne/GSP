@@ -29,6 +29,7 @@ class Segments(visual.Segments):
     def render(self, viewport=None, model=None, view=None, proj=None):
 
         super().render(viewport, model, view, proj)
+        
         model = model if model is not None else self._model
         view = view if view is not None else self._view
         proj = proj if proj is not None else self._proj
