@@ -11,3 +11,4 @@ from . paths import Paths
 from . polygons import Polygons
 from . image import Image
 # from . mesh import Mesh
+from . volume import Volume

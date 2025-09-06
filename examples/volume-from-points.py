@@ -25,9 +25,13 @@ print(f"Loaded point cloud data from {volume_path}")
 with gzip.open(volume_path, "rb") as f:
     volume_data = np.load(f, allow_pickle=True)
 
+# Normalize volume_data colors from [0, 255] to [0, 1]
+volume_data = volume_data / 255.0
+
+
 ############################
 
-volume_depth, volume_height, volume_width, _ = volume_data.shape
+volume_depth, volume_height, volume_width, color_ndim = volume_data.shape
 
 volume_downsample = 0.05
 
@@ -66,11 +70,9 @@ for index_x in range(len_x):
             ]
 
 
-# Normalize fill_colors from [0, 255] to [0, 1]
-fill_colors = fill_colors / 255.0
-
 # multiply alpha (the forth dimension) of fill_colors by the corresponding volume_data values
-fill_colors[..., 3] *= 1
+alpha_factor = 1
+fill_colors[..., 3] *= alpha_factor
 
 # count how many fill_colors got a alpha value > 0
 alpha_count = np.sum(fill_colors[..., 3] > 0)
@@ -83,7 +85,7 @@ fill_colors = fill_colors[fill_colors[..., 3] > 0]
 # Fake way to remove moire patterns
 positions += 0.003 * np.random.normal(0, 1, positions.shape)
 
-points = visual.Points(
+points = visual.Volume(
     positions=positions,
     sizes=80.0,
     fill_colors=fill_colors,

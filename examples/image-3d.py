@@ -8,6 +8,7 @@ from gsp.transform import Transform
 from gsp.core import Viewport, Buffer, Color, Matrix
 import matplotlib.pyplot as plt
 import numpy as np
+from libs.camera import Camera
 
 # import gsp
 gsp.use("matplotlib")
@@ -16,8 +17,8 @@ __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
 ########################################################################################
 
-canvas = core.Canvas(1024, 1024, 100.0)
-viewport = core.Viewport(canvas, 0, 0, 1024, 1024, [1, 1, 1, 1])
+canvas = core.Canvas(256, 256, 100.0)
+viewport = core.Viewport(canvas, 0, 0, 256, 256, [1, 1, 1, 1])
 
 ######
 
@@ -75,21 +76,13 @@ image_visual = visual.Image(
 )
 image_visual.render(viewport)
 
-# plt.show()
-
 #####################################################################
 # Run the camera
 #
-from libs.camera import Camera
 
 camera_ortho_enabled = False
-if camera_ortho_enabled:
-    camera = Camera("ortho")
-    camera.connect(viewport, "motion", paths_visual.render)
-    camera.connect(viewport, "motion", image_visual.render)
-    camera.run()
-else:
-    camera = Camera("perspective", theta=0, phi=0)
-    camera.connect(viewport, "motion", paths_visual.render)
-    camera.connect(viewport, "motion", image_visual.render)
-    camera.run()
+camera_type = "ortho" if camera_ortho_enabled else "perspective"
+camera = Camera(camera_ortho_enabled)
+camera.connect(viewport, "motion", paths_visual.render)
+camera.connect(viewport, "motion", image_visual.render)
+camera.run()

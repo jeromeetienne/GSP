@@ -10,6 +10,7 @@ from gsp.transform import Transform
 from gsp.core import Viewport, Buffer, Color, Matrix
 import matplotlib.image as mpl_img
 
+
 class Image(visual.Image):
     """
     TODO to write
@@ -22,7 +23,7 @@ class Image(visual.Image):
         image_data: np.ndarray,
         image_extent: tuple = (-1, 1, -1, 1),
     ):
-        super().__init__(positions,image_data, image_extent,__no_command__=True)
+        super().__init__(positions, image_data, image_extent, __no_command__=True)
 
         self._positions = positions
         self._image_data = image_data
@@ -73,17 +74,17 @@ class Image(visual.Image):
             glm.ndarray.tracked.__tracker_class__ = tracker
             return
 
-
         axe_image = self._viewports[viewport]
         positions4d = glm.to_vec4(self._positions) @ self._transform.T
         positions3d = glm.to_vec3(positions4d)
         # FIXME here image_extent is divided by W after rotation
         # but there is nothing to compensate for the camera z
+        # - should i divide by the camera's zoom ?
         projected_extent = (
-            positions3d[0, 0] + self._image_extent[0]/positions4d[0, 3],
-            positions3d[0, 0] + self._image_extent[1]/positions4d[0, 3],
-            positions3d[0, 1] + self._image_extent[2]/positions4d[0, 3],
-            positions3d[0, 1] + self._image_extent[3]/positions4d[0, 3],
+            positions3d[0, 0] + self._image_extent[0] / positions4d[0, 3],
+            positions3d[0, 0] + self._image_extent[1] / positions4d[0, 3],
+            positions3d[0, 1] + self._image_extent[2] / positions4d[0, 3],
+            positions3d[0, 1] + self._image_extent[3] / positions4d[0, 3],
         )
         axe_image.set_extent(projected_extent)
 
