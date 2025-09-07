@@ -17,7 +17,6 @@ class Volume(visual.Volume):
     @command("visual.Volume")
     def __init__(
         self,
-        bounds_3d: tuple,
         volume_data: np.ndarray,
         point_size: float = 10.0,
         downsample_ratio: float = 1.0,
@@ -25,17 +24,10 @@ class Volume(visual.Volume):
         jitter_position_factor: float = 0.0,
         remove_invisible_points_enabled: bool = True,
     ):
-        import time
-        time_start = time.perf_counter()
-
         volume_depth, volume_height, volume_width, color_ndim = volume_data.shape
 
-        ############
-        # Sanity checks for __init__ arguments
-        #
-
-        # sanity check - bounds_3d shape MUST be (3, 2)
-        assert np.shape(bounds_3d) == (3, 2)
+        import time
+        time_start = time.perf_counter()
 
         # sanity check - volume shape
         assert volume_depth > 0
@@ -43,73 +35,54 @@ class Volume(visual.Volume):
         assert volume_width > 0
         assert color_ndim == 4
 
-        #############
-        # Convert volume_data into numpy array for `positions` and `fill_colors`
-        #
+        len_x = int(volume_width * downsample_ratio)
+        len_y = int(volume_height * downsample_ratio)
+        len_z = int(volume_depth * downsample_ratio)
 
-        # Create a grid of normalized coordinates directly in meshgrid
-        x_min, x_max = bounds_3d[0]
-        y_min, y_max = bounds_3d[1]
-        z_min, z_max = bounds_3d[2]
-        coordinate_z, coordinate_y, coordinate_x = np.meshgrid(
-            np.linspace(z_min, z_max, volume_depth),
-            np.linspace(y_min, y_max, volume_height),
-            np.linspace(x_min, x_max, volume_width),
-            indexing="ij",  # ensures (z,y,x) ordering
-        )
+        point_count = len_x * len_y * len_z
 
-        # Stack into (N, 3) array of positions
-        positions = np.stack(
-            [coordinate_x.ravel(), coordinate_y.ravel(), coordinate_z.ravel()], axis=-1
-        ).reshape(-1, 3)
-        fill_colors = volume_data.reshape(-1, 4)  # rgba per point
+        # TODO should i sample that randomly - would be easier to vectorize
+        positions = glm.vec3(point_count)
+        fill_colors = glm.vec4(point_count)
 
-        ############
-        # Downsample the positions and fill_colors
-        #
+        # positions[...] = np.random.uniform(-1, +1, (n, 3))
+        # setup positions array to be a dense cube
+        linspace_x = np.linspace(-1, 1, len_x)
+        linspace_y = np.linspace(-1, 1, len_y)
+        linspace_z = np.linspace(-1, 1, len_z)
 
-        point_to_keep = int(downsample_ratio * len(positions))
-        indices = np.random.choice(len(positions), size=point_to_keep, replace=False)
-        positions = positions[indices]
-        fill_colors = fill_colors[indices]
+        # TODO should be vectorized
+        for index_x in range(len_x):
+            for index_y in range(len_y):
+                for index_z in range(len_z):
+                    array_index = index_x * len_y * len_z + index_y * len_z + index_z
+                    positions[array_index] = [
+                        linspace_z[index_z],
+                        linspace_y[index_y],
+                        linspace_x[index_x],
+                    ]
+                    fill_colors[array_index] = volume_data[
+                        int(index_z / downsample_ratio),
+                        int(index_y / downsample_ratio),
+                        int(index_x / downsample_ratio),
+                    ]
 
-        ############
+        # multiply alpha (the forth dimension) of fill_colors
+        fill_colors[..., 3] *= alpha_factor
+
         # optimisation: remove all positions and fill_colors where alpha is 0. it would be invisible anyways
-        #
-
         if remove_invisible_points_enabled:
             positions = positions[fill_colors[..., 3] > 0]
             fill_colors = fill_colors[fill_colors[..., 3] > 0]
 
-        ############
-        # multiply alpha (the forth dimension) of fill_colors
-        #
-
-        fill_colors[..., 3] *= alpha_factor
-
-        ############
         # Fake way to remove moire patterns
-        #
+        positions += jitter_position_factor * np.random.normal(0, 1, positions.shape)
 
-        if jitter_position_factor != 1:
-            positions += jitter_position_factor * np.random.normal(
-                0, 1, positions.shape
-            )
-
-        time_elapsed_full = time.perf_counter() - time_start
-        print(
-            f"Volume initialization took {time_elapsed_full:.4f} seconds. final point count: {len(positions)}"
-        )
-
-        ############
-        # Initialize the parent class
-        #
-
+        time_elapsed = time.perf_counter() - time_start
+        print(f"Volume initialization took {time_elapsed:.4f} seconds. length: {len(positions)}")
+        
         super().__init__(
-            positions=positions,
-            sizes=point_size,
-            fill_colors=fill_colors,
-            __no_command__=True,
+            positions=positions, sizes=point_size, fill_colors=fill_colors, __no_command__=True
         )
 
     def render(self, viewport=None, model=None, view=None, proj=None):

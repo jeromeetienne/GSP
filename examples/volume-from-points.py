@@ -31,14 +31,15 @@ volume_data = volume_data / 255.0
 
 ############################
 
-volume_depth, volume_height, volume_width, color_ndim = volume_data.shape
-
-volume_downsample = 0.05
 
 
 canvas = core.Canvas(width=1024, height=1024, dpi=500.0)
 viewport = core.Viewport(canvas=canvas, x=0, y=0, width=1024, height=1024, color=gsp.black)
 
+
+volume_depth, volume_height, volume_width, color_ndim = volume_data.shape
+
+volume_downsample = 0.05
 
 len_x = int(volume_width * volume_downsample)
 len_y = int(volume_height * volume_downsample)
@@ -85,7 +86,7 @@ fill_colors = fill_colors[fill_colors[..., 3] > 0]
 # Fake way to remove moire patterns
 positions += 0.003 * np.random.normal(0, 1, positions.shape)
 
-points = visual.Volume(
+points = visual.Points(
     positions=positions,
     sizes=80.0,
     fill_colors=fill_colors,

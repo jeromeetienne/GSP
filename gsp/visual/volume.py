@@ -45,8 +45,7 @@ class Volume(Visual):
     def __init__(self, positions   : Transform | Buffer,
                        sizes       : Transform | Buffer | float,
                        fill_colors : Transform | Buffer | Color,
-                       line_colors : Transform | Buffer | Color,
-                       line_widths : Transform | Buffer | float):
+                       ):
         """
         Create a visual of n points at given *positions* with
         given *sizes*, *flll_colors*., *line_colors* and
@@ -74,8 +73,6 @@ class Volume(Visual):
             "positions" : positions,
             "sizes" : sizes,
             "fill_colors" : fill_colors,
-            "line_colors" : line_colors,
-            "line_widths" : line_widths,
             "viewport" : None
         }
 
@@ -87,6 +84,4 @@ class Volume(Visual):
             "screen[positions]" : np.empty((n,3), np.float32),
             "sizes" :             np.empty(n, np.float32),
             "fill_colors" :       np.empty((n,4), np.float32),
-            "line_colors" :       np.empty((n,4), np.float32),
-            "line_widths" :       np.empty(n, np.float32),
         }
