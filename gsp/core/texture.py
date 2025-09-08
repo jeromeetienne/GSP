@@ -27,8 +27,9 @@ class Texture(Object):
         shape:
             The shape of the texture (height, width, channels).
         """
+        Object.__init__(self)
+
         self._texture_data = texture_data
         self._shape = shape
 
-        Object.__init__(self)
 
