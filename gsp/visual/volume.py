@@ -71,8 +71,8 @@ class Volume(Visual):
         # tracked
         self._in_variables = {
             "positions" : positions,
-            "sizes" : sizes,
             "fill_colors" : fill_colors,
+            "sizes" : sizes,
             "viewport" : None
         }
 
@@ -82,6 +82,6 @@ class Volume(Visual):
         n = len(positions)
         self._out_variables = {
             "screen[positions]" : np.empty((n,3), np.float32),
-            "sizes" :             np.empty(n, np.float32),
             "fill_colors" :       np.empty((n,4), np.float32),
+            "sizes" :             np.empty(n, np.float32),
         }

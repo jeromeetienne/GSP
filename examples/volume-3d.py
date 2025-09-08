@@ -15,7 +15,6 @@ import gsp
 
 gsp.use("matplotlib")
 
-
 ############################
 # Download/read the volume data
 #
@@ -36,16 +35,6 @@ volume_data = volume_data / 255.0
 
 texture_3d = core.Texture(volume_data, volume_data.shape)
 
-# TODO
-# - Create a volume from the texture
-# - add properties of the textures
-#   - shape
-#   - .width .height .depth
-# - .data
-# Q. how to handle 1d, 2d, 3d textures?
-# Q. how to handle the visual.Image with texture 2d
-
-
 #####################################################
 # Create a volume from the texture
 #
@@ -54,8 +43,8 @@ bound_x = (-1, 1)
 bound_y = (-1, 1)
 bound_z = (-1, 1)
 volume = visual.Volume(
-    bounds_3d=(bound_x, bound_y, bound_z),
     texture_3d=texture_3d,
+    bounds_3d=(bound_x, bound_y, bound_z),
     downsample_ratio=0.00005,
     jitter_position_factor=0.000,
     point_size=200.0,

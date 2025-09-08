@@ -13,20 +13,34 @@ import gsp.matplotlib.core as mpl_core
 
 
 class Volume(visual.Volume):
-
+    """
+    3D Volume visual representation.
+    """
     __doc__ = visual.Volume.__doc__
 
     @command("visual.Volume")
     def __init__(
         self,
-        bounds_3d: tuple,
         texture_3d: mpl_core.Texture,
+        bounds_3d: tuple[tuple[float, float], tuple[float, float], tuple[float, float]] = ((-1, 1), (-1, 1), (-1, 1)),
         point_size: float = 10.0,
         downsample_ratio: float = 1.0,
         alpha_factor: float = 1.0,
         jitter_position_factor: float = 0.0,
         remove_invisible_points_enabled: bool = True,
     ):
+        """
+        Initialize a 3D volume.
+
+        Args:
+            texture_3d (mpl_core.Texture): The 3D texture to use for the volume.
+            bounds_3d (tuple[tuple[float, float], tuple[float, float], tuple[float, float]]): The 3D bounds of the volume.
+            point_size (float): The size of the points in the volume.
+            downsample_ratio (float): The ratio to downsample the volume. percent of original number of point to keep
+            alpha_factor (float): The factor to apply to the alpha channel of each point color.
+            jitter_position_factor (float): The factor to apply to the jittering of positions. It helps to reduce moire patterns.
+            remove_invisible_points_enabled (bool): Whether to remove invisible points aka points with alpha = 0.
+        """
         import time
         time_start = time.perf_counter()
 

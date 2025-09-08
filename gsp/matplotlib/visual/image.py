@@ -15,6 +15,7 @@ import gsp.matplotlib.core.viewport as Viewport
 class Image(visual.Image):
     """
     TODO to write
+    TODO port to matplotlib.core.Texture instead of np.ndarray directly
     """
 
     @command("visual.Image")
