@@ -23,7 +23,7 @@ class Image(visual.Image):
         self,
         positions: Transform | Buffer,
         image_data: np.ndarray,
-        image_extent: tuple[int, int, int, int] = (-1, 1, -1, 1),
+        image_extent: tuple = (-1, 1, -1, 1),
     ):
         super().__init__(positions, image_data, image_extent, __no_command__=True)
 

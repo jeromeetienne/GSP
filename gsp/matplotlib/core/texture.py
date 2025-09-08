@@ -6,13 +6,14 @@ import numpy as np
 from gsp import core
 from gsp.core import Color
 from gsp.transform import Transform
-from . canvas import Canvas
+from .canvas import Canvas
+
 
 class Texture(core.Texture):
 
     __doc__ = core.Texture.__doc__
 
-    def __init__(self, texture_data: np.ndarray, shape: tuple[int, int, int, int]):
+    def __init__(self, texture_data: np.ndarray, shape: tuple):
 
         super().__init__(texture_data=texture_data, shape=shape)
 
@@ -26,6 +27,5 @@ class Texture(core.Texture):
         return self._texture_data
 
     @property
-    def shape(self) -> tuple[int, int, int, int]:
+    def shape(self) -> tuple:
         return self._shape
-    

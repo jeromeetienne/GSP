@@ -22,7 +22,7 @@ class Volume(visual.Volume):
     def __init__(
         self,
         texture_3d: mpl_core.Texture,
-        bounds_3d: tuple[tuple[float, float], tuple[float, float], tuple[float, float]] = ((-1, 1), (-1, 1), (-1, 1)),
+        bounds_3d: tuple= ((-1, 1), (-1, 1), (-1, 1)),
         point_size: float = 10.0,
         downsample_ratio: float = 1.0,
         alpha_factor: float = 1.0,
@@ -44,9 +44,9 @@ class Volume(visual.Volume):
         import time
         time_start = time.perf_counter()
 
-        volume_depth = texture_3d.depth
-        volume_height = texture_3d.height
-        volume_width = texture_3d.width
+        volume_depth = texture_3d.shape[0]
+        volume_height = texture_3d.shape[1]
+        volume_width = texture_3d.shape[2]
 
         ############
         # Sanity checks for __init__ arguments
