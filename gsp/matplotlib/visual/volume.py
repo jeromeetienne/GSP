@@ -3,11 +3,13 @@
 # License: BSD 3 clause
 
 import numpy as np
-from gsp import glm
+from gsp import glm, core
 from gsp import visual
 from gsp.io.command import command
 from gsp.transform import Transform
 from gsp.core import Viewport, Buffer, Color
+
+import gsp.matplotlib.core as mpl_core
 
 
 class Volume(visual.Volume):
@@ -18,7 +20,7 @@ class Volume(visual.Volume):
     def __init__(
         self,
         bounds_3d: tuple,
-        volume_data: np.ndarray,
+        texture_3d: mpl_core.Texture,
         point_size: float = 10.0,
         downsample_ratio: float = 1.0,
         alpha_factor: float = 1.0,
@@ -28,7 +30,9 @@ class Volume(visual.Volume):
         import time
         time_start = time.perf_counter()
 
-        volume_depth, volume_height, volume_width, color_ndim = volume_data.shape
+        volume_depth = texture_3d.depth
+        volume_height = texture_3d.height
+        volume_width = texture_3d.width
 
         ############
         # Sanity checks for __init__ arguments
@@ -41,7 +45,7 @@ class Volume(visual.Volume):
         assert volume_depth > 0
         assert volume_height > 0
         assert volume_width > 0
-        assert color_ndim == 4
+        # assert color_ndim == 4
 
         #############
         # Convert volume_data into numpy array for `positions` and `fill_colors`
@@ -62,7 +66,7 @@ class Volume(visual.Volume):
         positions = np.stack(
             [coordinate_x.ravel(), coordinate_y.ravel(), coordinate_z.ravel()], axis=-1
         ).reshape(-1, 3)
-        fill_colors = volume_data.reshape(-1, 4)  # rgba per point
+        fill_colors = texture_3d.data.reshape(-1, 4)  # rgba per point
 
         ############
         # Downsample the positions and fill_colors

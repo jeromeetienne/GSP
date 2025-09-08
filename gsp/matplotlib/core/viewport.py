@@ -26,7 +26,7 @@ class Viewport(core.Viewport):
         height = height or canvas._height
         self._color = color
         self._extent = x, y, width, height
-        self._axes = canvas._figure.add_axes([0,0,1,1])
+        self._axes = canvas._figure.add_axes([0.0, 0.0, 1.0, 1.0])
         self._axes.zoom = 1.0
         self._update()
 

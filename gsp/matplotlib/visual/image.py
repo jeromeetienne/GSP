@@ -7,8 +7,9 @@ from gsp import glm
 from gsp import visual
 from gsp.io.command import command
 from gsp.transform import Transform
-from gsp.core import Viewport, Buffer, Color, Matrix
+from gsp.core import  Buffer, Color, Matrix
 import matplotlib.image as mpl_img
+import gsp.matplotlib.core.viewport as Viewport
 
 
 class Image(visual.Image):
@@ -21,7 +22,7 @@ class Image(visual.Image):
         self,
         positions: Transform | Buffer,
         image_data: np.ndarray,
-        image_extent: tuple = (-1, 1, -1, 1),
+        image_extent: tuple[int, int, int, int] = (-1, 1, -1, 1),
     ):
         super().__init__(positions, image_data, image_extent, __no_command__=True)
 
@@ -32,9 +33,9 @@ class Image(visual.Image):
     def render(
         self,
         viewport: Viewport,
-        model: Matrix = None,
-        view: Matrix = None,
-        proj: Matrix = None,
+        model: Matrix | None = None,
+        view: Matrix | None = None,
+        proj: Matrix | None = None,
     ):
         super().render(viewport, model, view, proj)
 

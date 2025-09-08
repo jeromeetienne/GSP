@@ -5,6 +5,7 @@
 From https://datoviz.org/gallery/visuals/volume/
 """
 # Experiment to handle intellisense in VSCode
+from gsp.core.types import Color
 from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -33,7 +34,7 @@ volume_data = volume_data / 255.0
 # Create a texture from the volume data
 #
 
-texture = core.Texture(volume_data, volume_data.shape)
+texture_3d = core.Texture(volume_data, volume_data.shape)
 
 # TODO
 # - Create a volume from the texture
@@ -45,7 +46,6 @@ texture = core.Texture(volume_data, volume_data.shape)
 # Q. how to handle the visual.Image with texture 2d
 
 
-
 #####################################################
 # Create a volume from the texture
 #
@@ -55,7 +55,7 @@ bound_y = (-1, 1)
 bound_z = (-1, 1)
 volume = visual.Volume(
     bounds_3d=(bound_x, bound_y, bound_z),
-    volume_data=volume_data,
+    texture_3d=texture_3d,
     downsample_ratio=0.00005,
     jitter_position_factor=0.000,
     point_size=200.0,
@@ -65,7 +65,7 @@ volume = visual.Volume(
 
 canvas = core.Canvas(width=512, height=512, dpi=250.0)
 viewport = core.Viewport(
-    canvas=canvas, x=0, y=0, width=512, height=512, color=gsp.black
+    canvas=canvas, x=0, y=0, width=512, height=512, color=Color(0, 0, 0, 1)
 )
 
 # TODO make a function which change the opacity of the points based on the Z

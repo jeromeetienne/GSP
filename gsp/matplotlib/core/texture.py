@@ -12,7 +12,7 @@ class Texture(core.Texture):
 
     __doc__ = core.Texture.__doc__
 
-    def __init__(self, texture_data: np.ndarray, shape: tuple):
+    def __init__(self, texture_data: np.ndarray, shape: tuple[int, int, int, int]):
 
         super().__init__(texture_data=texture_data, shape=shape)
 
@@ -20,9 +20,10 @@ class Texture(core.Texture):
         self._shape = shape
 
     @property
-    def data(self):
+    def data(self) -> np.ndarray:
         return self._texture_data
 
     @property
-    def shape(self):
+    def shape(self) -> tuple[int, int, int, int]:
         return self._shape
+    

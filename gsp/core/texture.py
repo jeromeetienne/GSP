@@ -14,7 +14,7 @@ class Texture(Object):
 
     """
 
-    @command("core.Texture")
+    # @command("core.Texture")
     def __init__(self, texture_data: np.ndarray, shape: tuple):
         """
         A texture is a rectangular two-dimensional image.
@@ -27,8 +27,8 @@ class Texture(Object):
         shape:
             The shape of the texture (height, width, channels).
         """
-        self.texture_data = texture_data
-        self.shape = shape
+        self._texture_data = texture_data
+        self._shape = shape
 
         Object.__init__(self)
 
