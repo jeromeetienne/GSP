@@ -30,6 +30,25 @@ with gzip.open(volume_path, "rb") as f:
 volume_data = volume_data / 255.0
 
 ######################################################
+# Create a texture from the volume data
+#
+
+texture = core.Texture(volume_data, volume_data.shape)
+
+# TODO
+# - Create a volume from the texture
+# - add properties of the textures
+#   - shape
+#   - .width .height .depth
+# - .data
+# Q. how to handle 1d, 2d, 3d textures?
+# Q. how to handle the visual.Image with texture 2d
+
+
+
+#####################################################
+# Create a volume from the texture
+#
 
 bound_x = (-1, 1)
 bound_y = (-1, 1)

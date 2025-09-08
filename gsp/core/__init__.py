@@ -15,3 +15,4 @@ from . viewport import Viewport
 from . types import Color, Marker, Measure
 from . types import Matrix, Vec2, Vec3, Vec4
 from . types import LineCap, LineStyle, LineJoin
+from . texture import Texture
