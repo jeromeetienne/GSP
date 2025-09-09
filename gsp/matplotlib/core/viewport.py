@@ -30,7 +30,7 @@ class Viewport(core.Viewport):
         self._color = color
         self._extent = x, y, width, height
         self._axes: matplotlib.axes.Axes = canvas._figure.add_axes([0.0, 0.0, 1.0, 1.0])
-        self._axes.zoom = '1.0'
+        self._axes.zoom = 1.0
         self._update()
 
         self._axes.patch.set_color(self._color)

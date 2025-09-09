@@ -6,7 +6,7 @@ from . core.canvas import Canvas
 from . core.viewport import Viewport
 from . core.buffer import Buffer
 
-
+from . import core
 from . import visual
 
 

@@ -75,9 +75,6 @@ else:
 # Re-load commands and re-execute them
 ###################################################
 
-# from gsp import Object
-# from gsp.log import log
-
 import logging
 gsp.log.setLevel(logging.INFO)
 
@@ -92,7 +89,6 @@ gsp.use('matplotlib')
 
 # TODO send matplotlib as namespace in command_queue.run
 command_queue.run(globals(), locals())
-print(Object.objects[1])
-print()
+print(gsp.Object.objects[1])
 
 plt.show(block=True)

@@ -61,7 +61,7 @@ class Object:
     record = True
 
     # Dictionnaty of created objects based on their id
-    objects = {}
+    objects: dict[OID,any] = {}
 
     def __init__(self):
         self._id = OID()

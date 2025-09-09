@@ -11,7 +11,6 @@ class Texture(Object):
     """
     A texture is a rectangular two-dimensional image that can be
     applied to a surface in 3D space.
-
     """
 
     # @command("core.Texture")
