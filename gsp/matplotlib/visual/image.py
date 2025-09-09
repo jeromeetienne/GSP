@@ -76,7 +76,7 @@ class Image(visual.Image):
             glm.ndarray.tracked.__tracker_class__ = tracker
             return
 
-        axe_image = self._viewports[viewport]
+        axe_image: mpl_img.AxesImage = self._viewports[viewport]
         positions4d = glm.to_vec4(self._positions) @ self._transform.T
         positions3d = glm.to_vec3(positions4d)
         # FIXME here image_extent is divided by W after rotation

@@ -1,14 +1,19 @@
 # Package: Graphic Server Protocol
 # Authors: Nicolas P .Rougier <nicolas.rougier@gmail.com>
 # License: BSD 3 clause
+"""
+GSP main module
+"""
 
-from . log import log
+from .log import log
 from . object import Object
 
 from . import io
 from . import core
 from . import visual
 from . import transform
+from . import glm
+from . import matplotlib
 
 
 
@@ -85,19 +90,17 @@ def use(backend):
     inspect.stack()[1][0].f_globals["visual"] = visual
 
 
-def save(filename, format=None):
+def save(filename: str, format: str = None):
     """
     Save default command stack into a file. If format is not
     specified, it is deduced from filename exension.
     """
 
     import pathlib
-    from gsp.io import json
-    from gsp.io.command import CommandQueue
 
     format = format or pathlib.Path(filename).suffix[1:]
     if format in ["json"]:
-        json.save(filename)
+        io.json.save(filename)
     else:
         raise ValueError(f"Unknown format ({format})")
 

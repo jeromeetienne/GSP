@@ -1,6 +1,9 @@
 # Package: Graphic Server Protocol
 # Authors: Nicolas P .Rougier <nicolas.rougier@gmail.com>
 # License: BSD 3 clause
+"""
+GSP visual module
+"""
 
 from . visual import Visual
 from . pixels import Pixels

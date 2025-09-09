@@ -67,10 +67,10 @@ def dump(queue=None, filename=None):
     payload = { "jsonrpc": "2.0", "commands" : commands }
 
     if filename is None:
-        return json.dumps(payload, indent=2, default=default)
+        return json.dumps(payload, indent=8, default=default)
     else:
         with open(filename, "w") as stream:
-            json.dump(payload, stream, default=default)
+            json.dump(payload, stream, indent=8, default=default)
 
 
 def save(filename, queue = None ):

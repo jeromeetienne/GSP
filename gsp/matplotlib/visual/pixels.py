@@ -31,6 +31,7 @@ class Pixels(visual.Pixels):
     def __init__(
         self, positions: Transform | Buffer, colors: Transform | Buffer | Color
     ):
+        positions = glm.to_vec3(positions)
         super().__init__(positions, colors, __no_command__=True)
 
     def render(

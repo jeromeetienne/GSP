@@ -29,7 +29,6 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt, datefmt="%H:%M:%S")
         return formatter.format(record)
 
-
 log = logging.getLogger("GSP")
 log.setLevel(logging.WARNING)
 

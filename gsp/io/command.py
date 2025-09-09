@@ -16,7 +16,7 @@ from functools import wraps
 from types import UnionType
 from typing import Union, get_origin, get_args
 
-from .. log import log
+from ..log import log
 from .. object import Object, OID
 from . convert import Converter, get_converter, register
 
@@ -77,7 +77,7 @@ class CommandQueue(metaclass = NamedSingleton):
 
     name = "default"
     readonly = False
-    commands = None
+    commands: list["Command"] = None
     active = None
 
     def __init__(self, name : str = "active"):
@@ -129,7 +129,7 @@ class CommandQueue(metaclass = NamedSingleton):
         return self.commands[index]
 
 
-    def run(self,  globals=None, locals=None):
+    def run(self,  globals:dict|None=None, locals:dict|None=None):
         """
         Execute all commands in the queue, with the provided
         globals and locals dictionary that must contain claases and
@@ -328,7 +328,7 @@ class CID(int):
 class Command:
     """ Generic command with a unique id. """
 
-    def __init__(self,  classname,  methodname, parameters, annotations = None):
+    def __init__(self,  classname: str,  methodname: str, parameters: dict, annotations: dict = None):
         """ Build a new command with a unique command id (cid)
 
         Parameters
@@ -407,7 +407,9 @@ class Command:
 
 
     def execute(self, globals=None, locals=None):
-        """ Execute the command. """
+        """
+        Execute the command
+        """
 
         parameters = self.parameters.copy()
         oid = parameters["id"]
