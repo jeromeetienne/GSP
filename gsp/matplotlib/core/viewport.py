@@ -8,6 +8,9 @@ from gsp.core import Color
 from gsp.transform import Transform
 from . canvas import Canvas
 
+import matplotlib.axes
+import matplotlib.backend_bases
+
 class Viewport(core.Viewport):
 
     __doc__ = core.Viewport.__doc__
@@ -26,8 +29,8 @@ class Viewport(core.Viewport):
         height = height or canvas._height
         self._color = color
         self._extent = x, y, width, height
-        self._axes = canvas._figure.add_axes([0.0, 0.0, 1.0, 1.0])
-        self._axes.zoom = 1.0
+        self._axes: matplotlib.axes.Axes = canvas._figure.add_axes([0.0, 0.0, 1.0, 1.0])
+        self._axes.zoom = '1.0'
         self._update()
 
         self._axes.patch.set_color(self._color)
@@ -42,7 +45,7 @@ class Viewport(core.Viewport):
             self._axes.spines[position].set_visible(False)
 
         # Listen to resize event to adjust position and size
-        canvas = self._canvas._figure.canvas
+        canvas: matplotlib.backend_bases.FigureCanvasBase = self._canvas._figure.canvas
         canvas.mpl_connect('resize_event', lambda event: self._update())
 
 
