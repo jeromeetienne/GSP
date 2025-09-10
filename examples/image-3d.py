@@ -81,8 +81,8 @@ image_visual.render(viewport)
 #
 
 camera_ortho_enabled = False
-camera_type = "ortho" if camera_ortho_enabled else "perspective"
-camera = Camera(camera_ortho_enabled)
+camera_mode = "ortho" if camera_ortho_enabled else "perspective"
+camera = Camera(mode=camera_mode)
 camera.connect(viewport, "motion", paths_visual.render)
 camera.connect(viewport, "motion", image_visual.render)
 camera.run()
