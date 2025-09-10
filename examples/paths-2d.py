@@ -40,7 +40,7 @@ paths = visual.Paths(P, I.tolist(),
                      line_joins = gsp.core.LineJoin.miter,
                      line_caps = gsp.core.LineCap.round)
 
-from libs.camera import Camera
+from common.camera import Camera
 camera = Camera("ortho")
 camera.connect(viewport, "motion",  paths.render)
 # camera.save("output/paths-2d.png")

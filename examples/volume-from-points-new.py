@@ -8,7 +8,7 @@ From https://datoviz.org/gallery/visuals/volume/
 from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
-import libs.asset_downloader as asset_downloader
+import common.asset_downloader as asset_downloader
 
 import gsp
 
@@ -17,7 +17,7 @@ gsp.use("matplotlib")
 
 ############################
 
-import libs.asset_downloader as asset_downloader
+import common.asset_downloader as asset_downloader
 import gzip
 
 volume_path = asset_downloader.download_data("volumes/allen_mouse_brain_rgba.npy.gz")
@@ -112,7 +112,7 @@ points = visual.Points(
 import logging
 gsp.log.setLevel(logging.INFO)
 
-from libs.camera import Camera
+from common.camera import Camera
 camera = Camera("perspective", theta=0, phi=0, log_fps_enabled=True)
 camera.connect(viewport, "motion", points.render)
 camera.run()

@@ -8,8 +8,8 @@ def main(
     gsp.core.viewport.Canvas, gsp.core.viewport.Viewport, list[gsp.visual.visual.Visual]
 ]:
 
-    canvas = core.Canvas(256, 256, 100.0)
-    viewport = core.Viewport(canvas, 0, 0, 256, 256, [1, 1, 1, 1])
+    canvas = core.Canvas(512, 512, 100.0)
+    viewport = core.Viewport(canvas, 0, 0, 512, 512, [1, 1, 1, 1])
 
     ######
 
@@ -71,7 +71,7 @@ def main(
     return (canvas, viewport, visuals)
 
 if __name__ == "__main__":
-    from examples.libs.example_args_parse import ExampleArgsParse
+    from examples.common.example_args_parse import ExampleArgsParse
 
     # Parse command line arguments
     gsp_core, gsp_visual = ExampleArgsParse.parse(

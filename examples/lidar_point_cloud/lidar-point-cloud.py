@@ -18,9 +18,9 @@ print(f"Matplotlib backend: {plt.get_backend()}")
 
 # gsp.use("matplotlib")
 
-import libs.point_cloud_lib as point_cloud_lib
-import libs.point_cloud_display as point_cloud_display
-import libs.download as download
+import common.point_cloud_lib as point_cloud_lib
+import common.point_cloud_display as point_cloud_display
+import common.download as download
 
 # Set up gsp.logging
 import logging

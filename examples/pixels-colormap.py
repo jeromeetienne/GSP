@@ -29,7 +29,7 @@ pixels = visual.Pixels(positions=positions_3d, colors=point_colormap)
 import logging
 gsp.log.setLevel(logging.INFO)
 
-from libs.camera import Camera
+from common.camera import Camera
 camera = Camera("perspective", theta=50, phi=50, log_fps_enabled=True)
 camera.connect(viewport, "motion",  pixels.render)
 camera.save("output/pixels-colormap.png")

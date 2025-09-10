@@ -38,7 +38,7 @@ markers = visual.Markers(P,
                          line_colors = white,
                          line_widths = 0.0)
 
-from libs.camera import Camera
+from common.camera import Camera
 camera = Camera("perspective")
 camera.connect(viewport, "motion",  markers.render)
 camera.save("output/markers-3d.png")

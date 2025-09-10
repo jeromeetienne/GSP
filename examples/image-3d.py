@@ -8,7 +8,7 @@ from gsp.transform import Transform
 from gsp.core import Viewport, Buffer, Color, Matrix
 import matplotlib.pyplot as plt
 import numpy as np
-from libs.camera import Camera
+from common.camera import Camera
 
 # import gsp
 gsp.use("matplotlib")

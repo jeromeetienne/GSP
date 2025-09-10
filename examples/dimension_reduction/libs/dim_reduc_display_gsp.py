@@ -22,7 +22,7 @@ def display_gsp_scatter_plot(points_fitted: np.ndarray, points_colors: np.ndarra
     viewport = core.Viewport(canvas, 0, 0, 512, 512, [1,1,1,1])
     pixels = visual.Pixels(points_fitted, colors=points_colors)
 
-    from libs.camera import Camera
+    from common.camera import Camera
     camera = Camera("ortho")
     camera.connect(viewport, "motion",  pixels.render)
     if image_filename is not None:

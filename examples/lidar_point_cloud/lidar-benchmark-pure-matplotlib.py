@@ -4,9 +4,9 @@ Experiementation to measure the rendering time of the point cloud in matplotlib
 - report written in a file
 """
 
-import libs.point_cloud_lib as point_cloud_lib
-import libs.point_cloud_bench as point_cloud_bench
-import libs.download as download
+import common.point_cloud_lib as point_cloud_lib
+import common.point_cloud_bench as point_cloud_bench
+import common.download as download
 
 
 # Experiment to handle intellisense in VSCode

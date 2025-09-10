@@ -27,7 +27,7 @@ def main(
 ####################################################
 
 if __name__ == "__main__":
-    from examples.libs.example_args_parse import ExampleArgsParse
+    from examples.common.example_args_parse import ExampleArgsParse
 
     # Parse command line arguments
     gsp_core, gsp_visual = ExampleArgsParse.parse(

@@ -31,7 +31,7 @@ pixels.render(viewport)
 # -----------------------------------
 
 # Run the camera
-from libs.camera import Camera
+from common.camera import Camera
 camera = Camera("perspective", theta=50, phi=50)
 camera.connect(viewport, "motion",  pixels.render)
 camera.run()

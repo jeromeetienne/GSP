@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
-import libs.dim_reduct_data as dim_reduct_data
-import libs.dim_reduc_fitting_umap as dim_reduc_fitting_umap
+import common.dim_reduct_data as dim_reduct_data
+import common.dim_reduc_fitting_umap as dim_reduc_fitting_umap
 
 import os
 # define __dirname__ to the directory of this script
@@ -36,12 +36,12 @@ display_type='plain_matplotlib'
 image_filename = os.path.join(__dirname__, '../output/dim_reduc_umap_mnist.png')
 
 if display_type=='gsp_matplotlib':
-    import libs.dim_reduc_display_gsp as dim_reduc_display_gsp
+    import common.dim_reduc_display_gsp as dim_reduc_display_gsp
 
     # display 
     dim_reduc_display_gsp.display_gsp_scatter_plot(points_fitted=umap_points_fitted, points_colors=umap_colors, image_filename=image_filename)
 else:
-    import libs.dim_reduc_display_matplotlib as dim_reduc_display_matplotlib
+    import common.dim_reduc_display_matplotlib as dim_reduc_display_matplotlib
     # Plot the UMAP results
     dim_reduc_display_matplotlib.display_matplotlib_scatter_plot(umap_points_fitted, umap_colors)
 

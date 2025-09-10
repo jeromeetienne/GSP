@@ -35,7 +35,7 @@ pixels = visual.Pixels(pixel_positions, colors=pixel_colors)
 
 
 
-from libs.camera import Camera
+from common.camera import Camera
 camera = Camera("ortho", log_fps_enabled=True)
 camera.connect(viewport, "motion",  pixels.render)
 # camera.save("output/pixels-2d.png")

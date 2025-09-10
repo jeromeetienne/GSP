@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
-import libs.dim_reduct_data as dim_reduct_data
-import libs.dim_reduc_fitting_tsne as dim_reduc_fitting_tsne
+import common.dim_reduct_data as dim_reduct_data
+import common.dim_reduc_fitting_tsne as dim_reduc_fitting_tsne
 
 import os
 
@@ -39,12 +39,12 @@ display_type='plain_matplotlib'
 image_filename = os.path.join(__dirname__, '../output/dim_reduc_tsne_mnist.png')
 
 if display_type=='gsp_matplotlib':
-    import libs.dim_reduc_display_gsp as dim_reduc_display_gsp
+    import common.dim_reduc_display_gsp as dim_reduc_display_gsp
 
     # display 
     dim_reduc_display_gsp.display_gsp_scatter_plot(points_fitted=tsne_points_fitted, points_colors=tsne_colors, image_filename=image_filename)
 else:
-    import libs.dim_reduc_display_matplotlib as dim_reduc_display_matplotlib
+    import common.dim_reduc_display_matplotlib as dim_reduc_display_matplotlib
     # Plot the t-SNE results
     dim_reduc_display_matplotlib.display_matplotlib_scatter_plot(tsne_points_fitted, tsne_colors)
 

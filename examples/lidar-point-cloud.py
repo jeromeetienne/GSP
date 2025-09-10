@@ -11,8 +11,8 @@ from gsp.matplotlib import core, visual
 
 gsp.use("matplotlib")
 
-import libs.asset_downloader as asset_downloader
-from libs.camera import Camera
+import common.asset_downloader as asset_downloader
+from common.camera import Camera
 
 ###############################################################################
 # Load the LIDAR data for the point cloud
