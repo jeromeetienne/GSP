@@ -18,7 +18,7 @@ class ExampleArgsParse:
             example_description (str | None): Description of the example to show in the help message.
         """
 
-        args = ExampleArgsParse.__parse_args(example_description)
+        args = ExampleArgsParse.__parse_args(example_description=example_description)
 
         if args.command == "command_file":
             gsp_core = gsp.core
@@ -125,7 +125,7 @@ class ExampleArgsParse:
             nargs="?",
             help="Define the command to execute. 'command_file' will generate a command file. 'matplotlib_image' will show the image using matplotlib. 'matplotlib_camera' will use a matplotlib camera to navigate the scene.",
             choices=["command_file", "matplotlib_image", "matplotlib_camera"],
-            default="matplotlib_image",
+            default="matplotlib_camera",
         )
         arg_parser.add_argument(
             "-c",
@@ -149,6 +149,7 @@ class ExampleArgsParse:
         )
 
         # parse the arguments
-        args = arg_parser.parse_args()
+        # args = arg_parser.parse_args()
+        args = arg_parser.parse_args(['command_file'])  # For testing in VSCode
 
         return args

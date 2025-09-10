@@ -62,7 +62,6 @@ viewport = core.Viewport(
 
 # Set up gsp.logging
 import logging
-
 gsp.log.setLevel(logging.INFO)
 
 from common.camera import Camera

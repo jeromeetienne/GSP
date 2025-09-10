@@ -10,6 +10,7 @@ from .. object import Object
 from . command import CommandQueue, Command
 
 def default(obj):
+    """ Default JSON serializer """
     from .. core.types import Color
 
     if isinstance(obj, memoryview):

@@ -44,7 +44,7 @@ def list_to_List(obj):
 
 
 @register("ndarray", "Buffer")
-def ndarray_to_Buffer(obj):
+def ndarray_to_Buffer(obj: np.ndarray) -> core.Buffer:
     # WARN: Do we need to keep track of obj/Buffer such as not create
     #       several buffers pointing at the same underlying object?
     #       In the current implementation, Buffer is created each time
@@ -52,6 +52,13 @@ def ndarray_to_Buffer(obj):
     #       mofidied, it shoudl be ok
     Z = glm.ndarray.tracked(obj)
     return Z._tracker.gsp_buffer
+
+    # ndarray = obj
+    # buffer_count = ndarray.size
+    # buffer_dtype = ndarray.dtype
+    # buffer_data = ndarray.data
+    # position_buffer = core.Buffer(buffer_count, buffer_dtype, buffer_data)
+    # return position_buffer
 
 @register("tracked", "Buffer")
 def tracked_to_Buffer(obj):
