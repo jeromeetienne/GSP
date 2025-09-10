@@ -21,11 +21,11 @@ class ExampleArgsParse:
 
         args = ExampleArgsParse._parse_args(example_description)
 
-        if args.command == "generate_command_file":
+        if args.command == "command_file":
             gsp_core = gsp.core
             gsp_visual = gsp.visual
         elif (
-            args.command == "matplotlib_show"
+            args.command == "matplotlib_image"
             or args.command == "matplotlib_camera"
         ):
             gsp_core = gsp.matplotlib.core
@@ -66,7 +66,7 @@ class ExampleArgsParse:
         example_basename = os.path.basename(example_filename).replace(".py", "")
         __dirname__ = os.path.dirname(os.path.abspath(example_filename))
 
-        if args.command == "generate_command_file":
+        if args.command == "command_file":
             commands_filename = f"{__dirname__}/output/{example_basename}.commands.json"
             gsp.save(commands_filename)
             print(f"Commands saved to {commands_filename}")
@@ -93,17 +93,15 @@ class ExampleArgsParse:
                 import matplotlib.pyplot as plt
 
                 plt.show(block=True)
-        elif args.command == "matplotlib_show":
+        elif args.command == "matplotlib_image":
             import matplotlib.pyplot as plt
 
             # save a screenshot of the rendered canvas
             image_filename = f"{__dirname__}/output/{example_basename}.png"
             plt.savefig(image_filename)
 
-            plt.show(block=True)
+            print(f"Image saved to {image_filename}")
         elif args.command == "matplotlib_camera":
-            camera_ortho_enabled = False
-            camera_mode = "ortho" if camera_ortho_enabled else "perspective"
             camera = Camera(mode=args.camera_mode)
             for _visual in visuals:
                 camera.connect(viewport, "motion", _visual.render)
@@ -113,6 +111,7 @@ class ExampleArgsParse:
 
     @staticmethod
     def _parse_args(example_description: str | None = None) -> argparse.Namespace:
+
         # If no description is provided, get one based on the calling script name
         if example_description is None:
             example_filename = getattr(sys.modules.get("__main__"), "__file__", None)
@@ -128,13 +127,13 @@ class ExampleArgsParse:
             "command",
             nargs="?",
             help="Define the command to execute.",
-            choices=["generate_command_file", "matplotlib_show", "matplotlib_camera"],
-            default="matplotlib_show",
+            choices=["command_file", "matplotlib_image", "matplotlib_camera"],
+            default="matplotlib_image",
         )
         arg_parser.add_argument(
             "-c",
             "--camera_mode",
-            help="Define the matplotlib camera mode.",
+            help="Define the matplotlib camera mode. Valid IIF the command is 'matplotlib_camera'.",
             choices=["ortho", "perspective"],
             default="perspective",
         )
@@ -144,7 +143,6 @@ class ExampleArgsParse:
             help="If true, after generating a command file, it will be re-loaded and executed.",
             action="store_true",
         )
-        # add logging level as command line option
         arg_parser.add_argument(
             "-l",
             "--log_level",
