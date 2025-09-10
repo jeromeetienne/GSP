@@ -9,7 +9,6 @@ def main(core: gsp.core, visual: gsp.visual):
 
     n_points = 200_000
     positions_np = np.random.uniform(-1, +1, (n_points, 3)).astype(np.float32)
-    # positions_np = np.ones((n_points,3), dtype=np.float32)
     positions_vec3 = positions_np
 
     buffer_count = positions_vec3.size
@@ -22,19 +21,18 @@ def main(core: gsp.core, visual: gsp.visual):
     pixels = visual.Pixels(position_buffer, colors=[0, 0, 0, 1])
     pixels.render(viewport)
 
-
 ####################################################
 
 
 if __name__ == "__main__":
-    import libs.cmdline_args as Cmdline_Args
-    
+    from libs.cmdline_args import Cmdline_Args
+
     # Parse command line arguments
-    gsp_core, gsp_visual, args, example_basename = Cmdline_Args.parse_args()
+    gsp_core, gsp_visual = Cmdline_Args.preprocess()
 
     # Run the main function
     main(core=gsp_core, visual=gsp_visual)
 
     # Post-process command line arguments
-    Cmdline_Args.postprocess(args, example_basename)
+    Cmdline_Args.postprocess()
 
