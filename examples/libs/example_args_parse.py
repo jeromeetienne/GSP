@@ -6,7 +6,6 @@ import sys
 from .camera import Camera
 from gsp.visual.visual import Visual
 
-
 class ExampleArgsParse:
 
     @staticmethod
@@ -19,7 +18,7 @@ class ExampleArgsParse:
             example_description (str | None): Description of the example to show in the help message.
         """
 
-        args = ExampleArgsParse._parse_args(example_description)
+        args = ExampleArgsParse.__parse_args(example_description)
 
         if args.command == "command_file":
             gsp_core = gsp.core
@@ -36,8 +35,6 @@ class ExampleArgsParse:
         # set logging level if specified
         if args.log_level is not None:
             gsp.log.setLevel(args.log_level)
-
-
 
         return gsp_core, gsp_visual
 
@@ -57,7 +54,7 @@ class ExampleArgsParse:
             visuals (list[Visual]): The list of visuals to render.
         """
 
-        args = ExampleArgsParse._parse_args()
+        args = ExampleArgsParse.__parse_args()
 
         # get the __file__ of the calling script
         example_filename = getattr(sys.modules.get("__main__"), "__file__", None)
@@ -110,7 +107,7 @@ class ExampleArgsParse:
             print(f"Unknown command: {args.command}")
 
     @staticmethod
-    def _parse_args(example_description: str | None = None) -> argparse.Namespace:
+    def __parse_args(example_description: str | None = None) -> argparse.Namespace:
 
         # If no description is provided, get one based on the calling script name
         if example_description is None:
@@ -126,7 +123,7 @@ class ExampleArgsParse:
         arg_parser.add_argument(
             "command",
             nargs="?",
-            help="Define the command to execute.",
+            help="Define the command to execute. 'command_file' will generate a command file. 'matplotlib_image' will show the image using matplotlib. 'matplotlib_camera' will use a matplotlib camera to navigate the scene.",
             choices=["command_file", "matplotlib_image", "matplotlib_camera"],
             default="matplotlib_image",
         )
