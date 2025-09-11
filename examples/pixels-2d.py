@@ -12,8 +12,6 @@ camera.
 
 import gsp
 from gsp import core, visual, glm
-from gsp import transform
-# import matplotlib.pyplot as plt
 import numpy as np
 
 canvas = core.Canvas(512, 512, 100.0)
@@ -24,20 +22,43 @@ P = glm.to_vec3(np.random.uniform(-1, +1, (n,2)), dtype=np.float32)
 
 
 positions_np = np.random.uniform(-1, +1, (n,2))
-# buffer_count = positions_np.size
-# buffer_dtype = positions_np.dtype
-# buffer_data = positions_np.data
-# position_buffer = core.Buffer(buffer_count, buffer_dtype, buffer_data)
+buffer_count = positions_np.size
+buffer_dtype = positions_np.dtype
+buffer_data = positions_np.data
+position_buffer = core.Buffer(buffer_count, buffer_dtype, buffer_data)
 
-pixels = visual.Pixels(positions=P, colors=[0,0,0,1])
+pixels = visual.Pixels(positions=position_buffer, colors=[0,0,0,1])
 pixels.render(viewport)
 
+# Save a command file
 import os
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
-gsp.save(filename=f"{__dirname__}/output/pixels-2d.command.json",)
+commands_filename = f"{__dirname__}/output/pixels-2d.command.json"
+gsp.save(filename=commands_filename)
 
-# from common.camera import Camera
-# camera = Camera("ortho")
-# camera.connect(viewport, "motion",  pixels.render)
-# camera.save("output/pixels-2d.png")
-# camera.run()
+# exit the script
+import sys
+sys.exit(0)
+
+#######################################################
+# reset gsp, reload the command.json and render it with matpotlib
+
+# reset objects - TODO make it cleaner - call a function e.g. .clear() ?
+gsp.Object.objects = {}
+
+# load commands from file
+command_queue = gsp.io.json.load(commands_filename)
+
+for command in command_queue:
+        gsp.log.info("%s" % command)
+
+# KEY: REQUIRED FOR THE GLOBALS - Super dirty!!!
+gsp.use("matplotlib")
+
+# TODO send matplotlib as namespace in command_queue.run
+command_queue.run(globals(), locals())
+# print(f"object: {gsp.Object.objects[1]}")
+
+import matplotlib.pyplot as plt
+
+plt.show(block=True)

@@ -149,7 +149,7 @@ class ExampleArgsParse:
         )
 
         # parse the arguments
-        # args = arg_parser.parse_args()
-        args = arg_parser.parse_args(['command_file'])  # For testing in VSCode
+        args = arg_parser.parse_args()
+        # args = arg_parser.parse_args(['command_file'])  # For testing in VSCode
 
         return args

@@ -10,15 +10,17 @@ def main(
     viewport = core.Viewport(canvas, 0, 0, 512, 512, [1, 1, 1, 1])
 
     n_points = 200_000
-    positions_np = np.random.uniform(-1, +1, (n_points, 3)).astype(np.float32)
+    positions = gsp.glm.to_vec3(np.random.uniform(-1, +1, (n_points,2)), dtype=np.float32)
+    # positions_np2 = np.ndarray(positions_np)
 
+    positions_np = np.random.uniform(-1, +1, (n_points, 3)).astype(np.float32)
     buffer_count = positions_np.size
     buffer_dtype = positions_np.dtype
     buffer_data = positions_np.data
     position_buffer = core.Buffer(buffer_count, buffer_dtype, buffer_data)
 
     # position_vec3_bis = glm.to_vec3(position_buffer)
-    pixels = visual.Pixels(position_buffer, colors=[0, 0, 0, 1])
+    pixels = visual.Pixels(positions=position_buffer, colors=[0, 0, 0, 1])
     pixels.render(viewport)
 
     visuals = [pixels]
