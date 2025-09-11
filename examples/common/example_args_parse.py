@@ -64,6 +64,9 @@ class ExampleArgsParse:
         __dirname__ = os.path.dirname(os.path.abspath(example_filename))
 
         if args.command == "command_file":
+
+            print("Command file generation trigger exception at the moment, it depends on https://github.com/vispy/GSP/issues/14 .")
+
             commands_filename = f"{__dirname__}/output/{example_basename}.commands.json"
             gsp.save(commands_filename)
             print(f"Commands saved to {commands_filename}")
