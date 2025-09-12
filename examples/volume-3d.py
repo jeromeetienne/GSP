@@ -21,6 +21,10 @@ gsp.use("matplotlib")
 import common.asset_downloader as asset_downloader
 import gzip
 
+####################################################
+# Download/read the volume data
+#
+
 volume_path = asset_downloader.download_data("volumes/allen_mouse_brain_rgba.npy.gz")
 print(f"Loaded point cloud data from {volume_path}")
 with gzip.open(volume_path, "rb") as f:
@@ -28,6 +32,14 @@ with gzip.open(volume_path, "rb") as f:
 
 # Normalize volume_data colors from [0, 255] to [0, 1]
 volume_data = volume_data / 255.0
+
+####################################################
+# Create canvas+viewport for the GSP scene
+#
+canvas = core.Canvas(width=512, height=512, dpi=250.0)
+viewport = core.Viewport(
+    canvas=canvas, x=0, y=0, width=512, height=512, color=Color(0, 0, 0, 1)
+)
 
 ######################################################
 # Create a texture from the volume data
@@ -52,20 +64,7 @@ volume = visual.Volume(
 
 ############################
 
-canvas = core.Canvas(width=512, height=512, dpi=250.0)
-viewport = core.Viewport(
-    canvas=canvas, x=0, y=0, width=512, height=512, color=Color(0, 0, 0, 1)
-)
-
-# TODO make a function which change the opacity of the points based on the Z
-
-
-# Set up gsp.logging
-import logging
-gsp.log.setLevel(logging.INFO)
-
 from common.camera import Camera
-
-camera = Camera("perspective", theta=0, phi=0, log_fps_enabled=True)
+camera = Camera("perspective", theta=0, phi=0)
 camera.connect(viewport, "motion", volume.render)
 camera.run()
