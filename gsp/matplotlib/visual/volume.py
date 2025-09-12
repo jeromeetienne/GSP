@@ -11,11 +11,13 @@ from gsp.core import Viewport, Buffer, Color
 
 import gsp.matplotlib.core as mpl_core
 
+# FIXME doesnt handle the generation of commands for visual.Volume
 
 class Volume(visual.Volume):
     """
     3D Volume visual representation.
     """
+
     __doc__ = visual.Volume.__doc__
 
     @command("visual.Volume")
@@ -41,9 +43,6 @@ class Volume(visual.Volume):
             jitter_position_factor (float): The factor to apply to the jittering of positions. It helps to reduce moire patterns.
             remove_invisible_points_enabled (bool): Whether to remove invisible points aka points with alpha = 0.
         """
-        import time
-        time_start = time.perf_counter()
-
         volume_depth = texture_3d.shape[0]
         volume_height = texture_3d.shape[1]
         volume_width = texture_3d.shape[2]
@@ -59,7 +58,6 @@ class Volume(visual.Volume):
         assert volume_depth > 0
         assert volume_height > 0
         assert volume_width > 0
-        # assert color_ndim == 4
 
         #############
         # Convert volume_data into numpy array for `positions` and `fill_colors`
@@ -114,11 +112,6 @@ class Volume(visual.Volume):
                 0, 1, positions.shape
             )
 
-        time_elapsed_full = time.perf_counter() - time_start
-        print(
-            f"Volume initialization took {time_elapsed_full:.4f} seconds. final point count: {len(positions)}"
-        )
-
         ############
         # Initialize the parent class
         #
@@ -131,6 +124,10 @@ class Volume(visual.Volume):
         )
 
     def render(self, viewport=None, model=None, view=None, proj=None):
+        """
+        Render the volume in the given viewport.
+        Heavily inspired by `visual.points`
+        """
 
         super().render(viewport, model, view, proj)
         model = model if model is not None else self._model
@@ -180,18 +177,6 @@ class Volume(visual.Volume):
             collection.set_facecolors(fill_colors[sort_indices])
         else:
             collection.set_facecolors(fill_colors)
-
-        # line_colors = self.eval_variable("line_colors")
-        # if isinstance(line_colors, np.ndarray) and (len(line_colors) == len(positions)):
-        #     collection.set_edgecolors(line_colors[sort_indices])
-        # else:
-        #     collection.set_edgecolors(line_colors)
-
-        # line_widths = self.eval_variable("line_widths")
-        # if isinstance(line_widths, np.ndarray) and (len(line_widths) == len(positions)):
-        #     collection.set_linewidths(line_widths[sort_indices])
-        # else:
-        #     collection.set_linewidths(line_widths)
 
         sizes = self.eval_variable("sizes")
         if isinstance(sizes, np.ndarray) and (len(sizes) == len(positions)):

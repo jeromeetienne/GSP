@@ -11,6 +11,7 @@ from gsp.core import  Buffer, Color, Matrix
 import matplotlib.image as mpl_img
 import gsp.matplotlib.core.viewport as Viewport
 
+# FIXME doesnt handle the generation of commands for visual.Image
 
 class Image(visual.Image):
     """

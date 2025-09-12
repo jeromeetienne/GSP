@@ -41,7 +41,7 @@ class Volume(Visual):
     ```
     """
 
-    @command("visual.Points")
+    @command("visual.Volume")
     def __init__(self, positions   : Transform | Buffer,
                        sizes       : Transform | Buffer | float,
                        fill_colors : Transform | Buffer | Color,
