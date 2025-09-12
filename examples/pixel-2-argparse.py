@@ -1,12 +1,12 @@
 import numpy as np
 import gsp
-from examples.common.example_parser import ExampleParser
+from examples.common.example_launcher import ExampleLauncher
 
 ##############################################
 # Parse command line arguments
 #
 
-core, visual = ExampleParser.parse_args(
+core, visual = ExampleLauncher.parse_args(
     example_description="Example showing how to render a large number of pixels. NOTE: still buggy as it uses raw buffers"
 )
 
@@ -25,4 +25,4 @@ pixels.render(viewport)
 # Show or save the result
 #
 
-ExampleParser.show(canvas, viewport, [pixels])
+ExampleLauncher.show(canvas, viewport, [pixels])

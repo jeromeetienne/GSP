@@ -6,10 +6,11 @@ import sys
 from .camera import Camera
 from gsp.visual.visual import Visual
 
-class ExampleParser:
+
+class ExampleLauncher:
 
     @staticmethod
-    def parse_args(example_description: str | None = None) -> tuple[gsp.core, gsp.visual]: # type: ignore
+    def parse_args(example_description: str | None = None) -> tuple[gsp.core, gsp.visual]:  # type: ignore
         """
         Parse command line arguments and return the appropriate gsp core and visual modules.
         It depends if the user wants to generate a command file or use matplotlib for rendering.
@@ -18,18 +19,15 @@ class ExampleParser:
             example_description (str | None): Description of the example to show in the inline help message.
 
         Returns:
-            tuple[gsp.core, gsp.visual, gsp.transform]: The gsp core, visual and transform modules.
+            tuple[gsp.core, gsp.visual]: The gsp core and visual modules.
         """
 
-        args = ExampleParser.__parse_args(example_description=example_description)
+        args = ExampleLauncher.__parse_args(example_description=example_description)
 
         if args.command == "command_file":
             gsp_core = gsp.core
             gsp_visual = gsp.visual
-        elif (
-            args.command == "matplotlib_image"
-            or args.command == "matplotlib_camera"
-        ):
+        elif args.command == "matplotlib_image" or args.command == "matplotlib_camera":
             gsp_core = gsp.matplotlib.core
             gsp_visual = gsp.matplotlib.visual
         else:
@@ -57,7 +55,7 @@ class ExampleParser:
             visuals (list[Visual]): The list of visuals to render.
         """
 
-        args = ExampleParser.__parse_args()
+        args = ExampleLauncher.__parse_args()
 
         # get the __file__ of the calling script
         example_filename = getattr(sys.modules.get("__main__"), "__file__", None)
@@ -68,7 +66,9 @@ class ExampleParser:
 
         if args.command == "command_file":
 
-            print("Command file generation trigger exception at the moment, it depends on https://github.com/vispy/GSP/issues/14 .")
+            print(
+                "Command file generation trigger exception at the moment, it depends on https://github.com/vispy/GSP/issues/14 ."
+            )
 
             commands_filename = f"{__dirname__}/output/{example_basename}.commands.json"
             gsp.save(commands_filename)
@@ -80,6 +80,8 @@ class ExampleParser:
                 # reset objects - TODO make it cleaner - call a function e.g. .clear() ?
                 gsp.Object.objects = {}
 
+                #gsp.Object.clear()
+
                 # load commands from file
                 command_queue = gsp.io.json.load(commands_filename)
 
@@ -87,7 +89,7 @@ class ExampleParser:
                     gsp.log.info("%s" % command)
 
                 # KEY: REQUIRED FOR THE GLOBALS - Super dirty!!!
-                gsp.use("matplotlib")
+                # gsp.use("matplotlib")
 
                 # TODO send matplotlib as namespace in command_queue.run
                 command_queue.run(globals(), locals())
