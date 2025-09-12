@@ -1,8 +1,7 @@
 from .visual_base import VisualBase
-from .color import Color
 
 class Viewport:
-    def __init__(self,  x: int, y: int, width: int, height: int, background_color: Color):
+    def __init__(self,  x: int, y: int, width: int, height: int, background_color: tuple[float, float, float, float]=(1,1,1, 1)):
         self.x = x
         self.y = y
         self.width = width

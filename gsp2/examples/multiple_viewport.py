@@ -17,8 +17,8 @@ canvas = gsp2.core.Canvas(width=512, height=512, dpi=100)
 viewport1 = gsp2.core.Viewport(0, 0, 256, 256, (1, 1, 1, 1))
 canvas.add_viewport(viewport=viewport1)
 
-# viewport2 = gsp2.core.Viewport(256, 0, 256, 256, (1, 1, 1, 1))
-# canvas.add_viewport(viewport=viewport2)
+viewport2 = gsp2.core.Viewport(256, 0, 256, 256, (1, 1, 1, 1))
+canvas.add_viewport(viewport=viewport2)
 
 # Add some random points
 n_points = 100
@@ -26,7 +26,7 @@ positions_np = np.random.uniform(-0.5, 0.5, (n_points, 2)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
 pixels = gsp2.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=(0, 1, 0, 0.5))
 viewport1.add_visual(pixels)
-# viewport2.add_visual(pixels)
+viewport2.add_visual(pixels)
 
 # Add an image
 image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"

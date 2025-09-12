@@ -92,7 +92,7 @@ class __ExampleLauncher:
         args = __ExampleLauncher.__parse_args()
 
         # get the __file__ of the calling script
-        example_filename = getattr(sys.modules.get("__main__"), "__file__", None)
+        example_filename: str = getattr(sys.modules.get("__main__"), "__file__", None) #type: ignore
 
         # Extract example basename and directory
         example_basename = os.path.basename(example_filename).replace(".py", "")
@@ -155,7 +155,7 @@ class __ExampleLauncher:
 
         # If no description is provided, get one based on the calling script name
         if example_description is None:
-            example_filename = getattr(sys.modules.get("__main__"), "__file__", None)
+            example_filename:str = getattr(sys.modules.get("__main__"), "__file__", None) #type: ignore
             example_basename = os.path.basename(example_filename).replace(".py", "")
             example_description = f"Example using GSP called {example_basename}."
 

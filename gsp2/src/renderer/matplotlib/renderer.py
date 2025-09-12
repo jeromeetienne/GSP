@@ -14,13 +14,19 @@ class MatplotlibRenderer:
         figure = plt.figure(frameon=False, dpi=canvas.dpi)
         figure.set_size_inches(canvas.width / canvas.dpi, canvas.height / canvas.dpi)
 
-        axes: mpl_axes.Axes = figure.add_axes((0, 0, 1, 1))
-        axes.set_xlim(-1, 1)
-        axes.set_ylim(-1, 1)
-        axes.get_xaxis().set_visible(False)
-        axes.get_yaxis().set_visible(False)
-
         for viewport in canvas.viewports:
+            axes_rect = (viewport.x / canvas.width,
+                         viewport.y / canvas.height,
+                         viewport.width / canvas.width,
+                         viewport.height / canvas.height)
+            axes: mpl_axes.Axes = figure.add_axes(axes_rect)
+            axes.set_xlim(-1, 1)
+            axes.set_ylim(-1, 1)
+            axes.get_xaxis().set_visible(False)
+            axes.get_yaxis().set_visible(False)
+
+            # axes.set_position((viewport.x, viewport.y, viewport.width, viewport.height))
+
             for visual in viewport.visuals:
                 if isinstance(visual, Pixels):
                     self.__render_pixels(axes, visual)
