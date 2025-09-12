@@ -6,10 +6,10 @@ import sys
 from .camera import Camera
 from gsp.visual.visual import Visual
 
-class ExampleParse:
+class ExampleParser:
 
     @staticmethod
-    def backend(example_description: str | None = None) -> tuple[gsp.core, gsp.visual]: # type: ignore
+    def parse_args(example_description: str | None = None) -> tuple[gsp.core, gsp.visual]: # type: ignore
         """
         Parse command line arguments and return the appropriate gsp core and visual modules.
         It depends if the user wants to generate a command file or use matplotlib for rendering.
@@ -21,7 +21,7 @@ class ExampleParse:
             tuple[gsp.core, gsp.visual, gsp.transform]: The gsp core, visual and transform modules.
         """
 
-        args = ExampleParse.__parse_args(example_description=example_description)
+        args = ExampleParser.__parse_args(example_description=example_description)
 
         if args.command == "command_file":
             gsp_core = gsp.core
@@ -57,7 +57,7 @@ class ExampleParse:
             visuals (list[Visual]): The list of visuals to render.
         """
 
-        args = ExampleParse.__parse_args()
+        args = ExampleParser.__parse_args()
 
         # get the __file__ of the calling script
         example_filename = getattr(sys.modules.get("__main__"), "__file__", None)

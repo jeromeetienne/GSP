@@ -74,10 +74,10 @@ def main(
 
 
 if __name__ == "__main__":
-    from examples.common.example_parse import ExampleParse
+    from examples.common.example_parser import ExampleParser
 
     # Parse command line arguments
-    gsp_core, gsp_visual = ExampleParse.backend(
+    gsp_core, gsp_visual = ExampleParser.parse_args(
         example_description="Example showing how to render an image in 3d.",
     )
 
@@ -85,4 +85,4 @@ if __name__ == "__main__":
     canvas, viewport, visuals = main(core=gsp_core, visual=gsp_visual)
 
     # Post-process command line arguments
-    ExampleParse.show(canvas, viewport, visuals)
+    ExampleParser.show(canvas, viewport, visuals)

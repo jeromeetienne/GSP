@@ -13,7 +13,7 @@ class Texture(Object):
     applied to a surface in 3D space.
     """
 
-    # @command("core.Texture")
+    @command("core.Texture")
     def __init__(self, texture_data: np.ndarray, shape: tuple):
         """
         A texture is a rectangular two-dimensional image.
