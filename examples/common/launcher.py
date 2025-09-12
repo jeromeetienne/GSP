@@ -17,6 +17,18 @@ def parse_args(
         [gsp.core.viewport.Canvas, list[gsp.core.viewport.Viewport], list[Visual]], None
     ],
 ]:
+    """
+    Parse command line arguments and return the appropriate gsp core and visual modules.
+    It returns also a function to render the result of the example.
+
+    It depends if the user wants to generate a command file or use matplotlib for rendering.
+
+    Args:
+        example_description (str | None): Description of the example to show in the inline help message
+
+    Returns:
+        tuple[gsp.core, gsp.visual, Callable]: The gsp core and visual modules, and a function to render the result of the example.
+    """
     core, visual = __ExampleLauncher.parse_args(example_description=example_description)
 
     def render_func(
@@ -24,7 +36,7 @@ def parse_args(
         viewports: list[gsp.core.viewport.Viewport],
         visuals: list[Visual],
     ) -> None:
-        __ExampleLauncher.show(canvas, viewports[0], visuals)
+        __ExampleLauncher.render(canvas, viewports[0], visuals)
 
     return core, visual, render_func
 
@@ -62,7 +74,7 @@ class __ExampleLauncher:
         return gsp_core, gsp_visual
 
     @staticmethod
-    def show(
+    def render(
         canvas: gsp.core.viewport.Canvas,
         viewport: gsp.core.viewport.Viewport,
         visuals: list[Visual],
