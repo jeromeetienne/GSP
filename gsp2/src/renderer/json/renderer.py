@@ -23,8 +23,8 @@ class JsonRenderer:
 
         for viewport in canvas.viewports:
             viewport_dict = {
-                "x": viewport.x,
-                "y": viewport.y,
+                "origin_x": viewport.origin_x,
+                "origin_y": viewport.origin_y,
                 "width": viewport.width,
                 "height": viewport.height,
                 "background_color": viewport.background_color,

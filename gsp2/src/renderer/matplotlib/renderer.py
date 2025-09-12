@@ -15,8 +15,8 @@ class MatplotlibRenderer:
         figure.set_size_inches(canvas.width / canvas.dpi, canvas.height / canvas.dpi)
 
         for viewport in canvas.viewports:
-            axes_rect = (viewport.x / canvas.width,
-                         viewport.y / canvas.height,
+            axes_rect = (viewport.origin_x / canvas.width,
+                         viewport.origin_y / canvas.height,
                          viewport.width / canvas.width,
                          viewport.height / canvas.height)
             axes: mpl_axes.Axes = figure.add_axes(axes_rect)

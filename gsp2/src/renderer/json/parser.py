@@ -18,11 +18,11 @@ class JsonParser:
 
         for viewport_info in canvas_info["viewports"]:
             viewport = Viewport(
-                viewport_info["x"],
-                viewport_info["y"],
-                viewport_info["width"],
-                viewport_info["height"],
-                viewport_info["background_color"]
+                origin_x=viewport_info["origin_x"],
+                origin_y=viewport_info["origin_y"],
+                width=viewport_info["width"],
+                height=viewport_info["height"],
+                background_color=viewport_info["background_color"]
             )
             canvas.add(viewport)
 
