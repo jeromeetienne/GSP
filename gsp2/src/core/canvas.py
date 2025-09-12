@@ -7,5 +7,11 @@ class Canvas:
         self.dpi = dpi
         self.viewports: list[Viewport] = []
 
-    def add_viewport(self, viewport: Viewport) -> None:
+    def add(self, viewport: Viewport) -> None:
+        """
+        Add a viewport to the canvas.
+
+        Args:
+            viewport (Viewport): The viewport to add.
+        """
         self.viewports.append(viewport)

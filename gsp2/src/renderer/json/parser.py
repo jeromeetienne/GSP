@@ -24,7 +24,7 @@ class JsonParser:
                 viewport_info["height"],
                 viewport_info["background_color"]
             )
-            canvas.add_viewport(viewport)
+            canvas.add(viewport)
 
             for visual_info in viewport_info["visuals"]:
                 if visual_info["type"] == "Pixels":
@@ -45,6 +45,6 @@ class JsonParser:
                         f"Parsing for visual type {visual_info['type']} is not implemented."
                     )
 
-                viewport.add_visual(visual)
+                viewport.add(visual)
 
         return canvas

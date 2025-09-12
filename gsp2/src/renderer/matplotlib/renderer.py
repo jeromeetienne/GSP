@@ -49,7 +49,7 @@ class MatplotlibRenderer:
         positions = pixels.positions
         colors = pixels.colors
         sizes = pixels.sizes
-        pathCollection = axes.scatter(positions[:, 0], positions[:, 1], s=sizes, c=[colors], cmap='gray')
+        pathCollection = axes.scatter(positions[:, 0], positions[:, 1], s=sizes, c=[colors])
 
     def __render_image(self, axes: mpl_axes.Axes, image: Image) -> None:
         bounds = image.bounds
