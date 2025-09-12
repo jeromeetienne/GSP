@@ -1,3 +1,5 @@
 {
-        "makefile.configureOnOpen": false
+        "makefile.configureOnOpen": false,
+        "python.analysis.languageServerMode": "full",
+        "python.analysis.typeCheckingMode": "basic",
 }
