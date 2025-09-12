@@ -5,9 +5,31 @@ import sys
 
 from .camera import Camera
 from gsp.visual.visual import Visual
+from typing import Callable
 
 
-class ExampleLauncher:
+def parse_args(
+    example_description: str | None = None,
+) -> tuple[
+    gsp.core,   # type: ignore
+    gsp.visual, # type: ignore
+    Callable[
+        [gsp.core.viewport.Canvas, list[gsp.core.viewport.Viewport], list[Visual]], None
+    ],
+]:
+    core, visual = __ExampleLauncher.parse_args(example_description=example_description)
+
+    def render_func(
+        canvas: gsp.core.viewport.Canvas,
+        viewports: list[gsp.core.viewport.Viewport],
+        visuals: list[Visual],
+    ) -> None:
+        __ExampleLauncher.show(canvas, viewports[0], visuals)
+
+    return core, visual, render_func
+
+
+class __ExampleLauncher:
 
     @staticmethod
     def parse_args(example_description: str | None = None) -> tuple[gsp.core, gsp.visual]:  # type: ignore
@@ -22,7 +44,7 @@ class ExampleLauncher:
             tuple[gsp.core, gsp.visual]: The gsp core and visual modules.
         """
 
-        args = ExampleLauncher.__parse_args(example_description=example_description)
+        args = __ExampleLauncher.__parse_args(example_description=example_description)
 
         if args.command == "command_file":
             gsp_core = gsp.core
@@ -55,7 +77,7 @@ class ExampleLauncher:
             visuals (list[Visual]): The list of visuals to render.
         """
 
-        args = ExampleLauncher.__parse_args()
+        args = __ExampleLauncher.__parse_args()
 
         # get the __file__ of the calling script
         example_filename = getattr(sys.modules.get("__main__"), "__file__", None)
@@ -80,7 +102,7 @@ class ExampleLauncher:
                 # reset objects - TODO make it cleaner - call a function e.g. .clear() ?
                 gsp.Object.objects = {}
 
-                #gsp.Object.clear()
+                # gsp.Object.clear()
 
                 # load commands from file
                 command_queue = gsp.io.json.load(commands_filename)

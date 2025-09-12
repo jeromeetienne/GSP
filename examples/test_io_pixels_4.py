@@ -1,11 +1,11 @@
 import numpy as np
-from examples.common.example_launcher import ExampleLauncher
+from examples.common.launcher import parse_args
 
 ##############################################
 # Parse command line arguments
 #
 
-core, visual = ExampleLauncher.parse_args(
+core, visual, render = parse_args(
     example_description="Example showing how to render a large number of pixels. NOTE: still buggy as it uses raw buffers"
 )
 
@@ -37,4 +37,4 @@ pixels.render(viewport)
 # Show or save the result
 #
 
-ExampleLauncher.show(canvas, viewport, [pixels])
+render(canvas, [viewport], [pixels])

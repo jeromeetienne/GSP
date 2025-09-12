@@ -28,7 +28,7 @@ def main(
 ####################################################
 
 if __name__ == "__main__":
-    from examples.common.example_launcher import ExampleLauncher
+    from examples.common.launcher import ExampleLauncher
 
     # Parse command line arguments
     gsp_core, gsp_visual = ExampleLauncher.parse_args(
