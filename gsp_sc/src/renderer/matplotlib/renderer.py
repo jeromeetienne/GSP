@@ -1,3 +1,5 @@
+import io
+
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...core.canvas import Canvas
@@ -6,10 +8,10 @@ import matplotlib.axes as mpl_axes
 
 
 class MatplotlibRenderer:
-    def __init__(self):
+    def __init__(self) -> None: 
         pass
 
-    def render(self, canvas: Canvas, image_filename: str | None = None, show_image: bool = True) -> None:
+    def render(self, canvas: Canvas, show_image: bool = True) -> bytes:
 
         figure = plt.figure(frameon=False, dpi=canvas.dpi)
         figure.set_size_inches(canvas.width / canvas.dpi, canvas.height / canvas.dpi)
@@ -37,12 +39,19 @@ class MatplotlibRenderer:
                         f"Rendering for visual type {type(visual)} is not implemented."
                     )
 
-        # Save to file
-        if image_filename is not None:
-            figure.savefig(image_filename, dpi=canvas.dpi)
 
         if show_image:
             plt.show(block=True)
+
+        # Render the image to a PNG buffer
+        image_png_buffer = io.BytesIO()
+        plt.savefig(image_png_buffer, format='png')
+        image_png_buffer.seek(0)
+        image_png_data = image_png_buffer.getvalue()
+        image_png_buffer.close()
+
+        # return the PNG image data
+        return image_png_data
 
 
     def __render_pixels(self, axes: mpl_axes.Axes, pixels: Pixels) -> None:

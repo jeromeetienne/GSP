@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, send_file
+import io
 import gsp_sc.src as gsp_sc
 
 flask_app = Flask(__name__)
@@ -18,17 +19,19 @@ def render_scene_json():
     ###############################################################################
     # Render the loaded scene with matplotlib to visually verify it was loaded correctly
     #
-    import os
-    __dirname__ = os.path.dirname(os.path.abspath(__file__))
-    rendered_loaded_image_path = f"{__dirname__}/output/rendered_loaded_image.png"
     matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-    matplotlib_renderer.render(
-        canvas_loaded, show_image=False, image_filename=rendered_loaded_image_path
+    image_png_data = matplotlib_renderer.render(
+        canvas_loaded, show_image=False
     )
 
-    return send_file(rendered_loaded_image_path, mimetype='image/png')
+    return send_file(
+        io.BytesIO(image_png_data),
+        mimetype="image/png",
+        as_attachment=True,
+        download_name="rendered_scene.png",
+    )
 
 #######################################################################################
 
 if __name__ == "__main__":
-    flask_app.run(threaded=False, debug=True)  # Enable debug mode if desired
+    flask_app.run(threaded=False, debug=False)  # Enable debug mode if desired

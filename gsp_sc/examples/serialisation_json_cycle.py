@@ -42,8 +42,12 @@ viewport1.add(image)
 # Save and render the scene to verify it looks correct
 #
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
+rendered_image_png_data = matplotlib_renderer.render(canvas, show_image=False)
+
+# save the rendered image to a file
 rendered_image_path = f"{__dirname__}/output/rendered_image.png"
-matplotlib_renderer.render(canvas, image_filename=rendered_image_path, show_image=False)
+with open(rendered_image_path, "wb") as f:
+    f.write(rendered_image_png_data)
 
 ###############################################################################
 # Export the scene to JSON
@@ -60,8 +64,12 @@ canvas_loaded = json_parser.parse(scene_json)
 ###############################################################################
 # Render the loaded scene with matplotlib to visually verify it was loaded correctly
 #
-rendered_loaded_image_path = f"{__dirname__}/output/rendered_loaded_image.png"
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-matplotlib_renderer.render(
-    canvas_loaded, image_filename=rendered_loaded_image_path, show_image=False
+rendered_loaded_image_png_data = matplotlib_renderer.render(
+    canvas_loaded, show_image=False
 )
+
+# save the rendered loaded image to a file
+rendered_loaded_image_path = f"{__dirname__}/output/rendered_loaded_image.png"
+with open(rendered_loaded_image_path, "wb") as f:
+    f.write(rendered_loaded_image_png_data)

@@ -1,6 +1,3 @@
-import requests
-import json
-
 import gsp_sc.src as gsp_sc
 import numpy as np
 
