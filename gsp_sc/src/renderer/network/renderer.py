@@ -8,7 +8,8 @@ import requests
 
 
 class NetworkRenderer:
-    def __init__(self, server_url: str):
+    __slots__ = ("server_url",)
+    def __init__(self, server_url: str) -> None:
         self.server_url = server_url
 
     def render(self, canvas: Canvas) -> bytes:

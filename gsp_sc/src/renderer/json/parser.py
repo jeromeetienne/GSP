@@ -6,10 +6,11 @@ import numpy as np
 
 import json
 
+
 class JsonParser:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
-    
+
     def parse(self, scene_json: str) -> Canvas:
         scene_dict = json.loads(scene_json)
 
@@ -22,7 +23,7 @@ class JsonParser:
                 origin_y=viewport_info["origin_y"],
                 width=viewport_info["width"],
                 height=viewport_info["height"],
-                background_color=viewport_info["background_color"]
+                background_color=viewport_info["background_color"],
             )
             canvas.add(viewport)
 
@@ -31,15 +32,14 @@ class JsonParser:
                     visual = Pixels(
                         positions=np.array(visual_info["positions"]),
                         sizes=np.array(visual_info["sizes"]),
-                        colors=visual_info["colors"]
+                        colors=visual_info["colors"],
                     )
                 elif visual_info["type"] == "Image":
                     image_data_shape = tuple(visual_info["image_data_shape"])
-                    image_data = np.array(visual_info["image_data"]).reshape(image_data_shape)
-                    visual = Image(
-                        bounds=visual_info["bounds"],
-                        image_data=image_data
+                    image_data = np.array(visual_info["image_data"]).reshape(
+                        image_data_shape
                     )
+                    visual = Image(bounds=visual_info["bounds"], image_data=image_data)
                 else:
                     raise NotImplementedError(
                         f"Parsing for visual type {visual_info['type']} is not implemented."

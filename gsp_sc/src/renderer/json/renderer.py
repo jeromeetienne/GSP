@@ -6,8 +6,9 @@ import numpy as np
 
 import json
 
+
 class JsonRenderer:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def render(self, canvas: Canvas) -> str:
@@ -17,7 +18,7 @@ class JsonRenderer:
                 "width": canvas.width,
                 "height": canvas.height,
                 "dpi": canvas.dpi,
-                "viewports": []
+                "viewports": [],
             }
         }
 
@@ -28,9 +29,8 @@ class JsonRenderer:
                 "width": viewport.width,
                 "height": viewport.height,
                 "background_color": viewport.background_color,
-                "visuals": []
+                "visuals": [],
             }
-
 
             for visual in viewport.visuals:
                 if isinstance(visual, Pixels):
@@ -38,14 +38,14 @@ class JsonRenderer:
                         "type": "Pixels",
                         "positions": visual.positions.tolist(),
                         "sizes": visual.sizes.tolist(),
-                        "colors": visual.colors
+                        "colors": visual.colors,
                     }
                 elif isinstance(visual, Image):
                     visual_dict = {
                         "type": "Image",
                         "bounds": visual.bounds,
                         "image_data_shape": visual.image_data.shape,
-                        "image_data": visual.image_data.tolist()
+                        "image_data": visual.image_data.tolist(),
                     }
                 else:
                     raise NotImplementedError(
