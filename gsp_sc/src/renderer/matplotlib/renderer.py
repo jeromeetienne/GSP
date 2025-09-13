@@ -11,7 +11,7 @@ class MatplotlibRenderer:
     def __init__(self) -> None: 
         pass
 
-    def render(self, canvas: Canvas, show_image: bool = True) -> bytes:
+    def render(self, canvas: Canvas, show_image: bool = True, return_image: bool = False) -> bytes:
 
         figure = plt.figure(frameon=False, dpi=canvas.dpi)
         figure.set_size_inches(canvas.width / canvas.dpi, canvas.height / canvas.dpi)
@@ -39,18 +39,22 @@ class MatplotlibRenderer:
                         f"Rendering for visual type {type(visual)} is not implemented."
                     )
 
-        # handle show_image option
+        # honor show_image option
         if show_image:
             plt.show(block=True)
 
-        # Render the image to a PNG buffer
-        image_png_buffer = io.BytesIO()
-        plt.savefig(image_png_buffer, format='png')
-        image_png_buffer.seek(0)
-        image_png_data = image_png_buffer.getvalue()
-        image_png_buffer.close()
+        image_png_data = b""
 
-        # return the PNG image data
+        # honor return_image option
+        if return_image:
+            # Render the image to a PNG buffer
+            image_png_buffer = io.BytesIO()
+            plt.savefig(image_png_buffer, format='png')
+            image_png_buffer.seek(0)
+            image_png_data = image_png_buffer.getvalue()
+            image_png_buffer.close()
+
+        # return the PNG image data if requested else return empty bytes
         return image_png_data
 
 

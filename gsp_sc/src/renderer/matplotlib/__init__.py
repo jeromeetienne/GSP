@@ -1,1 +1,2 @@
 from .renderer import MatplotlibRenderer
+from .renderer_delta import MatplotlibRendererDelta

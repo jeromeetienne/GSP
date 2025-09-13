@@ -1,6 +1,6 @@
 import gsp_sc.src as gsp_sc
 import numpy as np
-import matplotlib.image as mpl_img
+import matplotlib.image
 
 
 import os
@@ -31,7 +31,7 @@ viewport2.add(pixels)
 # Add an image to viewport1
 #
 image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
-image_data_np = mpl_img.imread(image_path)
+image_data_np = matplotlib.image.imread(image_path)
 image = gsp_sc.visuals.Image(bounds=(-1, +1, -1, +1), image_data=image_data_np)
 viewport1.add(image)
 

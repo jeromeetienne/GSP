@@ -73,3 +73,5 @@ rendered_loaded_image_png_data = matplotlib_renderer.render(
 rendered_loaded_image_path = f"{__dirname__}/output/rendered_loaded_image.png"
 with open(rendered_loaded_image_path, "wb") as f:
     f.write(rendered_loaded_image_png_data)
+
+print(f"Rendered image saved to: {rendered_loaded_image_path}")

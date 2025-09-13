@@ -1,3 +1,6 @@
+import uuid
+
 class VisualBase:
+    __slots__ = ("uuid",)
     def __init__(self) -> None:
-        pass
+        self.uuid = str(uuid.uuid4())

@@ -1,8 +1,10 @@
 from .visual_base import VisualBase
 
+import uuid
 
 class Viewport:
     __slots__ = (
+        "uuid",
         "origin_x",
         "origin_y",
         "width",
@@ -29,6 +31,7 @@ class Viewport:
             height (int): The height of the viewport in the Canvas.
             background_color (tuple[float, float, float, float]): The background color of the viewport.
         """
+        self.uuid = str(uuid.uuid4())
         self.origin_x = origin_x
         self.origin_y = origin_y
         self.width = width
