@@ -7,7 +7,6 @@ import mpl3d.glm
 import mpl3d.mesh
 
 import os
-
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
 

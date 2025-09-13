@@ -22,8 +22,11 @@ mpl_axes = mpl_figure.add_axes([0, 0, 1, 1], xlim=[-1, +1], ylim=[-1, +1], aspec
 mpl_axes.axis("off")
 
 # Set up the camera
+def camera_update():
+    mesh.update(transform=mpl3d_camera.transform)
+
 mpl3d_camera = mpl3d.camera.Camera("perspective", scale=2)
-mpl3d_camera.connect(mpl_axes, mesh.update)
+mpl3d_camera.connect(mpl_axes, camera_update)
 
 # Read the mesh .obj file
 meshio_mesh = meshio.read("data/bunny.obj")
