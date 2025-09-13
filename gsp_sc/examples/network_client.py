@@ -38,6 +38,6 @@ image_png_data = network_renderer.render(canvas)
 # Save the image to a file
 #
 image_path = f"{__dirname__}/output/network_rendered_image.png"
-with open(image_path, "wb") as f:
-    f.write(image_png_data)
+with open(image_path, "wb") as file_writer:
+    file_writer.write(image_png_data)
 print(f"Image saved to {image_path}")

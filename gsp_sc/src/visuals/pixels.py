@@ -3,6 +3,7 @@ from ..core.visual_base import VisualBase
 import numpy as np
 
 class Pixels(VisualBase):
+    __slots__ = ("positions", "sizes", "colors")
     def __init__(self, positions: np.ndarray, sizes: np.ndarray, colors: tuple[float,float,float,float]):
         super().__init__()
 

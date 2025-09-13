@@ -1,6 +1,7 @@
 from .visual_base import VisualBase
 
 class Viewport:
+    __slots__ = ("origin_x", "origin_y", "width", "height", "background_color", "visuals")
     def __init__(self, origin_x: int, origin_y: int, width: int, height: int, background_color: tuple[float, float, float, float]=(1,1,1, 1)):
         """
         Initialize a viewport.
