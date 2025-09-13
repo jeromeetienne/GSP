@@ -39,7 +39,7 @@ class MatplotlibRenderer:
                         f"Rendering for visual type {type(visual)} is not implemented."
                     )
 
-
+        # handle show_image option
         if show_image:
             plt.show(block=True)
 
