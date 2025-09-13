@@ -1,26 +1,23 @@
-import gsp2.src as gsp2
+import gsp_sc.src as gsp_sc
 import numpy as np
 import matplotlib.image as mpl_img
 
+import mpl3d.camera
+import mpl3d.glm
+import mpl3d.mesh
 
 import os
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
-# TODO
-# - multiple viewports
-# - from/to file
-# - how to implement 3d....
-#   - matrix rotation/translation
-#   - camera
 
-canvas = gsp2.core.Canvas(width=512, height=512, dpi=100)
-viewport = gsp2.core.Viewport(
+canvas = gsp_sc.core.Canvas(width=512, height=512, dpi=100)
+viewport = gsp_sc.core.Viewport(
     origin_x=0,
     origin_y=0,
     width=canvas.width,
     height=canvas.height,
-    background_color=gsp2.Constants.White,
+    background_color=gsp_sc.Constants.White,
 )
 canvas.add(viewport=viewport)
 
@@ -28,11 +25,11 @@ canvas.add(viewport=viewport)
 n_points = 100
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 2)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
-pixels = gsp2.visuals.Pixels(
-    positions=positions_np, sizes=sizes_np, colors=gsp2.Constants.Green
+pixels = gsp_sc.visuals.Pixels(
+    positions=positions_np, sizes=sizes_np, colors=gsp_sc.Constants.Green
 )
 viewport.add(pixels)
 
 # Render the scene
-renderer = gsp2.renderer.matplotlib.MatplotlibRenderer()
+renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 renderer.render(canvas)
