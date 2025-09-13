@@ -42,7 +42,7 @@ viewport1.add(image)
 # Save and render the scene to verify it looks correct
 #
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-rendered_image_png_data = matplotlib_renderer.render(canvas, show_image=False)
+rendered_image_png_data = matplotlib_renderer.render(canvas, show_image=False, return_image=True)
 
 # save the rendered image to a file
 rendered_image_path = f"{__dirname__}/output/rendered_image.png"
@@ -66,7 +66,7 @@ canvas_loaded = json_parser.parse(scene_json)
 #
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 rendered_loaded_image_png_data = matplotlib_renderer.render(
-    canvas_loaded, show_image=False
+    canvas_loaded, show_image=False, return_image=True
 )
 
 # save the rendered loaded image to a file

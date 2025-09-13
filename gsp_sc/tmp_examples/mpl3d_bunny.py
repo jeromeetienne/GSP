@@ -21,15 +21,17 @@ mpl_figure = plt.figure(figsize=(4, 4))
 mpl_axes = mpl_figure.add_axes([0, 0, 1, 1], xlim=[-1, +1], ylim=[-1, +1], aspect=1)
 mpl_axes.axis("off")
 
+
 # Set up the camera
-def camera_update():
-    mesh.update(transform=mpl3d_camera.transform)
+def camera_update(transform) -> None:
+    mesh.update(transform=transform)
 
 mpl3d_camera = mpl3d.camera.Camera("perspective", scale=2)
 mpl3d_camera.connect(mpl_axes, camera_update)
 
 # Read the mesh .obj file
-meshio_mesh = meshio.read("data/bunny.obj")
+mesh_path = f"{__dirname__}/data/bunny.obj"
+meshio_mesh = meshio.read(mesh_path)
 mesh_vertices = meshio_mesh.points
 mesh_vertices = mpl3d.glm.fit_unit_cube(mesh_vertices)
 mesh_faces = meshio_mesh.cells[0].data
@@ -43,8 +45,8 @@ mesh = mpl3d.mesh.Mesh(
 )
 
 # Save an image scene
-image_path = f"{__dirname__}/output/bunny.png"
-plt.savefig(image_path, dpi=600)
+# image_path = f"{__dirname__}/output/bunny.png"
+# plt.savefig(image_path, dpi=600)
 
 # Show the scene in a window
 plt.show()

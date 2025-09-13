@@ -19,7 +19,7 @@ def render_scene_json() -> Response:
     #
     matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
     image_png_data = matplotlib_renderer.render(
-        canvas_loaded, show_image=False
+        canvas_loaded, show_image=False, return_image=True
     )
 
     return send_file(
