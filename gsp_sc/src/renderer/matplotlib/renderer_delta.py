@@ -1,4 +1,5 @@
 import io
+import os
 
 
 import mpl3d.glm
@@ -42,7 +43,9 @@ class MatplotlibRendererDelta:
 
         # honor show_image option
         if show_image:
-            matplotlib.pyplot.show()
+            # enter the matplotlib main loop IIF env.var GSP_SC_INTERACTIVE is not set to "False"
+            if "GSP_SC_INTERACTIVE" not in os.environ or os.environ["GSP_SC_INTERACTIVE"] != "False":
+                matplotlib.pyplot.show(block=True)
 
         if interactive and camera is not None:
             figure = matplotlib.pyplot.gcf()
@@ -51,8 +54,9 @@ class MatplotlibRendererDelta:
             def camera_update(transform) -> None:
                 self.render(canvas, camera=camera, show_image=False)
             camera.connect(mpl_axes, camera_update)
-            # enter the matplotlib main loop
-            matplotlib.pyplot.show(block=True)
+            # enter the matplotlib main loop IIF env.var GSP_SC_INTERACTIVE is not set to "False"
+            if "GSP_SC_INTERACTIVE" not in os.environ or os.environ["GSP_SC_INTERACTIVE"] != "False":
+                matplotlib.pyplot.show(block=True)
 
         image_png_data = b""
 
@@ -76,7 +80,7 @@ class MatplotlibRendererDelta:
         if canvas.uuid in self._figures:
             figure = self._figures[canvas.uuid]
         else:
-            print("Creating new figure")
+            print(f"Creating new figure {canvas.uuid}")
             figure = matplotlib.pyplot.figure(frameon=False, dpi=canvas.dpi)
             figure.set_size_inches(
                 canvas.width / canvas.dpi, canvas.height / canvas.dpi
@@ -88,7 +92,7 @@ class MatplotlibRendererDelta:
             if viewport.uuid in self._axes:
                 axes = self._axes[viewport.uuid]
             else:
-                print("Creating new axes for viewport")
+                print(f"Creating new axes for viewport {viewport.uuid}")
                 axes_rect = (
                     viewport.origin_x / canvas.width,
                     viewport.origin_y / canvas.height,
@@ -119,7 +123,7 @@ class MatplotlibRendererDelta:
         camera: mpl3d.camera.Camera | None = None,
     ) -> None:
         if pixels.uuid not in self._pathCollections:
-            print("Creating new PathCollection for pixels visual")
+            print(f"Creating new PathCollection for pixels visual {pixels.uuid}")
             self._pathCollections[pixels.uuid] = axes.scatter([], [])
 
         pathCollection = self._pathCollections[pixels.uuid]
@@ -136,7 +140,7 @@ class MatplotlibRendererDelta:
 
     def __render_image(self, axes: matplotlib.axes.Axes, image: Image, camera: mpl3d.camera.Camera | None = None) -> None:
         if image.uuid not in self._axesImages:
-            print("Creating new AxesImage for image visual")
+            print(f"Creating new AxesImage for image visual {image.uuid}")
             self._axesImages[image.uuid] = axes.imshow(np.zeros((2, 2, 3)))
 
         axes_image = self._axesImages[image.uuid]

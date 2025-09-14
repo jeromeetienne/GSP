@@ -15,6 +15,7 @@ class JsonRenderer:
 
         scene_dict = {
             "canvas": {
+                "uuid": canvas.uuid,
                 "width": canvas.width,
                 "height": canvas.height,
                 "dpi": canvas.dpi,
@@ -24,6 +25,7 @@ class JsonRenderer:
 
         for viewport in canvas.viewports:
             viewport_dict = {
+                "uuid": viewport.uuid,
                 "origin_x": viewport.origin_x,
                 "origin_y": viewport.origin_y,
                 "width": viewport.width,
@@ -34,18 +36,23 @@ class JsonRenderer:
 
             for visual in viewport.visuals:
                 if isinstance(visual, Pixels):
+                    pixels: Pixels = visual
                     visual_dict = {
                         "type": "Pixels",
-                        "positions": visual.positions.tolist(),
-                        "sizes": visual.sizes.tolist(),
-                        "colors": visual.colors,
+                        "uuid": pixels.uuid,
+                        "positions": pixels.positions.tolist(),
+                        "sizes": pixels.sizes.tolist(),
+                        "colors": pixels.colors,
                     }
                 elif isinstance(visual, Image):
+                    image: Image = visual
                     visual_dict = {
                         "type": "Image",
-                        "bounds": visual.image_extent,
-                        "image_data_shape": visual.image_data.shape,
-                        "image_data": visual.image_data.tolist(),
+                        "uuid": image.uuid,
+                        "position": image.position.tolist(),
+                        "bounds": image.image_extent,
+                        "image_data_shape": image.image_data.shape,
+                        "image_data": image.image_data.tolist(),
                     }
                 else:
                     raise NotImplementedError(

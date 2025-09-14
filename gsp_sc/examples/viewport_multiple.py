@@ -22,7 +22,7 @@ canvas.add(viewport2)
 # Add some random points to viewport1 and viewport2
 #
 n_points = 100
-positions_np = np.random.uniform(-0.5, 0.5, (n_points, 2)).astype(np.float32)
+positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
 pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=(0, 1, 0, 0.5))
 viewport1.add(pixels)
@@ -40,5 +40,11 @@ viewport1.add(image)
 ###############################################################################
 # Render the scene
 #
-matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-matplotlib_renderer.render(canvas)
+matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
+image_png_buffer = matplotlib_renderer.render(canvas, show_image=True, return_image=True)
+
+# Save the rendered image to a file
+image_path = f"{__dirname__}/output/viewport_multiple.png"
+with open(image_path, "wb") as png_file:
+    png_file.write(image_png_buffer)
+print(f"Rendered image saved to {image_path}")

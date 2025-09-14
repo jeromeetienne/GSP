@@ -2,10 +2,11 @@ import subprocess
 import sys
 import os
 
+
 def launch_example(cmdline_args: list[str]) -> bool:
     """
     Launches the example script with the given command line arguments.
-    
+
     :param cmdline_args: Command line arguments to run the script
     :type cmdline_args: list[str]
     :return: True if script ran successfully, False otherwise
@@ -15,11 +16,11 @@ def launch_example(cmdline_args: list[str]) -> bool:
         # Add a environment variable to disable interactive mode in the example
         env = dict(**os.environ, GSP_SC_INTERACTIVE="False")
         result = subprocess.run(
-            cmdline_args, 
-            check=True,      # Raises CalledProcessError if script fails
+            cmdline_args,
+            check=True,  # Raises CalledProcessError if script fails
             capture_output=True,
             text=True,
-            env=env
+            env=env,
         )
         print("Script B ran successfully.")
         print("Output:", result.stdout)
@@ -35,7 +36,7 @@ def launch_example(cmdline_args: list[str]) -> bool:
 def launch_pyright(script_path: str) -> bool:
     """
     Launches pyright on the given script path to check for type errors.
-    
+
     :param script_path: Path to the script to check
     :type script_path: str
     :return: True if no type errors found, False otherwise
@@ -43,10 +44,10 @@ def launch_pyright(script_path: str) -> bool:
     """
     try:
         result = subprocess.run(
-            ["pyright", script_path], 
-            check=True,      # Raises CalledProcessError if pyright finds issues
+            ["pyright", script_path],
+            check=True,  # Raises CalledProcessError if pyright finds issues
             capture_output=True,
-            text=True
+            text=True,
         )
         print("Pyright found no type errors.")
         print("Output:", result.stdout)
@@ -59,8 +60,23 @@ def launch_pyright(script_path: str) -> bool:
 
     return type_check_success
 
+###############################################################################
+# Main script logic
+#
 
-run_success = launch_example([sys.executable, "basic.py"])
-print("Example script ran successfully:", run_success)
-pyright_success = launch_pyright("basic.py")
-print("Pyright type check passed:", pyright_success)
+__dirname__ = os.path.dirname(os.path.abspath(__file__))
+script_paths = [
+    f"{__dirname__}/basic.py",
+    f"{__dirname__}/viewport_multiple.py",
+    f"{__dirname__}/serialisation_json_cycle.py",
+    f"{__dirname__}/serialisation_json_file.py",
+]
+for script_path in script_paths:
+    run_success = launch_example([sys.executable, script_path])
+    print("Example script ran successfully:", run_success)
+    if not run_success:
+        sys.exit(1)
+    pyright_success = launch_pyright(script_path)
+    print("Pyright type check passed:", pyright_success)
+    if not pyright_success:
+        sys.exit(1)

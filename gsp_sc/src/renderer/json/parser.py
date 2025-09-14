@@ -16,7 +16,8 @@ class JsonParser:
 
         canvas_info = scene_dict["canvas"]
         canvas = Canvas(canvas_info["width"], canvas_info["height"], canvas_info["dpi"])
-
+        canvas.uuid = canvas_info["uuid"]
+        
         for viewport_info in canvas_info["viewports"]:
             viewport = Viewport(
                 origin_x=viewport_info["origin_x"],
@@ -25,21 +26,26 @@ class JsonParser:
                 height=viewport_info["height"],
                 background_color=viewport_info["background_color"],
             )
+            viewport.uuid = viewport_info["uuid"]
             canvas.add(viewport)
 
             for visual_info in viewport_info["visuals"]:
                 if visual_info["type"] == "Pixels":
-                    visual = Pixels(
+                    pixels = Pixels(
                         positions=np.array(visual_info["positions"]),
                         sizes=np.array(visual_info["sizes"]),
                         colors=visual_info["colors"],
                     )
+                    pixels.uuid = visual_info["uuid"]
+                    visual = pixels
                 elif visual_info["type"] == "Image":
                     image_data_shape = tuple(visual_info["image_data_shape"])
                     image_data = np.array(visual_info["image_data"]).reshape(
                         image_data_shape
                     )
-                    visual = Image(image_extent=visual_info["bounds"], image_data=image_data)
+                    image = Image(position=np.array(visual_info["position"]), image_extent=visual_info["bounds"], image_data=image_data)
+                    image.uuid = visual_info["uuid"]
+                    visual = image
                 else:
                     raise NotImplementedError(
                         f"Parsing for visual type {visual_info['type']} is not implemented."

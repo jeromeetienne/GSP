@@ -2,10 +2,9 @@
 - issue with serialisation: currently camera is not serialised
   - may require to have my own Camera class ... 
   - not required, i can serialize the parameters (including the matrices)
-- serialisation doesnt conserve uuid, fix this
+- BUG MatplotlibRendererDelta fails on multi viewport
 - keep only MatplotlibRendererDelta
   - remove MatplotlibRenderer
-- check all examples
 - add more visual
   - e.g. mesh with hidden face
 - add sanity check on the np.ndarray shapes type hinting
@@ -14,6 +13,9 @@
 
 ---
 
+- DONE serialisation doesnt conserve uuid, fix this
+- DONE Add type checking with pyright in Makefile
+- DONE check all examples
 - DONE make image work in 3d in MatplotlibRendererDelta
 - DONE implement 3d
   - https://github.com/rougier/matplotlib-3d/ <- YES
