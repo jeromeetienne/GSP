@@ -35,7 +35,7 @@ viewport2.add(pixels)
 #
 image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
 image_data_np = mpl_img.imread(image_path)
-image = gsp_sc.visuals.Image(bounds=(-1, +1, -1, +1), image_data=image_data_np)
+image = gsp_sc.visuals.Image(position=np.array([0.5, 0.5, 0.5]), image_extent=(-1, +1, -1, +1), image_data=image_data_np)
 viewport1.add(image)
 
 ###############################################################################

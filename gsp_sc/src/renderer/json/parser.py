@@ -39,7 +39,7 @@ class JsonParser:
                     image_data = np.array(visual_info["image_data"]).reshape(
                         image_data_shape
                     )
-                    visual = Image(bounds=visual_info["bounds"], image_data=image_data)
+                    visual = Image(image_extent=visual_info["bounds"], image_data=image_data)
                 else:
                     raise NotImplementedError(
                         f"Parsing for visual type {visual_info['type']} is not implemented."

@@ -43,7 +43,7 @@ class JsonRenderer:
                 elif isinstance(visual, Image):
                     visual_dict = {
                         "type": "Image",
-                        "bounds": visual.bounds,
+                        "bounds": visual.image_extent,
                         "image_data_shape": visual.image_data.shape,
                         "image_data": visual.image_data.tolist(),
                     }

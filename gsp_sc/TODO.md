@@ -1,4 +1,11 @@
 # TODO
+- keep only MatplotlibRendererDelta
+  - remove MatplotlibRenderer
+- make image work in 3d in MatplotlibRendererDelta
+- check all examples
+- add more visual
+- make image work in 3d
+
 - implement 3d
   - https://github.com/rougier/matplotlib-3d/ <- YES
   - https://github.com/rougier/tiny-renderer/blob/master/bunny.py

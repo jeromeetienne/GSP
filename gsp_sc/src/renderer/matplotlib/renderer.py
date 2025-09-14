@@ -65,7 +65,7 @@ class MatplotlibRenderer:
         pathCollection = axes.scatter(positions[:, 0], positions[:, 1], s=sizes, c=[colors])
 
     def __render_image(self, axes: mpl_axes.Axes, image: Image) -> None:
-        bounds = image.bounds
+        bounds = image.image_extent
         image_data = image.image_data
         extent = (bounds[0], bounds[1], bounds[2], bounds[3])
         axes.imshow(image_data, extent=extent, origin="lower")

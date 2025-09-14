@@ -4,7 +4,6 @@ import numpy as np
 import mpl3d.camera
 
 import os
-from matplotlib.animation import FuncAnimation
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
 ###############################################################################
@@ -34,35 +33,24 @@ viewport.add(pixels)
 ###############################################################################
 # Add an image to viewport
 #
+
+# TODO this fails on MatplotlibRendererDelta
+
 import matplotlib.image
+
 image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
 image_data_np = matplotlib.image.imread(image_path)
-image = gsp_sc.visuals.Image(bounds=(-1, +1, -1, +1), image_data=image_data_np)
+image = gsp_sc.visuals.Image(
+    position=np.array([0.5, 0.5, 0.5]),
+    image_extent=(-0.1, +0.1, -0.1, +0.1),
+    image_data=image_data_np,
+)
 viewport.add(image)
 
 ###############################################################################
 # Render the scene with matplotlib
 #
-# mpl3d_camera = mpl3d.camera.Camera("perspective")
 
+camera = mpl3d.camera.Camera("perspective")
 renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
-# renderer.render(canvas, show_image=False)
-
-###############################################################################
-# Set up the camera
-#
-
-def camera_update(transform) -> None:
-    renderer.render(canvas, transform_matrix=transform, show_image=False)
-
-import matplotlib.pyplot as plt
-mpl3d_camera = mpl3d.camera.Camera("perspective")
-mpl3d_camera.aperture = 10
-renderer.render(canvas, transform_matrix=mpl3d_camera.transform, show_image=False)
-
-figure = plt.gcf()
-mpl_axes = figure.get_axes()[0]
-mpl3d_camera.connect(mpl_axes, camera_update)
-
-plt.show(block=True)
-
+renderer.render(canvas, camera, interactive=True)
