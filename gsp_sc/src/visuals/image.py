@@ -1,14 +1,14 @@
-from ..core.visual_base import VisualBase
-
 import numpy as np
+import nptyping
 
+from ..core.visual_base import VisualBase
 
 class Image(VisualBase):
     __slots__ = ("position", "image_extent", "image_data")
 
     def __init__(
         self, 
-        position: np.ndarray,
+        position: nptyping.NDArray[nptyping.Shape["1, 3"], nptyping.Float],
         image_extent: tuple[float, float, float, float],
         image_data: np.ndarray
     ) -> None:

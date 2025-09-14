@@ -48,5 +48,5 @@ viewport.add(pixels)
 #
 
 camera = mpl3d.camera.Camera("perspective")
-renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
+renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 renderer.render(canvas, camera, interactive=True)

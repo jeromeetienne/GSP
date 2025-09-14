@@ -35,13 +35,13 @@ image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
 image_data_np = matplotlib.image.imread(image_path)
 image_position = np.array([0, 0, 0])
 image = gsp_sc.visuals.Image(position=image_position, image_extent=(-1, +1, -1, +1), image_data=image_data_np)
-viewport1.add(image)
+viewport2.add(image)
 
 ###############################################################################
 # Render the scene
 #
-matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
-image_png_buffer = matplotlib_renderer.render(canvas, show_image=True, return_image=True)
+matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
+image_png_buffer = matplotlib_renderer.render(canvas, show_image=True)
 
 # Save the rendered image to a file
 image_path = f"{__dirname__}/output/viewport_multiple.png"

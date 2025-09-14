@@ -32,5 +32,12 @@ viewport.add(pixels)
 # Render the scene with matplotlib
 #
 camera = mpl3d.camera.Camera("perspective")
-renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
-renderer.render(canvas, camera, interactive=True)
+renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
+image_png_buffer = renderer.render(canvas, camera, interactive=True)
+
+
+# Save the rendered image to a file
+image_path = f"{__dirname__}/output/basic.png"
+with open(image_path, "wb") as png_file:
+    png_file.write(image_png_buffer)
+print(f"Rendered image saved to {image_path}")

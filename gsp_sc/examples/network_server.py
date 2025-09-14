@@ -19,13 +19,13 @@ def render_scene_json() -> Response:
     ###############################################################################
     # Render the loaded scene with matplotlib to visually verify it was loaded correctly
     #
-    matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
+    matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 
     # FIXME this camera should be serialized too
     camera = mpl3d.camera.Camera("perspective")
 
     image_png_data = matplotlib_renderer.render(
-        canvas=canvas_loaded, camera=camera, show_image=False, return_image=True
+        canvas=canvas_loaded, camera=camera, show_image=False
     )
 
     return send_file(

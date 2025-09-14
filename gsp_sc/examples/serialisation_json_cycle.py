@@ -48,10 +48,8 @@ viewport1.add(image)
 #
 camera = mpl3d.camera.Camera("perspective")
 
-matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
-rendered_image_png_data = matplotlib_renderer.render(
-    canvas, camera=camera, show_image=False, return_image=True
-)
+matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
+rendered_image_png_data = matplotlib_renderer.render(canvas, camera=camera)
 
 # save the rendered image to a file
 rendered_image_path = f"{__dirname__}/output/rendered_image.png"
@@ -65,7 +63,6 @@ json_renderer = gsp_sc.renderer.json.JsonRenderer()
 scene_json = json_renderer.render(canvas)
 
 
-
 ###############################################################################
 # Load the scene from JSON
 #
@@ -76,9 +73,9 @@ canvas_loaded = json_parser.parse(scene_json)
 ###############################################################################
 # Render the loaded scene with matplotlib to visually verify it was loaded correctly
 #
-matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
+matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 rendered_loaded_image_png_data = matplotlib_renderer.render(
-    canvas=canvas_loaded, camera=camera, show_image=True, return_image=True
+    canvas=canvas_loaded, camera=camera
 )
 
 # save the rendered loaded image to a file

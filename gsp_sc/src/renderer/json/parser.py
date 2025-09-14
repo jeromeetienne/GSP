@@ -16,6 +16,7 @@ class JsonParser:
 
         canvas_info = scene_dict["canvas"]
         canvas = Canvas(canvas_info["width"], canvas_info["height"], canvas_info["dpi"])
+        # restore the original uuid
         canvas.uuid = canvas_info["uuid"]
         
         for viewport_info in canvas_info["viewports"]:
@@ -26,6 +27,7 @@ class JsonParser:
                 height=viewport_info["height"],
                 background_color=viewport_info["background_color"],
             )
+            # restore the original uuid
             viewport.uuid = viewport_info["uuid"]
             canvas.add(viewport)
 
@@ -36,6 +38,7 @@ class JsonParser:
                         sizes=np.array(visual_info["sizes"]),
                         colors=visual_info["colors"],
                     )
+                    # restore the original uuid
                     pixels.uuid = visual_info["uuid"]
                     visual = pixels
                 elif visual_info["type"] == "Image":
@@ -44,6 +47,7 @@ class JsonParser:
                         image_data_shape
                     )
                     image = Image(position=np.array(visual_info["position"]), image_extent=visual_info["bounds"], image_data=image_data)
+                    # restore the original uuid
                     image.uuid = visual_info["uuid"]
                     visual = image
                 else:

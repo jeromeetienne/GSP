@@ -54,6 +54,6 @@ viewport.add(pixels)
 #
 # mpl3d_camera = mpl3d.camera.Camera("perspective")
 
-renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
+renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 renderer.render(canvas)
 

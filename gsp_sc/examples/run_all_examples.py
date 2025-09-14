@@ -21,13 +21,13 @@ def launch_example(cmdline_args: list[str]) -> bool:
         result = subprocess.run(
             cmdline_args,
             check=True,  # Raises CalledProcessError if script fails
-            capture_output=True,
-            text=True,
+            # capture_output=False,
+            # text=True,  # Capture output as string instead of bytes
             env=env,
         )
         # print("Script B ran successfully.")
         # print("Output:", result.stdout)
-        run_success = True
+        run_success = True if result.returncode == 0 else False
 
     except subprocess.CalledProcessError as e:
         # print("Script B failed!")
