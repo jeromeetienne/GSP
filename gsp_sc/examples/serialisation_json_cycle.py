@@ -1,6 +1,7 @@
 import gsp_sc.src as gsp_sc
 import numpy as np
 import matplotlib.image as mpl_img
+import mpl3d.camera
 
 
 import os
@@ -35,14 +36,22 @@ viewport2.add(pixels)
 #
 image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
 image_data_np = mpl_img.imread(image_path)
-image = gsp_sc.visuals.Image(position=np.array([0.5, 0.5, 0.5]), image_extent=(-1, +1, -1, +1), image_data=image_data_np)
+image = gsp_sc.visuals.Image(
+    position=np.array([0.5, 0.5, 0.5]),
+    image_extent=(-1, +1, -1, +1),
+    image_data=image_data_np,
+)
 viewport1.add(image)
 
 ###############################################################################
 # Save and render the scene to verify it looks correct
 #
-matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-rendered_image_png_data = matplotlib_renderer.render(canvas, show_image=False, return_image=True)
+camera = mpl3d.camera.Camera("perspective")
+
+matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
+rendered_image_png_data = matplotlib_renderer.render(
+    canvas, camera=camera, show_image=False, return_image=True
+)
 
 # save the rendered image to a file
 rendered_image_path = f"{__dirname__}/output/rendered_image.png"
@@ -55,18 +64,21 @@ with open(rendered_image_path, "wb") as f:
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
 scene_json = json_renderer.render(canvas)
 
+
+
 ###############################################################################
 # Load the scene from JSON
 #
 json_parser = gsp_sc.renderer.json.JsonParser()
+# FIXME json_parser should return the unserialized camera too
 canvas_loaded = json_parser.parse(scene_json)
 
 ###############################################################################
 # Render the loaded scene with matplotlib to visually verify it was loaded correctly
 #
-matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
+matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
 rendered_loaded_image_png_data = matplotlib_renderer.render(
-    canvas_loaded, show_image=False, return_image=True
+    canvas=canvas_loaded, camera=camera, show_image=False, return_image=True
 )
 
 # save the rendered loaded image to a file

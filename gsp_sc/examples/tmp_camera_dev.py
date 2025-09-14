@@ -1,7 +1,7 @@
-from time import sleep
 import gsp_sc.src as gsp_sc
 import numpy as np
 import mpl3d.camera
+import matplotlib.image
 
 import os
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
@@ -30,22 +30,18 @@ pixels = gsp_sc.visuals.Pixels(
 )
 viewport.add(pixels)
 
-###############################################################################
-# Add an image to viewport
-#
+# ###############################################################################
+# # Add an image to viewport
+# #
 
-# TODO this fails on MatplotlibRendererDelta
-
-import matplotlib.image
-
-image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
-image_data_np = matplotlib.image.imread(image_path)
-image = gsp_sc.visuals.Image(
-    position=np.array([0.5, 0.5, 0.5]),
-    image_extent=(-0.1, +0.1, -0.1, +0.1),
-    image_data=image_data_np,
-)
-viewport.add(image)
+# image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
+# image_data_np = matplotlib.image.imread(image_path)
+# image = gsp_sc.visuals.Image(
+#     position=np.array([0.5, 0.5, 0.5]),
+#     image_extent=(-0.1, +0.1, -0.1, +0.1),
+#     image_data=image_data_np,
+# )
+# viewport.add(image)
 
 ###############################################################################
 # Render the scene with matplotlib

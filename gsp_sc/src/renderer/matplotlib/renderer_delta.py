@@ -52,7 +52,7 @@ class MatplotlibRendererDelta:
                 self.render(canvas, camera=camera, show_image=False)
             camera.connect(mpl_axes, camera_update)
             # enter the matplotlib main loop
-            matplotlib.pyplot.show()
+            matplotlib.pyplot.show(block=True)
 
         image_png_data = b""
 

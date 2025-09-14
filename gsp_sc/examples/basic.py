@@ -1,6 +1,6 @@
 import gsp_sc.src as gsp_sc
 import numpy as np
-
+import mpl3d.camera
 import os
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,7 +21,7 @@ canvas.add(viewport=viewport)
 # Add some random points
 #
 n_points = 100
-positions_np = np.random.uniform(-0.5, 0.5, (n_points, 2)).astype(np.float32)
+positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
 pixels = gsp_sc.visuals.Pixels(
     positions=positions_np, sizes=sizes_np, colors=gsp_sc.Constants.Green
@@ -31,5 +31,6 @@ viewport.add(pixels)
 ###############################################################################
 # Render the scene with matplotlib
 #
-renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-renderer.render(canvas)
+camera = mpl3d.camera.Camera("perspective")
+renderer = gsp_sc.renderer.matplotlib.MatplotlibRendererDelta()
+renderer.render(canvas, camera, interactive=True)

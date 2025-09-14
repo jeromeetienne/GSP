@@ -18,7 +18,7 @@ canvas.add(viewport=viewport)
 # Add some random points to both viewports
 #
 n_points = 100
-positions_np = np.random.uniform(-0.5, 0.5, (n_points, 2)).astype(np.float32)
+positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
 pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=(0, 1, 0, 0.5))
 viewport.add(pixels)
