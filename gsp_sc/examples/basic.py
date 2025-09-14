@@ -1,6 +1,5 @@
 import gsp_sc.src as gsp_sc
 import numpy as np
-import mpl3d.camera
 import os
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,10 +30,9 @@ viewport.add(pixels)
 ###############################################################################
 # Render the scene with matplotlib
 #
-camera = mpl3d.camera.Camera("perspective")
+camera = gsp_sc.core.Camera(camera_type="perspective")
 renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 image_png_buffer = renderer.render(canvas, camera, interactive=True)
-
 
 # Save the rendered image to a file
 image_path = f"{__dirname__}/output/basic.png"

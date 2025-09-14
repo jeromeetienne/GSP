@@ -1,24 +1,28 @@
+import numpy as np
+import json
+
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...core.canvas import Canvas
 from ...core.viewport import Viewport
-import numpy as np
-
-import json
+from ...core.camera import Camera
 
 
 class JsonParser:
     def __init__(self) -> None:
         pass
 
-    def parse(self, scene_json: str) -> Canvas:
+    def parse(self, scene_json: str) -> tuple[Canvas, Camera]:
         scene_dict = json.loads(scene_json)
+
+        camera_info = scene_dict["camera"]
+        camera = Camera(camera_info["type"])
+        camera.uuid = camera_info["uuid"]   # restore the original uuid
 
         canvas_info = scene_dict["canvas"]
         canvas = Canvas(canvas_info["width"], canvas_info["height"], canvas_info["dpi"])
-        # restore the original uuid
-        canvas.uuid = canvas_info["uuid"]
-        
+        canvas.uuid = canvas_info["uuid"]   # restore the original uuid
+
         for viewport_info in canvas_info["viewports"]:
             viewport = Viewport(
                 origin_x=viewport_info["origin_x"],
@@ -46,7 +50,11 @@ class JsonParser:
                     image_data = np.array(visual_info["image_data"]).reshape(
                         image_data_shape
                     )
-                    image = Image(position=np.array(visual_info["position"]), image_extent=visual_info["bounds"], image_data=image_data)
+                    image = Image(
+                        position=np.array(visual_info["position"]),
+                        image_extent=visual_info["bounds"],
+                        image_data=image_data,
+                    )
                     # restore the original uuid
                     image.uuid = visual_info["uuid"]
                     visual = image
@@ -57,4 +65,4 @@ class JsonParser:
 
                 viewport.add(visual)
 
-        return canvas
+        return canvas, camera

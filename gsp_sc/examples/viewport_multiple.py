@@ -40,8 +40,9 @@ viewport2.add(image)
 ###############################################################################
 # Render the scene
 #
+camera = gsp_sc.core.Camera(camera_type="perspective")
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-image_png_buffer = matplotlib_renderer.render(canvas, show_image=True)
+image_png_buffer = matplotlib_renderer.render(canvas, camera, show_image=True)
 
 # Save the rendered image to a file
 image_path = f"{__dirname__}/output/viewport_multiple.png"

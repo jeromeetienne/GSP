@@ -1,7 +1,6 @@
 from flask import Flask, request, send_file, Response
 import io
 import gsp_sc.src as gsp_sc
-import mpl3d.camera
 
 flask_app = Flask(__name__)
 
@@ -14,18 +13,14 @@ def render_scene_json() -> Response:
     # Load the scene from JSON
     #
     json_parser = gsp_sc.renderer.json.JsonParser()
-    canvas_loaded = json_parser.parse(scene_json)
+    canvas_parsed, camera_parsed = json_parser.parse(scene_json)
 
     ###############################################################################
     # Render the loaded scene with matplotlib to visually verify it was loaded correctly
     #
     matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-
-    # FIXME this camera should be serialized too
-    camera = mpl3d.camera.Camera("perspective")
-
     image_png_data = matplotlib_renderer.render(
-        canvas=canvas_loaded, camera=camera, show_image=False
+        canvas=canvas_parsed, camera=camera_parsed, show_image=False
     )
 
     return send_file(

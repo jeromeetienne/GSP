@@ -26,8 +26,9 @@ viewport.add(pixels)
 ###############################################################################
 # Export the scene to JSON and save to file
 #
+camera = gsp_sc.core.Camera("perspective")
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
-scene_json = json_renderer.render(canvas)
+scene_json = json_renderer.render(canvas, camera)
 
 json_output_path = f"{__dirname__}/output/scene.json"
 with open(json_output_path, 'w') as json_file:

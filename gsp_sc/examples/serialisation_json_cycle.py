@@ -1,8 +1,6 @@
 import gsp_sc.src as gsp_sc
 import numpy as np
 import matplotlib.image as mpl_img
-import mpl3d.camera
-
 
 import os
 
@@ -46,41 +44,41 @@ viewport1.add(image)
 ###############################################################################
 # Save and render the scene to verify it looks correct
 #
-camera = mpl3d.camera.Camera("perspective")
-
+camera = gsp_sc.core.Camera("perspective")
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 rendered_image_png_data = matplotlib_renderer.render(canvas, camera=camera)
 
 # save the rendered image to a file
-rendered_image_path = f"{__dirname__}/output/rendered_image.png"
+rendered_image_path = f"{__dirname__}/output/serialisation_original_image.png"
 with open(rendered_image_path, "wb") as f:
     f.write(rendered_image_png_data)
+
+print(f"original Rendered image saved to: {rendered_image_path}")
 
 ###############################################################################
 # Export the scene to JSON
 #
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
-scene_json = json_renderer.render(canvas)
+scene_json = json_renderer.render(canvas, camera)
 
 
 ###############################################################################
 # Load the scene from JSON
 #
 json_parser = gsp_sc.renderer.json.JsonParser()
-# FIXME json_parser should return the unserialized camera too
-canvas_loaded = json_parser.parse(scene_json)
+canvas_parsed, camera_parsed = json_parser.parse(scene_json)
 
 ###############################################################################
 # Render the loaded scene with matplotlib to visually verify it was loaded correctly
 #
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 rendered_loaded_image_png_data = matplotlib_renderer.render(
-    canvas=canvas_loaded, camera=camera
+    canvas=canvas_parsed, camera=camera_parsed
 )
 
 # save the rendered loaded image to a file
-rendered_loaded_image_path = f"{__dirname__}/output/rendered_loaded_image.png"
+rendered_loaded_image_path = f"{__dirname__}/output/serialisation_parsed_image.png"
 with open(rendered_loaded_image_path, "wb") as f:
     f.write(rendered_loaded_image_png_data)
 
-print(f"Rendered image saved to: {rendered_loaded_image_path}")
+print(f"Network rendered image saved to: {rendered_loaded_image_path}")

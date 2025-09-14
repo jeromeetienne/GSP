@@ -9,6 +9,7 @@ from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...core.canvas import Canvas
 from ...core.visual_base import VisualBase
+from ...core.camera import Camera
 
 import matplotlib.pyplot
 import matplotlib.axes
@@ -29,7 +30,7 @@ class MatplotlibRenderer:
     def render(
         self,
         canvas: Canvas,
-        camera: mpl3d.camera.Camera | None = None,
+        camera: Camera,
         show_image: bool = False,
         return_image: bool = True,
         interactive: bool = False,
@@ -48,21 +49,23 @@ class MatplotlibRenderer:
             ):
                 matplotlib.pyplot.show(block=True)
 
-        if interactive and camera is not None:
+
+        # Handle interactive camera IIF env.var GSP_SC_INTERACTIVE is not set to "False"
+        if interactive and (
+            "GSP_SC_INTERACTIVE" not in os.environ
+            or os.environ["GSP_SC_INTERACTIVE"] != "False"
+        ):
             figure = matplotlib.pyplot.gcf()
             mpl_axes = figure.get_axes()[0]
+            mpl3d_camera: mpl3d.camera.Camera = camera.mpl3d_camera
 
             # connect the camera events to the render function
             def camera_update(transform) -> None:
-                self.render(canvas, camera=camera, show_image=False)
+                self.render(canvas, camera, show_image=False)
 
-            camera.connect(mpl_axes, camera_update)
-            # enter the matplotlib main loop IIF env.var GSP_SC_INTERACTIVE is not set to "False"
-            if (
-                "GSP_SC_INTERACTIVE" not in os.environ
-                or os.environ["GSP_SC_INTERACTIVE"] != "False"
-            ):
-                matplotlib.pyplot.show(block=True)
+            mpl3d_camera.connect(mpl_axes, camera_update)
+            matplotlib.pyplot.show(block=True)
+            mpl3d_camera.disconnect()
 
         image_png_data = b""
 
@@ -81,7 +84,7 @@ class MatplotlibRenderer:
     def __render(
         self,
         canvas: Canvas,
-        camera: mpl3d.camera.Camera | None = None,
+        camera: Camera,
     ) -> None:
         if canvas.uuid in self._figures:
             figure = self._figures[canvas.uuid]
@@ -137,7 +140,7 @@ class MatplotlibRenderer:
         axes: matplotlib.axes.Axes,
         pixels: Pixels,
         full_uuid: str,
-        camera: mpl3d.camera.Camera | None = None,
+        camera: Camera,
     ) -> None:
         if full_uuid in self._pathCollections:
             pathCollection = self._pathCollections[full_uuid]
@@ -162,7 +165,7 @@ class MatplotlibRenderer:
         axes: matplotlib.axes.Axes,
         image: Image,
         full_uuid: str,
-        camera: mpl3d.camera.Camera | None = None,
+        camera: Camera,
     ) -> None:
         if full_uuid not in self._axesImages:
             print(f"Creating new AxesImage for image visual {full_uuid}")

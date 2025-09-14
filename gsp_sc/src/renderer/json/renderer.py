@@ -2,6 +2,7 @@ from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...core.canvas import Canvas
 from ...core.viewport import Viewport
+from ...core.camera import Camera
 import numpy as np
 
 import json
@@ -11,9 +12,13 @@ class JsonRenderer:
     def __init__(self) -> None:
         pass
 
-    def render(self, canvas: Canvas) -> str:
+    def render(self, canvas: Canvas, camera: Camera) -> str:
 
         scene_dict = {
+            "camera": {
+                "uuid": camera.uuid,
+                "type": camera.camera_type,
+            },
             "canvas": {
                 "uuid": canvas.uuid,
                 "width": canvas.width,

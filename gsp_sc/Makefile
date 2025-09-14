@@ -3,12 +3,12 @@ help: ## Show this help message
 
 ##############################################################################
 
-lint_checker: lint_checker_src lint_checker_examples ## Run pyright type checker on src and examples
+lint: lint_src lint_examples ## Run pyright type checker on src and examples
 
-lint_checker_src: ## Run pyright type checker on ./src
+lint_src: ## Run pyright type checker on ./src
 	pyright src/**/*.py
 
-lint_checker_examples: ## Run pyright type checker on ./examples
+lint_examples: ## Run pyright type checker on ./examples
 	pyright examples/**/*.py
 
 ##############################################################################

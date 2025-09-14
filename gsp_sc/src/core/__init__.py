@@ -8,4 +8,5 @@ including Viewport, Canvas, and VisualBase.
 from .types import Color
 from .viewport import Viewport
 from .canvas import Canvas
+from .camera import Camera
 from .visual_base import VisualBase
