@@ -1,7 +1,6 @@
 import gsp_sc.src as gsp_sc
 import numpy as np
-import matplotlib.image as mpl_img
-
+import matplotlib.pyplot
 
 import os
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
@@ -22,6 +21,17 @@ positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
 pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=(0, 1, 0, 0.5))
 viewport.add(pixels)
+
+###############################################################################
+# Add a mesh
+#
+obj_mesh_path = f"{__dirname__}/data/bunny.obj"
+mesh = gsp_sc.visuals.Mesh.from_obj_file(
+    obj_mesh_path,
+    cmap=matplotlib.pyplot.get_cmap("magma"),
+    edgecolors=(0, 0, 0, 0.25), # type: ignore
+)
+viewport.add(mesh)
 
 ###############################################################################
 # Export the scene to JSON and save to file

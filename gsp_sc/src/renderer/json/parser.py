@@ -1,11 +1,15 @@
 import numpy as np
 import json
 
-from ...visuals.pixels import Pixels
-from ...visuals.image import Image
+import matplotlib.pyplot
+
 from ...core.canvas import Canvas
 from ...core.viewport import Viewport
 from ...core.camera import Camera
+
+from ...visuals.pixels import Pixels
+from ...visuals.image import Image
+from ...visuals.mesh import Mesh
 
 
 class JsonParser:
@@ -58,6 +62,20 @@ class JsonParser:
                     # restore the original uuid
                     image.uuid = visual_info["uuid"]
                     visual = image
+                elif visual_info["type"] == "Mesh":
+                    cmap = None if visual_info["cmap"] is None else matplotlib.pyplot.get_cmap(visual_info["cmap"])
+                    mesh = Mesh(
+                        vertices=np.array(visual_info["vertices"]),
+                        faces=np.array(visual_info["faces"]),
+                        cmap=cmap,
+                        facecolors=visual_info.get("facecolors", "white"),
+                        edgecolors=visual_info.get("edgecolors", "black"),
+                        linewidths=visual_info.get("linewidths", 0.5),
+                        mode=visual_info.get("mode", "front"),
+                    )
+                    # restore the original uuid
+                    mesh.uuid = visual_info["uuid"]
+                    visual = mesh
                 else:
                     raise NotImplementedError(
                         f"Parsing for visual type {visual_info['type']} is not implemented."

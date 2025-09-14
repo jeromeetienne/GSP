@@ -1,11 +1,12 @@
-from ...visuals.pixels import Pixels
-from ...visuals.image import Image
+import json
+
 from ...core.canvas import Canvas
 from ...core.viewport import Viewport
 from ...core.camera import Camera
-import numpy as np
 
-import json
+from ...visuals.pixels import Pixels
+from ...visuals.image import Image
+from ...visuals.mesh import Mesh
 
 
 class JsonRenderer:
@@ -58,6 +59,19 @@ class JsonRenderer:
                         "bounds": image.image_extent,
                         "image_data_shape": image.image_data.shape,
                         "image_data": image.image_data.tolist(),
+                    }
+                elif isinstance(visual, Mesh):
+                    mesh = visual
+                    visual_dict = {
+                        "type": "Mesh",
+                        "uuid": mesh.uuid,
+                        "vertices": mesh.vertices.tolist(),
+                        "cmap": None if mesh.cmap is None else mesh.cmap.name,
+                        "faces": mesh.faces.tolist(),
+                        "facecolors": mesh.facecolors.tolist(),
+                        "edgecolors": mesh.edgecolors.tolist(),
+                        "linewidths": mesh.linewidths,
+                        "mode": mesh.mode,
                     }
                 else:
                     raise NotImplementedError(

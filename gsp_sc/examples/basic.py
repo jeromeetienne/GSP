@@ -1,8 +1,9 @@
-import matplotlib
 import matplotlib.pyplot
-import gsp_sc.src as gsp_sc
+import matplotlib.image
 import numpy as np
 import os
+
+import gsp_sc.src as gsp_sc
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,13 +32,25 @@ pixels = gsp_sc.visuals.Pixels(
 viewport.add(pixels)
 
 ###############################################################################
+# Add an image to viewport
+#
+image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
+image_data_np = matplotlib.image.imread(image_path)
+image = gsp_sc.visuals.Image(
+    position=np.array([0.5, 0.5, 0.5]),
+    image_extent=(-1, +1, -1, +1),
+    image_data=image_data_np,
+)
+viewport.add(image)
+
+###############################################################################
 # Add a mesh
 #
 obj_mesh_path = f"{__dirname__}/data/bunny.obj"
 mesh = gsp_sc.visuals.Mesh.from_obj_file(
     obj_mesh_path,
     cmap=matplotlib.pyplot.get_cmap("magma"),
-    edgecolors=(0, 0, 0, 0.25),
+    edgecolors=(0, 0, 0, 0.25), # type: ignore
 )
 viewport.add(mesh)
 

@@ -18,6 +18,9 @@ canvas.add(viewport1)
 viewport2 = gsp_sc.core.Viewport(256, 0, 256, 256, (1, 1, 1, 1))
 canvas.add(viewport2)
 
+viewport3 = gsp_sc.core.Viewport(0, 256, 256, 256, (1, 1, 1, 1))
+canvas.add(viewport3)
+
 ###############################################################################
 # Add some random points to viewport1 and viewport2
 #
@@ -36,6 +39,18 @@ image_data_np = matplotlib.image.imread(image_path)
 image_position = np.array([0, 0, 0])
 image = gsp_sc.visuals.Image(position=image_position, image_extent=(-1, +1, -1, +1), image_data=image_data_np)
 viewport2.add(image)
+
+###############################################################################
+# Add a mesh
+#
+obj_mesh_path = f"{__dirname__}/data/bunny.obj"
+mesh = gsp_sc.visuals.Mesh.from_obj_file(
+    obj_mesh_path,
+    cmap=matplotlib.pyplot.get_cmap("magma"),
+    edgecolors=(0, 0, 0, 0.25), # type: ignore
+)
+viewport2.add(mesh)
+viewport3.add(mesh)
 
 ###############################################################################
 # Render the scene

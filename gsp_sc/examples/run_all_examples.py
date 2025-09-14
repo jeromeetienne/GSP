@@ -62,6 +62,7 @@ def launch_network_server():
     except Exception as e:
         print("Failed to start network server:", str(e))
         return None
+
 ###############################################################################
 # Main script logic
 #
