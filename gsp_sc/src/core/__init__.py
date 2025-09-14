@@ -5,6 +5,7 @@ This module contains the fundamental classes for creating and managing graphical
 including Viewport, Canvas, and VisualBase.
 """
 
+from .types import Color
 from .viewport import Viewport
 from .canvas import Canvas
 from .visual_base import VisualBase

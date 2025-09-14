@@ -13,6 +13,17 @@ test_verbose:
 	cd tests
 	pytest -v
 
+
+##########################################################################
+
+lint_checker: lint_checker_src lint_checker_examples
+
+lint_checker_src:
+	pyright gsp/**/*.py
+
+lint_checker_examples:
+	pyright examples/**/*.py
+
 ##########################################################################
 
 examples_output_force_commit:

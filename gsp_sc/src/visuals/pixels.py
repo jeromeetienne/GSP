@@ -12,11 +12,21 @@ class Pixels(VisualBase):
         sizes: nptyping.NDArray[nptyping.Shape["*"], nptyping.Float] = np.array([5.0]),
         colors: tuple[float, float, float, float] = (0.0, 0.0, 1.0, 1.0),
     ) -> None:
+        """
+        Initialize a Pixels visual.
+        
+        :param positions: np.ndarray of shape (N, 3) representing the 3D positions of the pixels
+        :type positions: nptyping.NDArray[nptyping.Shape["*, 3"], nptyping.Float]
+        :param sizes: np.ndarray of shape (N,) representing the sizes of the pixels
+        :type sizes: nptyping.NDArray[nptyping.Shape["*"], nptyping.Float]
+        :param colors: Tuple of 4 floats representing the RGBA color of the pixels
+        :type colors: tuple[float, float, float, float]
+        """
         super().__init__()
 
         # sanity check - np.ndarray type checking at runtime
         assert positions.shape[1:] == (3,), "Positions must have shape (N, 3) where N is the number of positions."
-        assert sizes.shape == (1,), "Sizes must have shape (N, 1) where N is the number of sizes."
+        assert sizes.shape.__len__() == 1, "Sizes must have shape (N, 1) where N is the number of sizes."
 
         self.positions = positions
         self.sizes = sizes
