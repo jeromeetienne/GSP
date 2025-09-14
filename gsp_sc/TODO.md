@@ -1,7 +1,4 @@
 # TODO
-- issue with serialisation: currently camera is not serialised
-  - may require to have my own Camera class ... 
-  - not required, i can serialize the parameters (including the matrices)
 - add more visual
   - e.g. mesh with hidden face
 - add sanity check on the np.ndarray shapes type hinting
@@ -9,7 +6,9 @@
   - https://github.com/beartype/beartype
 
 ---
-
+- DONE issue with serialisation: currently camera is not serialised
+  - may require to have my own Camera class ... 
+  - not required, i can serialize the parameters (including the matrices)
 - FIXED MatplotlibRendererDelta fails on multi viewport
 - DONE keep only MatplotlibRendererDelta
   - remove MatplotlibRenderer

@@ -10,3 +10,4 @@ Currently supported visuals are:
 
 from . pixels import Pixels
 from . image import Image
+from . mesh import Mesh

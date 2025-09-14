@@ -1,6 +1,9 @@
+import matplotlib
+import matplotlib.pyplot
 import gsp_sc.src as gsp_sc
 import numpy as np
 import os
+
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
 ###############################################################################
@@ -26,6 +29,17 @@ pixels = gsp_sc.visuals.Pixels(
     positions=positions_np, sizes=sizes_np, colors=gsp_sc.Constants.Green
 )
 viewport.add(pixels)
+
+###############################################################################
+# Add a mesh
+#
+obj_mesh_path = f"{__dirname__}/data/bunny.obj"
+mesh = gsp_sc.visuals.Mesh.from_obj_file(
+    obj_mesh_path,
+    cmap=matplotlib.pyplot.get_cmap("magma"),
+    edgecolors=(0, 0, 0, 0.25),
+)
+viewport.add(mesh)
 
 ###############################################################################
 # Render the scene with matplotlib

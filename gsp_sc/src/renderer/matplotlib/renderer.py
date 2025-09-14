@@ -2,14 +2,19 @@ import io
 import os
 
 
+import matplotlib.collections
+import matplotlib.colors
+
 import mpl3d.glm
 import mpl3d.camera
 
-from ...visuals.pixels import Pixels
-from ...visuals.image import Image
 from ...core.canvas import Canvas
 from ...core.visual_base import VisualBase
 from ...core.camera import Camera
+
+from ...visuals.pixels import Pixels
+from ...visuals.image import Image
+from ...visuals.mesh import Mesh
 
 import matplotlib.pyplot
 import matplotlib.axes
@@ -25,6 +30,7 @@ class MatplotlibRenderer:
         self._figures: dict[str, matplotlib.figure.Figure] = {}
         self._axes: dict[str, matplotlib.axes.Axes] = {}
         self._pathCollections: dict[str, matplotlib.collections.PathCollection] = {}
+        self._polyCollections: dict[str, matplotlib.collections.PolyCollection] = {}
         self._axesImages: dict[str, matplotlib.image.AxesImage] = {}
 
     def render(
@@ -48,7 +54,6 @@ class MatplotlibRenderer:
                 or os.environ["GSP_SC_INTERACTIVE"] != "False"
             ):
                 matplotlib.pyplot.show(block=True)
-
 
         # Handle interactive camera IIF env.var GSP_SC_INTERACTIVE is not set to "False"
         if interactive and (
@@ -125,6 +130,13 @@ class MatplotlibRenderer:
                     )
                 elif isinstance(visual, Image):
                     self.__render_image(
+                        axes,
+                        visual,
+                        full_uuid=visual.uuid + viewport.uuid,
+                        camera=camera,
+                    )
+                elif isinstance(visual, Mesh):
+                    self.__render_mesh(
                         axes,
                         visual,
                         full_uuid=visual.uuid + viewport.uuid,
@@ -216,3 +228,70 @@ class MatplotlibRenderer:
                 image.image_extent[3],
             )
             axes_image.set_extent(extent)
+
+    def __render_mesh(
+        self,
+        axes: matplotlib.axes.Axes,
+        mesh: Mesh,
+        full_uuid: str,
+        camera: Camera,
+    ) -> None:
+        transform = camera.transform
+
+        if full_uuid not in self._polyCollections:
+            print(f"Creating new PathCollection for mesh visual {full_uuid}")
+            self._polyCollections[full_uuid] = matplotlib.collections.PolyCollection(
+                [], clip_on=False, snap=False
+            )
+            axes.add_collection(self._polyCollections[full_uuid], autolim=False)
+
+        polyCollection = self._polyCollections[full_uuid]
+
+        T = mpl3d.glm.transform(mesh.vertices, transform)[mesh.faces]
+        Z = -T[:, :, 2].mean(axis=1)
+
+        if mesh.cmap is not None:
+            # Facecolors using depth buffer
+            norm = matplotlib.colors.Normalize(vmin=Z.min(), vmax=Z.max())
+            facecolors = mesh.cmap(norm(Z))
+        else:
+            facecolors = mesh.facecolors
+
+        edgecolors = mesh.edgecolors
+        linewidths = mesh.linewidths
+
+        # Back face culling
+        if mesh.mode == "front":
+            front, back = mpl3d.glm.frontback(T)
+            T, Z = T[front], Z[front]
+            if len(facecolors) == len(mesh.faces):
+                facecolors = facecolors[front]
+            if len(edgecolors) == len(mesh.faces):
+                edgecolors = edgecolors[front]
+
+        # Front face culling
+        elif mesh.mode == "back":
+            front, back = mpl3d.glm.frontback(T)
+            T, Z = T[back], Z[back]
+            if len(facecolors) == len(mesh.faces):
+                facecolors = facecolors[back]
+            if len(edgecolors) == len(mesh.faces):
+                edgecolors = edgecolors[back]
+
+        # Separate 2d triangles from zbuffer
+        triangles = T[:, :, :2]
+        antialiased = linewidths > 0
+
+        # Sort triangles according to z buffer
+        I = np.argsort(Z)
+        triangles = triangles[I, :]
+        if len(facecolors) == len(I):
+            facecolors = facecolors[I, :]
+        if len(edgecolors) == len(I):
+            edgecolors = edgecolors[I, :]
+
+        polyCollection.set_verts(triangles)
+        polyCollection.set_linewidth(linewidths)
+        polyCollection.set_facecolor(facecolors)
+        polyCollection.set_edgecolor(edgecolors)
+        polyCollection.set_antialiased(antialiased)

@@ -13,5 +13,3 @@ from . import core
 from . import renderer
 from . import visuals
 from . constants import Constants
-
-import mpl3d
