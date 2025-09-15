@@ -1,6 +1,8 @@
 import gsp_sc.src as gsp_sc
 import numpy as np
 import matplotlib.pyplot
+import msgpack
+
 
 import os
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
@@ -16,7 +18,7 @@ canvas.add(viewport=viewport)
 ###############################################################################
 # Add some random points to viewport
 #
-n_points = 100
+n_points = 1000
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
 pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=(0, 1, 0, 0.5))
@@ -40,8 +42,23 @@ camera = gsp_sc.core.Camera("perspective")
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
 scene_json = json_renderer.render(canvas, camera)
 
+# save to file as json
 json_output_path = f"{__dirname__}/output/scene.json"
-with open(json_output_path, 'w') as json_file:
-    json_file.write(scene_json)
+with open(json_output_path, 'w') as msgpack_file:
+    msgpack_file.write(scene_json)
 
-print(f"Scene exported to JSON and saved to {json_output_path}")
+print(f"Scene exported to JSON and saved to {json_output_path}. length={len(scene_json)}")
+
+###############################################################################
+# Save as messagepack too
+#
+
+import json
+scene_json_obj = json.loads(scene_json)
+msgpack_output_path = f"{__dirname__}/output/scene.msgpack"
+scene_msgpack = msgpack.packb(scene_json_obj, use_bin_type=True)
+with open(msgpack_output_path, 'wb') as msgpack_file:
+    msgpack_file.write(scene_msgpack)
+
+print(f"Scene exported to MessagePack and saved to {msgpack_output_path}. length={len(scene_msgpack)}")
+

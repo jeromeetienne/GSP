@@ -5,6 +5,8 @@
   - https://github.com/beartype/beartype
 
 ---
+
+- DONE support msgpack in serialisation
 - DONE Add mesh visual with hidden faces
 - DONE issue with serialisation: currently camera is not serialised
   - may require to have my own Camera class ... 
