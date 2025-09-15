@@ -7,7 +7,8 @@ from gsp import glm
 from gsp import visual
 from gsp.io.command import command
 from gsp.transform import Transform
-from gsp.matplotlib.core import Viewport, Buffer, Color, Matrix
+from gsp.matplotlib.core import Viewport, Buffer, Color
+from gsp.core.types import Matrix
 
 
 class Pixels(visual.Pixels):

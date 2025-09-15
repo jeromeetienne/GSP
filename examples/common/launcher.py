@@ -29,19 +29,19 @@ def parse_args(
     Returns:
         tuple[gsp.core, gsp.visual, Callable]: The gsp core and visual modules, and a function to render the result of the example.
     """
-    core, visual = __ExampleLauncher.parse_args(example_description=example_description)
+    core, visual = ExampleLauncher.parse_args(example_description=example_description)
 
     def render_func(
         canvas: gsp.core.viewport.Canvas,
         viewports: list[gsp.core.viewport.Viewport],
         visuals: list[Visual],
     ) -> None:
-        __ExampleLauncher.render(canvas, viewports[0], visuals)
+        ExampleLauncher.render(canvas, viewports[0], visuals)
 
     return core, visual, render_func
 
 
-class __ExampleLauncher:
+class ExampleLauncher:
 
     @staticmethod
     def parse_args(example_description: str | None = None) -> tuple[gsp.core, gsp.visual]:  # type: ignore
@@ -56,7 +56,7 @@ class __ExampleLauncher:
             tuple[gsp.core, gsp.visual]: The gsp core and visual modules.
         """
 
-        args = __ExampleLauncher.__parse_args(example_description=example_description)
+        args = ExampleLauncher.__parse_args(example_description=example_description)
 
         if args.command == "command_file":
             gsp_core = gsp.core
@@ -89,7 +89,7 @@ class __ExampleLauncher:
             visuals (list[Visual]): The list of visuals to render.
         """
 
-        args = __ExampleLauncher.__parse_args()
+        args = ExampleLauncher.__parse_args()
 
         # get the __file__ of the calling script
         example_filename: str = getattr(sys.modules.get("__main__"), "__file__", None) #type: ignore

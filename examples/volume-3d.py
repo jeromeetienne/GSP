@@ -5,7 +5,7 @@
 From https://datoviz.org/gallery/visuals/volume/
 """
 # Experiment to handle intellisense in VSCode
-from gsp.core.types import Color
+# from gsp.core.types import Color
 from gsp.matplotlib import core, visual, glm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -38,7 +38,7 @@ volume_data = volume_data / 255.0
 #
 canvas = core.Canvas(width=512, height=512, dpi=250.0)
 viewport = core.Viewport(
-    canvas=canvas, x=0, y=0, width=512, height=512, color=Color(0, 0, 0, 1)
+    canvas=canvas, x=0, y=0, width=512, height=512, color=(0, 0, 0, 1)
 )
 
 ######################################################
