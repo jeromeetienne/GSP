@@ -14,7 +14,7 @@ viewport = gsp_sc.core.Viewport(0, 0, 256, 256, (1, 1, 1, 1))
 canvas.add(viewport=viewport)
 
 ###############################################################################
-# Add some random points to both viewports
+# Add some random points to viewport
 #
 n_points = 100
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
@@ -34,7 +34,7 @@ mesh = gsp_sc.visuals.Mesh.from_obj_file(
 viewport.add(mesh)
 
 ###############################################################################
-# Export the scene to JSON and save to file
+# Render the scene to JSON and save to file
 #
 camera = gsp_sc.core.Camera("perspective")
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
