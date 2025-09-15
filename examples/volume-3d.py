@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import common.asset_downloader as asset_downloader
 
-
 ############################
 # Download/read the volume data
 #
