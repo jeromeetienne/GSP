@@ -28,7 +28,5 @@ class Texture(Object):
         """
         Object.__init__(self)
 
-        self._texture_data = texture_data
-        self._shape = shape
 
 

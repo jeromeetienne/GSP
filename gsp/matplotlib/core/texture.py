@@ -20,8 +20,6 @@ class Texture(core.Texture):
         self._texture_data = texture_data
         self._shape = shape
 
-        # TODO check if shape is coherent with texture_data.shape
-
     @property
     def data(self) -> np.ndarray:
         return self._texture_data
