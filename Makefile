@@ -13,7 +13,6 @@ test_verbose:
 	cd tests
 	pytest -v
 
-
 ##########################################################################
 
 lint_checker: lint_checker_src lint_checker_examples
@@ -37,6 +36,10 @@ examples_output_force_commit:
 doc_build:
 	# Build the documentation using MkDocs
 	mkdocs build
+
+doc_deploy:
+	# Deploy the documentation to GitHub Pages
+	mkdocs gh-deploy
 
 doc_open: doc_build
 	# Open the documentation in the default web browser
