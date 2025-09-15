@@ -1,4 +1,9 @@
+from calendar import c
 import matplotlib.pyplot
+import mpl3d.glm
+from numpy.__config__ import show
+from numpy.matlib import mat
+
 import gsp_sc.src as gsp_sc
 import numpy as np
 import matplotlib.image
@@ -7,32 +12,26 @@ import matplotlib.image
 import os
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
-
 canvas = gsp_sc.core.Canvas(width=512, height=512, dpi=100)
 
 ###############################################################################
-# Create two viewports
-viewport1 = gsp_sc.core.Viewport(0, 0, 256, 256, (1, 1, 1, 1))
+# Create 4 viewports
+#
+canvas_half = canvas.width // 2
+viewport1 = gsp_sc.core.Viewport(0, canvas_half, canvas_half, canvas_half, (1, 1, 1, 1))
 canvas.add(viewport1)
 
-viewport2 = gsp_sc.core.Viewport(256, 0, 256, 256, (1, 1, 1, 1))
+viewport2 = gsp_sc.core.Viewport(canvas_half, canvas_half, canvas_half, canvas_half, (1, 1, 1, 1))
 canvas.add(viewport2)
 
-viewport3 = gsp_sc.core.Viewport(0, 256, 256, 256, (1, 1, 1, 1))
+viewport3 = gsp_sc.core.Viewport(0, 0, canvas_half, canvas_half, (1, 1, 1, 1))
 canvas.add(viewport3)
 
-###############################################################################
-# Add some random points to viewport1 and viewport2
-#
-n_points = 100
-positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
-sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
-pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=(0, 1, 0, 0.5))
-viewport1.add(pixels)
-viewport2.add(pixels)
+viewport4 = gsp_sc.core.Viewport(canvas_half, 0, canvas_half, canvas_half, (1, 1, 1, 1))
+canvas.add(viewport4)
 
 ###############################################################################
-# Add a mesh
+# Add a mesh and add it to all viewports
 #
 obj_mesh_path = f"{__dirname__}/data/bunny.obj"
 mesh = gsp_sc.visuals.Mesh.from_obj_file(
@@ -40,18 +39,34 @@ mesh = gsp_sc.visuals.Mesh.from_obj_file(
     cmap=matplotlib.pyplot.get_cmap("magma"),
     edgecolors=(0, 0, 0, 0.25), # type: ignore
 )
+viewport1.add(mesh)
 viewport2.add(mesh)
 viewport3.add(mesh)
+viewport4.add(mesh)
+
+###############################################################################
+# setup one camera per viewport
+#
+camera1 = gsp_sc.core.Camera(camera_type="perspective")
+camera1.mpl3d_camera.trackball._model =  mpl3d.glm.yrotate(-30) @ mpl3d.glm.xrotate(-10)
+camera1.mpl3d_camera.transform = camera1.mpl3d_camera.proj @ camera1.mpl3d_camera.view @ camera1.mpl3d_camera.trackball.model.T
+
+camera2 = gsp_sc.core.Camera(camera_type="ortho")
+camera2.mpl3d_camera.trackball._model =  mpl3d.glm.xrotate(-90)
+camera2.mpl3d_camera.transform = camera2.mpl3d_camera.proj @ camera2.mpl3d_camera.view @ camera2.mpl3d_camera.trackball.model.T
+
+camera3 = gsp_sc.core.Camera(camera_type="ortho")
+camera3.mpl3d_camera.trackball._model =  mpl3d.glm.yrotate(-90)
+camera3.mpl3d_camera.transform = camera3.mpl3d_camera.proj @ camera3.mpl3d_camera.view @ camera3.mpl3d_camera.trackball.model.T
+
+camera4 = gsp_sc.core.Camera(camera_type="perspective")
+camera4.mpl3d_camera.trackball._model =  np.eye(4)
+camera4.mpl3d_camera.transform = camera4.mpl3d_camera.proj @ camera4.mpl3d_camera.view @ camera4.mpl3d_camera.trackball.model.T
 
 ###############################################################################
 # Render the scene
 #
-camera = gsp_sc.core.Camera(camera_type="perspective")
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-image_png_buffer = matplotlib_renderer.render(canvas, camera, show_image=True)
-
-# Save the rendered image to a file
-image_path = f"{__dirname__}/output/viewport_multiple.png"
-with open(image_path, "wb") as png_file:
-    png_file.write(image_png_buffer)
-print(f"Rendered image saved to {image_path}")
+viewports = [viewport1, viewport2, viewport3, viewport4]
+cameras = [camera1, camera2, camera3, camera4]
+matplotlib_renderer.render_viewports(canvas, viewports=viewports, cameras=cameras, show_image=True)

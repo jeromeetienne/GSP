@@ -1,6 +1,5 @@
 import io
 import os
-from unittest import result
 
 
 import matplotlib.collections
@@ -25,7 +24,7 @@ import matplotlib.collections
 import matplotlib.image
 
 import numpy as np
-import typing
+
 
 class MatplotlibRenderer:
     def __init__(self) -> None:
@@ -38,32 +37,14 @@ class MatplotlibRenderer:
     def render(
         self,
         canvas: Canvas,
+        viewport: Viewport,
         camera: Camera,
         show_image: bool = False,
         return_image: bool = True,
         interactive: bool = False,
     ) -> bytes:
-        result = self.render_viewports(
-            canvas,
-            viewports=canvas.viewports,
-            cameras=[camera for _ in canvas.viewports],
-            show_image=show_image,
-            return_image=return_image,
-            interactive=interactive,
-        )
-        return result
-        
-    def render_viewports(
-        self,
-        canvas: Canvas,
-        viewports: list[Viewport],
-        cameras: list[Camera],
-        show_image: bool = False,
-        return_image: bool = True,
-        interactive: bool = False,
-    ) -> bytes:
 
-        self.__render(canvas, viewports=viewports, cameras=cameras)
+        self.__render(canvas, viewport=viewport, camera=camera)
 
         ################################################################################
 
@@ -83,20 +64,15 @@ class MatplotlibRenderer:
         ):
             figure = matplotlib.pyplot.gcf()
             mpl_axes = figure.get_axes()[0]
-
-            mpl3d_cameras: list[mpl3d.camera.Camera] = [camera.mpl3d_camera for camera in cameras]
+            mpl3d_camera: mpl3d.camera.Camera = camera.mpl3d_camera
 
             # connect the camera events to the render function
             def camera_update(transform) -> None:
-                self.__render(canvas, viewports=viewports, cameras=cameras)
+                self.render(canvas=canvas, viewport=viewport, camera=camera, show_image=False)
 
-            for mpl3d_camera in mpl3d_cameras:
-                mpl3d_camera.connect(mpl_axes, camera_update)
-
+            mpl3d_camera.connect(mpl_axes, camera_update)
             matplotlib.pyplot.show(block=True)
-
-            for mpl3d_camera in mpl3d_cameras:
-                mpl3d_camera.disconnect()
+            mpl3d_camera.disconnect()
 
         image_png_data = b""
 
@@ -122,10 +98,9 @@ class MatplotlibRenderer:
     def __render(
         self,
         canvas: Canvas,
-        viewports: typing.List[Viewport],
-        cameras: typing.List[Camera],
+        viewport: Viewport,
+        camera: Camera,
     ) -> None:
-        # Create the matplotlib figure from the canvas if it does not exist yet
         if canvas.uuid in self._figures:
             figure = self._figures[canvas.uuid]
         else:
@@ -136,56 +111,50 @@ class MatplotlibRenderer:
             )
             self._figures[canvas.uuid] = figure
 
+        # create an axes for each viewport
+        if viewport.uuid in self._axes:
+            axes = self._axes[viewport.uuid]
+        else:
+            print(f"Creating new axes for viewport {viewport.uuid}")
+            axes_rect = (
+                viewport.origin_x / canvas.width,
+                viewport.origin_y / canvas.height,
+                viewport.width / canvas.width,
+                viewport.height / canvas.height,
+            )
+            axes: matplotlib.axes.Axes = figure.add_axes(axes_rect)
+            axes.set_xlim(-1, 1)
+            axes.set_ylim(-1, 1)
+            axes.get_xaxis().set_visible(False)
+            axes.get_yaxis().set_visible(False)
+            self._axes[viewport.uuid] = axes
 
-        # sanity check - viewports and cameras must have the same length
-        assert len(viewports) == len(cameras), "Number of viewports must be equal to number of cameras."
-
-        for viewport, camera in zip(viewports, cameras):
-            # create an axes for each viewport
-            if viewport.uuid in self._axes:
-                axes = self._axes[viewport.uuid]
-            else:
-                print(f"Creating new axes for viewport {viewport.uuid}")
-                axes_rect = (
-                    viewport.origin_x / canvas.width,
-                    viewport.origin_y / canvas.height,
-                    viewport.width / canvas.width,
-                    viewport.height / canvas.height,
+        for visual in viewport.visuals:
+            if isinstance(visual, Pixels):
+                self.__render_pixels(
+                    axes,
+                    visual,
+                    full_uuid=visual.uuid + viewport.uuid,
+                    camera=camera,
                 )
-                axes: matplotlib.axes.Axes = figure.add_axes(axes_rect)
-                axes.set_xlim(-1, 1)
-                axes.set_ylim(-1, 1)
-                axes.get_xaxis().set_visible(False)
-                axes.get_yaxis().set_visible(False)
-                self._axes[viewport.uuid] = axes
-
-            for visual in viewport.visuals:
-                full_uuid = visual.uuid + viewport.uuid
-                if isinstance(visual, Pixels):
-                    self.__render_pixels(
-                        axes,
-                        visual,
-                        full_uuid=full_uuid,
-                        camera=camera,
-                    )
-                elif isinstance(visual, Image):
-                    self.__render_image(
-                        axes,
-                        visual,
-                        full_uuid=full_uuid,
-                        camera=camera,
-                    )
-                elif isinstance(visual, Mesh):
-                    self.__render_mesh(
-                        axes,
-                        visual,
-                        full_uuid=full_uuid,
-                        camera=camera,
-                    )
-                else:
-                    raise NotImplementedError(
-                        f"Rendering for visual type {type(visual)} is not implemented."
-                    )
+            elif isinstance(visual, Image):
+                self.__render_image(
+                    axes,
+                    visual,
+                    full_uuid=visual.uuid + viewport.uuid,
+                    camera=camera,
+                )
+            elif isinstance(visual, Mesh):
+                self.__render_mesh(
+                    axes,
+                    visual,
+                    full_uuid=visual.uuid + viewport.uuid,
+                    camera=camera,
+                )
+            else:
+                raise NotImplementedError(
+                    f"Rendering for visual type {type(visual)} is not implemented."
+                )
 
     def __render_pixels(
         self,
@@ -332,6 +301,6 @@ class MatplotlibRenderer:
 
         polyCollection.set_verts(triangles)
         polyCollection.set_linewidth(linewidths)
-        polyCollection.set_facecolor(facecolors)    # type: ignore
-        polyCollection.set_edgecolor(edgecolors)    # type: ignore
+        polyCollection.set_facecolor(facecolors)
+        polyCollection.set_edgecolor(edgecolors)
         polyCollection.set_antialiased(antialiased)

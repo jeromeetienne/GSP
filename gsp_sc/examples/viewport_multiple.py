@@ -5,6 +5,7 @@ import matplotlib.image
 
 
 import os
+
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -27,7 +28,9 @@ canvas.add(viewport3)
 n_points = 100
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
-pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=(0, 1, 0, 0.5))
+pixels = gsp_sc.visuals.Pixels(
+    positions=positions_np, sizes=sizes_np, colors=(0, 1, 0, 0.5)
+)
 viewport1.add(pixels)
 viewport2.add(pixels)
 
@@ -37,7 +40,9 @@ viewport2.add(pixels)
 image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
 image_data_np = matplotlib.image.imread(image_path)
 image_position = np.array([0, 0, 0])
-image = gsp_sc.visuals.Image(position=image_position, image_extent=(-1, +1, -1, +1), image_data=image_data_np)
+image = gsp_sc.visuals.Image(
+    position=image_position, image_extent=(-1, +1, -1, +1), image_data=image_data_np
+)
 viewport2.add(image)
 
 ###############################################################################
@@ -47,7 +52,7 @@ obj_mesh_path = f"{__dirname__}/data/bunny.obj"
 mesh = gsp_sc.visuals.Mesh.from_obj_file(
     obj_mesh_path,
     cmap=matplotlib.pyplot.get_cmap("magma"),
-    edgecolors=(0, 0, 0, 0.25), # type: ignore
+    edgecolors=(0, 0, 0, 0.25),  # type: ignore
 )
 viewport2.add(mesh)
 viewport3.add(mesh)
@@ -56,8 +61,14 @@ viewport3.add(mesh)
 # Render the scene
 #
 camera = gsp_sc.core.Camera(camera_type="perspective")
+
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-image_png_buffer = matplotlib_renderer.render(canvas, camera, show_image=True)
+image_png_buffer = matplotlib_renderer.render_viewports(
+    canvas,
+    viewports=[viewport1, viewport2, viewport3],
+    cameras=[camera, camera, camera],
+    show_image=True,
+)
 
 # Save the rendered image to a file
 image_path = f"{__dirname__}/output/viewport_multiple.png"
