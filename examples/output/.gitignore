@@ -1,4 +1,3 @@
-# ignore all .png files
-*.png
-*.txt
-*.json
+# ignore ALL file in this directory but .gitignore
+*
+!.gitignore

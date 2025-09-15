@@ -3,87 +3,35 @@
 
 The Graphic Server Protocol (GSP) defines the protocol used between a visualization library or a visualization software a language server that provides graphical features.
 
-# Installation
-## How to install repository for development
+## How to install the project
 
-Create a virtual environment:
+Note that GSP requires Python 3.11 or higher.
 
-```bash
-python3 -m venv gcp_env
-source gcp_env/bin/activate
-```
-
-Then install the packages:
+Potentially create a virtual environment
 
 ```bash
-pip install .
+python -m venv venv
+source venv/bin/activate
 ```
 
-## How to run tests
+To install the project itself, you can use pip:
 
-Install pytest package
 ```bash
-pip install pytest
+pip install -e .
 ```
 
-how to run tests
-```
-cd tests
-pytest
-```
+## How to test the project
 
-how to run tests in verbose mode
-```
-cd tests
-pytest -v
-```
+To test the project, you can use the provided Makefile. Here are the available commands:
 
-## How to launch examples
+- `make test`: Run the tests using pytest.
+- `make test_verbose`: Run the tests with verbose output.
 
-From the root of the repository, navigate to the examples directory:
-```bash
-cd ./examples
-```
+## How to build the documentation
 
-To List all examples
-```
-ls -l *.py
-```
+To build the documentation, you can use the provided Makefile. Here are the available commands:
 
-To launch one example
-```
-python ./points-3d.py
-```
-
-## How to use Makefile
-
-Run the test
-```
-make test
-```
-
-Run the tests in verbose mode
-```
-make test-verbose
-```
-
-## How to generate documentation
-
-Install the mkdocs-material package
-
-```
-pip install mkdocs-material
-pip install "markdown-exec[ansi]"
-```
-
-Generate the documentation in the ```./site``` directory
-```
-mkdocs build  
-```
-
-# Useful Links
-- https://glumpy.github.io/gallery.html
-- https://github.com/vispy/GSP
-- https://datoviz.org/
-  - https://github.com/datoviz/data
-- https://github.com/rougier/numpy-100/
+- `make doc_build`: Build the documentation using MkDocs.
+- `make doc_deploy`: Deploy the documentation to GitHub Pages.
+- `make doc_open`: Open the documentation in the default web browser.
+- `make doc_serve`: Serve the documentation locally.
