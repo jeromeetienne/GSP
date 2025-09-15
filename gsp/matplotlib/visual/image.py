@@ -10,26 +10,24 @@ from gsp.transform import Transform
 from gsp.core import  Buffer, Color, Matrix
 import matplotlib.image as mpl_img
 import gsp.matplotlib.core.viewport as Viewport
+import gsp.matplotlib.core.texture as Texture
 
 # FIXME doesnt handle the generation of commands for visual.Image
 
 class Image(visual.Image):
-    """
-    TODO to write
-    TODO port to matplotlib.core.Texture instead of np.ndarray directly
-    """
+    __doc__ = visual.Image.__doc__
 
     @command("visual.Image")
     def __init__(
         self,
         positions: Transform | Buffer,
-        image_data: np.ndarray,
+        texture_2d: Texture,
         image_extent: tuple = (-1, 1, -1, 1),
     ):
-        super().__init__(positions, image_data, image_extent, __no_command__=True)
+        super().__init__(positions, texture_2d, image_extent, __no_command__=True)
 
         self._positions = positions
-        self._image_data = image_data
+        self._texture_2d = texture_2d
         self._image_extent = image_extent
 
     def render(
@@ -54,20 +52,15 @@ class Image(visual.Image):
         if viewport not in self._viewports:
             axe_image = mpl_img.AxesImage(
                 viewport._axes,
-                # extent=[-1, 1, -1, 1],
-                # origin="upper",
-                # clip_on=True,
-                # interpolation="nearest",
-                # zorder=0,
-                data=self._image_data,
+                data=self._texture_2d.data.reshape(self._texture_2d.shape),
             )
             self._viewports[viewport] = axe_image
             viewport._axes.add_image(axe_image)
 
             # This is necessary for measure transforms that need to be
             # kept up to date with canvas size
-            # canvas = viewport._canvas._figure.canvas
-            # canvas.mpl_connect("resize_event", lambda event: self.render(viewport))
+            canvas = viewport._canvas._figure.canvas
+            canvas.mpl_connect("resize_event", lambda event: self.render(viewport))
 
         # If render has been called without model/view/proj, we don't
         # render Such call is only used to declare that this visual is

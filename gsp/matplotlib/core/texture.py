@@ -4,9 +4,6 @@
 # from __future__ import annotations
 import numpy as np
 from gsp import core
-from gsp.core import Color
-from gsp.transform import Transform
-from .canvas import Canvas
 
 
 class Texture(core.Texture):
@@ -17,7 +14,7 @@ class Texture(core.Texture):
 
         super().__init__(texture_data=texture_data, shape=shape)
 
-        self._texture_data = texture_data
+        self._texture_data = texture_data.flatten().astype(np.uint8)
         self._shape = shape
 
     @property

@@ -1,18 +1,12 @@
 import os
-import matplotlib.pyplot as plt
 import matplotlib.image as mpl_img
 
 import gsp
 from gsp.matplotlib import core, visual, glm
-from gsp.transform import Transform
-from gsp.core import Viewport, Buffer, Color, Matrix
-import matplotlib.pyplot as plt
-import numpy as np
 from common.camera import Camera
 
 # import gsp
 gsp.use("matplotlib")
-
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
 ########################################################################################
@@ -65,13 +59,15 @@ paths_visual.render(viewport)
 # Add an image visual
 #
 
-# Read the image_data numpy array from a file
+# Read the image_data numpy array from a file and create a texture
 image_path = f"{__dirname__}/images/UV_Grid_Sm.jpg"
-image_data_np = mpl_img.imread(image_path)
+image_data = mpl_img.imread(image_path)
+texture = core.Texture(image_data, image_data.shape)
 
+# Create an image visual
 image_visual = visual.Image(
     positions=[[-1, 1, -1]],
-    image_data=image_data_np,
+    texture_2d=texture,
     image_extent=(-1, 1, -1, 1),
 )
 image_visual.render(viewport)
@@ -80,9 +76,7 @@ image_visual.render(viewport)
 # Run the camera
 #
 
-camera_ortho_enabled = False
-camera_mode = "ortho" if camera_ortho_enabled else "perspective"
-camera = Camera(mode=camera_mode)
+camera = Camera("perspective")
 camera.connect(viewport, "motion", paths_visual.render)
 camera.connect(viewport, "motion", image_visual.render)
 camera.run()

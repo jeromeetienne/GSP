@@ -4,30 +4,24 @@
 
 import numpy as np
 from gsp.visual import Visual
-from gsp.core import Buffer, Color
+from gsp.core import Buffer, Color, Texture
 from gsp.transform import Transform
 from gsp.io.command import command
 
 
 class Image(Visual):
-    """
-    TODO to write
-    """
 
     @command("visual.Image")
     def __init__(
-        self, positions: Transform | Buffer, image_data: np.ndarray, image_extent: tuple
+        self, positions: Transform | Buffer, texture_2d: Texture, image_extent: tuple
     ):
-        """
-        TODO to write
-        """
 
         super().__init__()
 
         # These variables are available prior to rendering
         self._in_variables = {
             "positions": positions,
-            "image_data": image_data,
+            "texture_2d": texture_2d,
             "image_extent": image_extent,
             "viewport": None,
         }
