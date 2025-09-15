@@ -1,11 +1,11 @@
 # TODO
-- add more visual
-  - e.g. mesh with hidden face
+- BUG in rendering the multi viewport, i have a single camera
 - add sanity check on the np.ndarray shapes type hinting
   - https://github.com/ramonhagenaars/nptyping/
   - https://github.com/beartype/beartype
 
 ---
+- DONE Add mesh visual with hidden faces
 - DONE issue with serialisation: currently camera is not serialised
   - may require to have my own Camera class ... 
   - not required, i can serialize the parameters (including the matrices)
