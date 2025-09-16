@@ -82,6 +82,6 @@ class JsonRenderer:
 
             scene_dict["canvas"]["viewports"].append(viewport_dict)
 
-        scene_json = json.dumps(scene_dict, indent=4)
+        scene_json = json.dumps(scene_dict)
 
         return scene_json

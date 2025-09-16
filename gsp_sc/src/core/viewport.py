@@ -32,6 +32,7 @@ class Viewport:
             background_color (tuple[float, float, float, float]): The background color of the viewport.
         """
         self.uuid = str(uuid.uuid4())
+        """The unique identifier of the viewport"""
         self.origin_x = origin_x
         """The x position of the viewport in the Canvas"""
         self.origin_y = origin_y

@@ -27,13 +27,19 @@ import matplotlib.image
 import numpy as np
 import typing
 
+
 class MatplotlibRenderer:
     def __init__(self) -> None:
         self._figures: dict[str, matplotlib.figure.Figure] = {}
+        """Mapping from canvas UUID to matplotlib Figure"""
         self._axes: dict[str, matplotlib.axes.Axes] = {}
+        """Mapping from viewport UUID to matplotlib Axes"""
         self._pathCollections: dict[str, matplotlib.collections.PathCollection] = {}
+        """Mapping from visual UUID to matplotlib PathCollection. For Pixels visuals."""
         self._polyCollections: dict[str, matplotlib.collections.PolyCollection] = {}
+        """Mapping from visual UUID to matplotlib PolyCollection. For Mesh visuals."""
         self._axesImages: dict[str, matplotlib.image.AxesImage] = {}
+        """Mapping from visual UUID to matplotlib AxesImage. For Image visuals."""
 
     def render(
         self,
@@ -52,7 +58,7 @@ class MatplotlibRenderer:
             interactive=interactive,
         )
         return result
-        
+
     def render_viewports(
         self,
         canvas: Canvas,
@@ -84,7 +90,9 @@ class MatplotlibRenderer:
             figure = matplotlib.pyplot.gcf()
             mpl_axes = figure.get_axes()[0]
 
-            mpl3d_cameras: list[mpl3d.camera.Camera] = [camera.mpl3d_camera for camera in cameras]
+            mpl3d_cameras: list[mpl3d.camera.Camera] = [
+                camera.mpl3d_camera for camera in cameras
+            ]
 
             # connect the camera events to the render function
             def camera_update(transform) -> None:
@@ -112,7 +120,6 @@ class MatplotlibRenderer:
         # return the PNG image data if requested else return empty bytes
         return image_png_data
 
-
     ###########################################################################
     ###########################################################################
     # .__render() and helpers
@@ -129,23 +136,24 @@ class MatplotlibRenderer:
         if canvas.uuid in self._figures:
             figure = self._figures[canvas.uuid]
         else:
-            print(f"Creating new figure {canvas.uuid}")
+            # print(f"Creating new figure {canvas.uuid}")
             figure = matplotlib.pyplot.figure(frameon=False, dpi=canvas.dpi)
             figure.set_size_inches(
                 canvas.width / canvas.dpi, canvas.height / canvas.dpi
             )
             self._figures[canvas.uuid] = figure
 
-
         # sanity check - viewports and cameras must have the same length
-        assert len(viewports) == len(cameras), "Number of viewports must be equal to number of cameras."
+        assert len(viewports) == len(
+            cameras
+        ), "Number of viewports must be equal to number of cameras."
 
         for viewport, camera in zip(viewports, cameras):
             # create an axes for each viewport
             if viewport.uuid in self._axes:
                 axes = self._axes[viewport.uuid]
             else:
-                print(f"Creating new axes for viewport {viewport.uuid}")
+                # print(f"Creating new axes for viewport {viewport.uuid}")
                 axes_rect = (
                     viewport.origin_x / canvas.width,
                     viewport.origin_y / canvas.height,
@@ -197,7 +205,7 @@ class MatplotlibRenderer:
         if full_uuid in self._pathCollections:
             pathCollection = self._pathCollections[full_uuid]
         else:
-            print(f"Creating new PathCollection for pixels visual {full_uuid}")
+            # print(f"Creating new PathCollection for pixels visual {full_uuid}")
             pathCollection = axes.scatter([], [])
             self._pathCollections[full_uuid] = pathCollection
 
@@ -220,7 +228,7 @@ class MatplotlibRenderer:
         camera: Camera,
     ) -> None:
         if full_uuid not in self._axesImages:
-            print(f"Creating new AxesImage for image visual {full_uuid}")
+            # print(f"Creating new AxesImage for image visual {full_uuid}")
             self._axesImages[full_uuid] = axes.imshow(np.zeros((2, 2, 3)))
 
         axes_image = self._axesImages[full_uuid]
@@ -279,7 +287,7 @@ class MatplotlibRenderer:
         transform = camera.transform
 
         if full_uuid not in self._polyCollections:
-            print(f"Creating new PathCollection for mesh visual {full_uuid}")
+            # print(f"Creating new PathCollection for mesh visual {full_uuid}")
             self._polyCollections[full_uuid] = matplotlib.collections.PolyCollection(
                 [], clip_on=False, snap=False
             )
@@ -332,6 +340,6 @@ class MatplotlibRenderer:
 
         polyCollection.set_verts(triangles)
         polyCollection.set_linewidth(linewidths)
-        polyCollection.set_facecolor(facecolors)    # type: ignore
-        polyCollection.set_edgecolor(edgecolors)    # type: ignore
+        polyCollection.set_facecolor(facecolors)  # type: ignore
+        polyCollection.set_edgecolor(edgecolors)  # type: ignore
         polyCollection.set_antialiased(antialiased)

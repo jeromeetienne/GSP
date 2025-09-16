@@ -6,6 +6,7 @@ class Canvas:
     __slots__ = ("uuid", "width", "height", "dpi", "viewports")
     def __init__(self, width: int, height: int, dpi: float = 100.0) -> None:
         self.uuid = str(uuid.uuid4())
+        """unique identifier of the canvas"""
         self.width = width
         """The width of the canvas in pixels"""
         self.height = height
