@@ -7,7 +7,6 @@ from ..json.renderer import JsonRenderer
 import json
 import requests
 
-
 class NetworkRenderer:
     __slots__ = ("server_url",)
     def __init__(self, server_url: str) -> None:

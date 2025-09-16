@@ -7,9 +7,13 @@ class Canvas:
     def __init__(self, width: int, height: int, dpi: float = 100.0) -> None:
         self.uuid = str(uuid.uuid4())
         self.width = width
+        """The width of the canvas in pixels"""
         self.height = height
+        """The height of the canvas in pixels"""
         self.dpi = dpi
+        """The DPI (dots per inch) of the canvas"""
         self.viewports: list[Viewport] = []
+        """List of viewports associated with this canvas"""
 
     def add(self, viewport: Viewport) -> None:
         """

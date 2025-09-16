@@ -13,6 +13,10 @@ from ...visuals.mesh import Mesh
 
 
 class JsonParser:
+    """
+    A parser to convert a JSON representation of a scene into GSP objects.
+    """
+
     def __init__(self) -> None:
         pass
 

@@ -33,12 +33,18 @@ class Viewport:
         """
         self.uuid = str(uuid.uuid4())
         self.origin_x = origin_x
+        """The x position of the viewport in the Canvas"""
         self.origin_y = origin_y
+        """The y position of the viewport in the Canvas"""
         self.width = width
+        """The width of the viewport in the Canvas"""
         self.height = height
+        """The height of the viewport in the Canvas"""
         self.background_color = background_color
+        """The background color of the viewport"""
 
         self.visuals: list[VisualBase] = []
+        """List of visuals associated with this viewport"""
 
     def add(self, visual: VisualBase) -> None:
         """

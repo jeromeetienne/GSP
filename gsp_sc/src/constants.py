@@ -1,4 +1,7 @@
 class Constants:
+    """
+    A class to hold constant values used throughout the application.
+    """
 
     # Colors
     Black = (0, 0, 0, 1)
