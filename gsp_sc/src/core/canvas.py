@@ -4,15 +4,29 @@ import uuid
 
 class Canvas:
     __slots__ = ("uuid", "width", "height", "dpi", "viewports")
+
     def __init__(self, width: int, height: int, dpi: float = 100.0) -> None:
+        """
+        Initialize a Canvas object.
+
+        Arguments:
+            width (int): The width of the canvas in pixels.
+            height (int): The height of the canvas in pixels.
+            dpi (float, optional): The DPI (dots per inch) of the canvas. Defaults to 100.0.
+        """
+
         self.uuid = str(uuid.uuid4())
         """unique identifier of the canvas"""
+
         self.width = width
         """The width of the canvas in pixels"""
+
         self.height = height
         """The height of the canvas in pixels"""
+
         self.dpi = dpi
         """The DPI (dots per inch) of the canvas"""
+
         self.viewports: list[Viewport] = []
         """List of viewports associated with this canvas"""
 
