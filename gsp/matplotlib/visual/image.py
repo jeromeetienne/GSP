@@ -9,8 +9,8 @@ from gsp.io.command import command
 from gsp.transform import Transform
 from gsp.core import  Buffer, Color, Matrix
 import matplotlib.image as mpl_img
-import gsp.matplotlib.core.viewport as Viewport
-import gsp.matplotlib.core.texture as Texture
+from gsp.matplotlib.core.viewport import Viewport
+from gsp.matplotlib.core.texture import Texture
 
 # FIXME doesnt handle the generation of commands for visual.Image
 
@@ -23,7 +23,16 @@ class Image(visual.Image):
         positions: Transform | Buffer,
         texture_2d: Texture,
         image_extent: tuple = (-1, 1, -1, 1),
-    ):
+    )->None:
+        """
+        Initialize an Image object.
+
+        Parameters:
+            positions (Transform | Buffer): A (N, 3) array of XYZ positions in object space.
+            texture_2d (Texture): A Texture object containing the image to display.
+            image_extent (tuple): A tuple (left, right, bottom, top) defining the extent of the image in object space.
+        """
+
         super().__init__(positions, texture_2d, image_extent, __no_command__=True)
 
         self._positions = positions
