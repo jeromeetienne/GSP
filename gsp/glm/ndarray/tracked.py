@@ -35,6 +35,7 @@ class tracked(np.ndarray):
 
     def __new__(cls, *args, **kwargs):
         obj = np.ndarray.__new__(cls, *args, **kwargs)
+        # obj = np.array(*args, **kwargs)
         # obj = super().__new__(cls, *args, **kwargs)
         # obj = np.ndarray.__new__(cls, *args, **kwargs)
         if cls.__tracker_class__ is not None:
