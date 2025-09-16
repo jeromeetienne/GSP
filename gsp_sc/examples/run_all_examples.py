@@ -1,3 +1,8 @@
+"""
+Run all example scripts in this directory sequentially.
+It helps testing that all examples run without errors.
+"""
+
 from posixpath import basename
 import subprocess
 import sys
@@ -91,9 +96,9 @@ def main()->None:
 
         # display X in red if failed, or a check in green if successful
         if run_success:
-            print("\033[92mOK\033[0m")  # Green check mark
+            print("\033[92mOK\033[0m")  # Green "OK"
         else:
-            print("\033[91mFailed\033[0m")  # Red X mark
+            print("\033[91mFailed\033[0m")  # Red "Failed"
 
         if not run_success:
             sys.exit(1)

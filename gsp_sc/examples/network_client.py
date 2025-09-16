@@ -1,3 +1,10 @@
+"""
+Example of using a network renderer to render a scene.
+
+NOTE: This example requires the network server to be running. You can start the server by running the
+`network_server.py` script in a separate terminal.
+"""
+
 import gsp_sc.src as gsp_sc
 import numpy as np
 import matplotlib.pyplot
@@ -39,7 +46,6 @@ image = gsp_sc.visuals.Image(
     image_data=image_data_np,
 )
 viewport.add(image)
-
 
 ###############################################################################
 # Add a mesh

@@ -1,3 +1,10 @@
+"""
+Server example using Flask to render a scene from JSON input.
+
+- use Flask to create a simple web server
+- render with matplotlib
+"""
+
 from flask import Flask, request, send_file, Response
 import io
 import gsp_sc.src as gsp_sc
@@ -16,13 +23,14 @@ def render_scene_json() -> Response:
     canvas_parsed, camera_parsed = json_parser.parse(scene_json)
 
     ###############################################################################
-    # Render the loaded scene with matplotlib to visually verify it was loaded correctly
+    # Render the loaded scene with matplotlib
     #
     matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
     image_png_data = matplotlib_renderer.render(
         canvas=canvas_parsed, camera=camera_parsed, show_image=False
     )
 
+    # Return the rendered image as a PNG file
     return send_file(
         io.BytesIO(image_png_data),
         mimetype="image/png",
