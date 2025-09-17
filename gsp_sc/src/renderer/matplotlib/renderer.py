@@ -202,6 +202,10 @@ class MatplotlibRenderer:
         full_uuid: str,
         camera: Camera,
     ) -> None:
+        # Notify pre-rendering event
+        # TODO add the renderer object as sender?
+        pixels.pre_rendering.send()
+
         if full_uuid in self._pathCollections:
             pathCollection = self._pathCollections[full_uuid]
         else:
@@ -209,16 +213,23 @@ class MatplotlibRenderer:
             pathCollection = axes.scatter([], [])
             self._pathCollections[full_uuid] = pathCollection
 
-        if camera is not None:
-            transformed_positions: np.ndarray = mpl3d.glm.transform(
-                pixels.positions, camera.transform
-            )
-            pathCollection.set_offsets(transformed_positions)
-        else:
-            pathCollection.set_offsets(pixels.positions)
+        transformed_positions: np.ndarray = mpl3d.glm.transform(
+            pixels.positions, camera.transform
+        )
 
+        # Notify post-transform event
+        pixels.post_transform.send(self, **{
+            "camera": camera,
+            "transformed_positions": transformed_positions,
+        })
+
+        pathCollection.set_offsets(transformed_positions)
         pathCollection.set_sizes(pixels.sizes)
         pathCollection.set_color(pixels.colors)
+        # pathCollection.set_edgecolor([0,0,0,1])
+
+        # Notify post-rendering event
+        pixels.post_rendering.send()
 
     def __render_image(
         self,
@@ -236,46 +247,37 @@ class MatplotlibRenderer:
 
         #
 
-        if camera is not None:
-            # extent_3d = np.array([
-            #     [image.position[0]+image.image_extent[0], image.position[1]+image.image_extent[2], image.position[2]],
-            #     [image.position[0]+image.image_extent[1], image.position[1]+image.image_extent[2], image.position[2]],
-            #     [image.position[0]+image.image_extent[1], image.position[1]+image.image_extent[3], image.position[2]],
-            #     [image.position[0]+image.image_extent[0], image.position[1]+image.image_extent[3], image.position[2]],
-            # ])
+        # extent_3d = np.array([
+        #     [image.position[0]+image.image_extent[0], image.position[1]+image.image_extent[2], image.position[2]],
+        #     [image.position[0]+image.image_extent[1], image.position[1]+image.image_extent[2], image.position[2]],
+        #     [image.position[0]+image.image_extent[1], image.position[1]+image.image_extent[3], image.position[2]],
+        #     [image.position[0]+image.image_extent[0], image.position[1]+image.image_extent[3], image.position[2]],
+        # ])
 
-            # transformed_positions: np.ndarray = mpl3d.glm.transform(
-            #     V=extent_3d, mvp=camera.transform
-            # )
-            # transformed_extent = (
-            #     transformed_positions[0, 0],
-            #     transformed_positions[0, 1],
-            #     transformed_positions[0, 2],
-            #     transformed_positions[0, 3],
-            # )
-            # axes_image.set_extent(transformed_extent)
+        # transformed_positions: np.ndarray = mpl3d.glm.transform(
+        #     V=extent_3d, mvp=camera.transform
+        # )
+        # transformed_extent = (
+        #     transformed_positions[0, 0],
+        #     transformed_positions[0, 1],
+        #     transformed_positions[0, 2],
+        #     transformed_positions[0, 3],
+        # )
+        # axes_image.set_extent(transformed_extent)
 
-            positions = np.array([image.position])
-            transformed_positions: np.ndarray = mpl3d.glm.transform(
-                positions, camera.transform
-            )
-            # FIXME should be divided by W after rotation
-            # but there is nothing to compensate for the camera z
-            transformed_extent = (
-                transformed_positions[0, 0] + image.image_extent[0],
-                transformed_positions[0, 0] + image.image_extent[1],
-                transformed_positions[0, 1] + image.image_extent[2],
-                transformed_positions[0, 1] + image.image_extent[3],
-            )
-            axes_image.set_extent(transformed_extent)
-        else:
-            extent = (
-                image.image_extent[0],
-                image.image_extent[1],
-                image.image_extent[2],
-                image.image_extent[3],
-            )
-            axes_image.set_extent(extent)
+        positions = np.array([image.position])
+        transformed_positions: np.ndarray = mpl3d.glm.transform(
+            positions, camera.transform
+        )
+        # FIXME should be divided by W after rotation
+        # but there is nothing to compensate for the camera z
+        transformed_extent = (
+            transformed_positions[0, 0] + image.image_extent[0],
+            transformed_positions[0, 0] + image.image_extent[1],
+            transformed_positions[0, 1] + image.image_extent[2],
+            transformed_positions[0, 1] + image.image_extent[3],
+        )
+        axes_image.set_extent(transformed_extent)
 
     def __render_mesh(
         self,
