@@ -60,7 +60,8 @@ print(f"Scene exported to JSON and saved to {json_output_path}. length={len(scen
 import json
 scene_json_obj = json.loads(scene_json)
 msgpack_output_path = f"{__dirname__}/output/{os.path.basename(__file__)}_scene.msgpack"
-scene_msgpack = msgpack.packb(scene_json_obj, use_bin_type=True)
+from typing import cast
+scene_msgpack = cast(bytes, msgpack.packb(scene_json_obj, use_bin_type=True)) # type: ignore
 with open(msgpack_output_path, 'wb') as msgpack_file:
     msgpack_file.write(scene_msgpack)
 

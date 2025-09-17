@@ -301,6 +301,6 @@ class MatplotlibRenderer:
 
         polyCollection.set_verts(triangles)
         polyCollection.set_linewidth(linewidths)
-        polyCollection.set_facecolor(facecolors)
-        polyCollection.set_edgecolor(edgecolors)
+        polyCollection.set_facecolor(facecolors)    # type: ignore
+        polyCollection.set_edgecolor(edgecolors)    # type: ignore
         polyCollection.set_antialiased(antialiased)

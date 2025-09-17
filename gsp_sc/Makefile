@@ -6,10 +6,10 @@ help: ## Show this help message
 lint: lint_src lint_examples ## Run pyright type checker on src and examples
 
 lint_src: ## Run pyright type checker on ./src
-	pyright src/**/*.py
+	pyright src/
 
 lint_examples: ## Run pyright type checker on ./examples
-	pyright examples/**/*.py
+	pyright examples/
 
 ##############################################################################
 

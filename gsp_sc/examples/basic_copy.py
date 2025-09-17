@@ -11,13 +11,13 @@ from gsp_sc.src.visuals.pixels import Pixels
 
 # Create a GSP scene
 canvas = Canvas(512, 512, 100)
-viewport = Viewport(0, 0, canvas.width, canvas.height, [1,1,1,1])
+viewport = Viewport(0, 0, canvas.width, canvas.height, (1,1,1,1))
 canvas.add(viewport)
 
 # Add some random points
 n_points = 100
 positions = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float64)
-pixels = Pixels(positions, [0,1,0,1])
+pixels = Pixels(positions, colors=(0,1,0,1))
 viewport.add(pixels)
 
 # Render the scene with matplotlib
