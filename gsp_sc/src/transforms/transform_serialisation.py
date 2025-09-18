@@ -2,6 +2,8 @@ from typing import Any
 import numpy as np
 from .transform_base import TransformBase
 
+from .transform_link_db import TransformLinkDB
+
 from .links import TransformAssertShape
 from .links import TransformImmediate
 from .links import TransformLoad
@@ -31,7 +33,6 @@ class TransformSerialisation:
 
         return json_array
 
-
     @staticmethod
     def from_json(json_array: list[dict[str, Any]]) -> "TransformBase":
         """
@@ -41,31 +42,13 @@ class TransformSerialisation:
         if not json_array:
             raise ValueError("JSON array MUST NOT be empty")
 
-        def get_link_instance(json_dict: dict) -> TransformBase:
-            class_type = json_dict.get("type")
-            if class_type is None:
-                raise ValueError("JSON dictionary MUST contain a 'type' field")
-
-            # FIXME those hardcoded strings are error-prone and should be avoided - have that to be dynamic - similar in transform_helper.py
-            if class_type == "TransformLoad":
-                link_instance = TransformLoad._from_json(json_dict)
-            elif class_type == "TransformMathOp":
-                link_instance = TransformMathOp._from_json(json_dict)
-            elif class_type == "TransformImmediate":
-                link_instance = TransformImmediate._from_json(json_dict)
-            elif class_type == "TransformAssertShape":
-                link_instance = TransformAssertShape._from_json(json_dict)
-            else:
-                raise ValueError(f"Unknown transform type: {class_type}")
-
-            return link_instance
 
         # Create the first transform
-        current_transform = get_link_instance(json_array[0])
+        current_transform = TransformSerialisation.__get_link_instance(json_array[0])
 
         # Create and chain the remaining transforms
         for json_dict in json_array[1:]:
-            next_transform = get_link_instance(json_dict)
+            next_transform = TransformSerialisation.__get_link_instance(json_dict)
             current_transform = current_transform.chain(next_transform)
 
         # Find the first transform in the chain
@@ -74,3 +57,23 @@ class TransformSerialisation:
             first_transform = first_transform.previous_transform
 
         return first_transform
+
+    @staticmethod
+    def __get_link_instance(json_dict: dict[str, Any]) -> TransformBase:
+        """
+        Get an instance of a TransformBase subclass from a JSON dictionary and TransformLinkDB
+        """
+
+        class_type = json_dict.get("type")
+        if class_type is None:
+            raise ValueError("JSON dictionary MUST contain a 'type' field")
+
+        # Get the class from the TransformLinkDB
+        link_class = TransformLinkDB.get_link(class_type)
+        if link_class is None:
+            raise ValueError(f"Unknown transform type: {class_type}")
+
+        # call the static method _from_json of the link_class
+        link_instance = link_class._from_json(json_dict)    # type: ignore    
+
+        return link_instance

@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Literal, Any
 from ..transform_base import TransformBase
+from ..transform_link_db import TransformLinkDB
 
 class TransformMathOp(TransformBase):
     def __init__(self, operation: Literal["add", "sub", "mul", "div"], operand: float)  -> None:
@@ -43,3 +44,6 @@ class TransformMathOp(TransformBase):
         operation = json_dict["operation"]
         operand = json_dict["operand"]
         return TransformMathOp(operation, operand)
+
+# Register the TransformMathOp class in the TransformLinkDB
+TransformLinkDB.add_link("TransformMathOp", TransformMathOp)

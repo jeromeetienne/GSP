@@ -2,6 +2,8 @@ from typing import Any
 import numpy as np
 
 from ..transform_base import TransformBase
+from ..transform_link_db import TransformLinkDB
+
 
 class TransformLoad(TransformBase):
 
@@ -30,3 +32,6 @@ class TransformLoad(TransformBase):
     def _from_json(json_dict: dict[str, Any]) -> TransformBase:
         data_url = json_dict["data_url"]
         return TransformLoad(data_url)
+    
+# Register the TransformLoad class in the TransformLinkDB
+TransformLinkDB.add_link("TransformLoad", TransformLoad)

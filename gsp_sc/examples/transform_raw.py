@@ -26,6 +26,3 @@ myTransform2 = (
 
 np_array2 = myTransform2.run()
 print(f"Loaded array2: {np_array2}")
-
-print(f"Transform1 to JSON: {myTransform1.to_json()}")
-print(f"Transform2 to JSON: {myTransform2.to_json()}")

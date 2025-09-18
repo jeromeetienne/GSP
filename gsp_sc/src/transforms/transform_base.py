@@ -33,34 +33,11 @@ class TransformBase:
 
     ###########################################################################
 
-
-
-    def to_json(self) -> list[dict[str, Any]]:
-        """
-        Convert the transformation chain to a JSON-serializable dictionary.
-        """
-
-        # Find the first transform in the chain
-        first_transform = self
-        while first_transform.previous_transform is not None:
-            first_transform = first_transform.previous_transform
-
-        # Traverse the chain and build the JSON array
-        json_array = []
-        current_transform = first_transform
-        while current_transform is not None:
-            # Convert this transform to JSON
-            json_array.append(current_transform._to_json())
-            # Move to the next transform
-            current_transform = current_transform.next_transform
-
-        return json_array
-
-
     def run(self) -> np.ndarray:
         """
         Run the chain of transformations and return the resulting numpy array.
         """
+
         # Find the first transform in the chain
         first_transform = self
         while first_transform.previous_transform is not None:
