@@ -23,6 +23,7 @@ class VisualBase:
         # - much less code to maintain
         self.pre_rendering = blinker.Signal()
         """Event triggered before rendering the visual."""
+
         self.post_transform = blinker.Signal()
         """
         Event triggered after applying 3d transformations to the visual.
@@ -32,5 +33,6 @@ class VisualBase:
         - camera: The camera used for rendering.
         - transformed_positions: The numpy array of transformed positions (shape: n x 3).
         """
+
         self.post_rendering = blinker.Signal()
         """Event triggered after rendering the visual."""
