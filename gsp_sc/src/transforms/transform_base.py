@@ -25,10 +25,11 @@ class TransformBase:
     def _run(self, np_array: np.ndarray) -> np.ndarray:
         raise NotImplementedError("_run method must be implemented by subclasses")
     
-    def _to_json(self) -> dict:
+    def _to_json(self) -> dict[str, Any]:
         raise NotImplementedError("_to_json method must be implemented by subclasses")
     
-    def _from_json(self, json_dict: dict) -> 'TransformBase':
+    @staticmethod
+    def _from_json( json_dict: dict[str, Any]) -> 'TransformBase':
         raise NotImplementedError("_from_json method must be implemented by subclasses")
 
     ###########################################################################

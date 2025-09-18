@@ -8,11 +8,8 @@ from gsp_sc.src.transforms import TransformSerialisation
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
 # Create a Transform chain
-transform = Transform(np.array([1, 2, 3])).assert_shape((3,)).math_op("mul", 10)
-print(f"np_array: {transform}")
-
-# get the transformation chain
-transform_chain = transform.get_transform_chain()
+transform_chain = Transform(np.array([1, 2, 3])).assert_shape((3,)).math_op("mul", 10).get_transform_chain()
+print(f"transform_chain: {transform_chain}")
 
 # Convert to JSON
 json_array = TransformSerialisation.to_json(transform_chain)
