@@ -64,14 +64,14 @@ class TransformSerialisation:
         Get an instance of a TransformBase subclass from a JSON dictionary and TransformLinkDB
         """
 
-        class_type = json_dict.get("type")
-        if class_type is None:
+        class_name = json_dict.get("type")
+        if class_name is None:
             raise ValueError("JSON dictionary MUST contain a 'type' field")
 
         # Get the class from the TransformLinkDB
-        link_class = TransformLinkDB.get_link(class_type)
+        link_class = TransformLinkDB.get_link(class_name)
         if link_class is None:
-            raise ValueError(f"Unknown transform type: {class_type}")
+            raise ValueError(f"Unknown transform type: {class_name}")
 
         # call the static method _from_json of the link_class
         link_instance = link_class._from_json(json_dict)    # type: ignore    

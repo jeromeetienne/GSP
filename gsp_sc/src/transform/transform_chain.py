@@ -10,13 +10,15 @@ from .transform_link_base import TransformLinkBase
 import numpy as np
 
 class TransformChain:
-    def __init__(self, np_array: np.ndarray | None = None) -> None:
+    def __init__(self, np_array: np.ndarray | list| None = None) -> None:
         """
         Initialize the TransformHelper with an optional initial numpy array.
         """
         self._transform_chain: TransformLinkBase | None = None
 
-        if np_array is not None:
+        if isinstance(np_array, list):
+            self.immediate(np.array(np_array))
+        elif isinstance(np_array, np.ndarray):
             self.immediate(np_array)
 
     def get_transform_chain(self) -> TransformLinkBase:

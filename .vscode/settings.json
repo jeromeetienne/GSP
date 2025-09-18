@@ -2,4 +2,5 @@
         "makefile.configureOnOpen": false,
         "python.analysis.languageServerMode": "full",
         "python.analysis.typeCheckingMode": "basic",
+        "python.formatting.blackArgs": ["--line-length=120"],
 }
