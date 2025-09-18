@@ -1,18 +1,18 @@
 from typing import Any
 import numpy as np
-from .transform_base import TransformBase
+from .transform_link_base import TransformLinkBase
 
 from .transform_link_db import TransformLinkDB
 
-from .links import TransformAssertShape
-from .links import TransformImmediate
-from .links import TransformLoad
-from .links import TransformMathOp
+from .links import TransformLinkAssertShape
+from .links import TransformLinkImmediate
+from .links import TransformLinkLoad
+from .links import TransformLinkMathOp
 
 class TransformSerialisation:
 
     @staticmethod
-    def to_json(transformBase: TransformBase) -> list[dict[str, Any]]:
+    def to_json(transformBase: TransformLinkBase) -> list[dict[str, Any]]:
         """
         Convert the transformation chain to a JSON-serializable array.
         """
@@ -34,7 +34,7 @@ class TransformSerialisation:
         return json_array
 
     @staticmethod
-    def from_json(json_array: list[dict[str, Any]]) -> "TransformBase":
+    def from_json(json_array: list[dict[str, Any]]) -> "TransformLinkBase":
         """
         Convert a JSON-serializable array to a transformation chain.
         """
@@ -59,7 +59,7 @@ class TransformSerialisation:
         return first_transform
 
     @staticmethod
-    def __get_link_instance(json_dict: dict[str, Any]) -> TransformBase:
+    def __get_link_instance(json_dict: dict[str, Any]) -> TransformLinkBase:
         """
         Get an instance of a TransformBase subclass from a JSON dictionary and TransformLinkDB
         """

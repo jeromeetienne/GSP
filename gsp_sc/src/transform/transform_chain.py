@@ -1,25 +1,25 @@
 from typing import Literal
 
 from .links import (
-    TransformLoad,
-    TransformMathOp,
-    TransformImmediate,
-    TransformAssertShape,
+    TransformLinkLoad,
+    TransformLinkMathOp,
+    TransformLinkImmediate,
+    TransformLinkAssertShape,
 )
-from .transform_base import TransformBase
+from .transform_link_base import TransformLinkBase
 import numpy as np
 
-class TransformHelper:
+class TransformChain:
     def __init__(self, np_array: np.ndarray | None = None) -> None:
         """
         Initialize the TransformHelper with an optional initial numpy array.
         """
-        self._transform_chain: TransformBase | None = None
+        self._transform_chain: TransformLinkBase | None = None
 
         if np_array is not None:
             self.immediate(np_array)
 
-    def get_transform_chain(self) -> TransformBase:
+    def get_transform_chain(self) -> TransformLinkBase:
         """
         Get the current transformation chain.
         """
@@ -48,7 +48,7 @@ class TransformHelper:
         # return the re
         return np_array
     
-    def __chain(self, new_transform: TransformBase) -> "TransformHelper":
+    def __chain(self, new_transform: TransformLinkBase) -> "TransformChain":
         """
         Chain a new transformation to the existing transformation chain.
         """
@@ -60,44 +60,42 @@ class TransformHelper:
 
         return self
 
-
-
 	#####################################################################################
     # Transformation methods
     # FIXME those hardcoded strings are error-prone and should be avoided - have that to be dynamic - similar in transform_helper.py
     #
 
-    def assert_shape(self, expected_shape: tuple[int, ...]) -> "TransformHelper":
+    def assert_shape(self, expected_shape: tuple[int, ...]) -> "TransformChain":
         """
         Ensure the input array has the specified shape.
         """
-        new_transform = TransformAssertShape(expected_shape)
+        new_transform = TransformLinkAssertShape(expected_shape)
         
         return self.__chain(new_transform)
 
-    def immediate(self, np_array: np.ndarray) -> "TransformHelper":
+    def immediate(self, np_array: np.ndarray) -> "TransformChain":
         """
         Use the provided numpy array as the initial data.
         """
-        new_transform = TransformImmediate(np_array)
+        new_transform = TransformLinkImmediate(np_array)
 
         return self.__chain(new_transform)
 
-    def load(self, data_url: str) -> "TransformHelper":
+    def load(self, data_url: str) -> "TransformChain":
         """
         Load a numpy array from the specified .npy file URL.
         """
-        new_transform = TransformLoad(data_url)
+        new_transform = TransformLinkLoad(data_url)
         
         return self.__chain(new_transform)
 
     def math_op(
         self, operation: Literal["add", "sub", "mul", "div"], operand: float
-    ) -> "TransformHelper":
+    ) -> "TransformChain":
         """
         Perform a math operation on the data.
         """
-        new_transform = TransformMathOp(operation, operand)
+        new_transform = TransformLinkMathOp(operation, operand)
 
         return self.__chain(new_transform)
 

@@ -1,17 +1,17 @@
 from typing import Any
 import numpy as np
 
-class TransformBase:
+class TransformLinkBase:
     def __init__(self):
         """
         Base class for data transformations.
         Each transformation can be chained to another transformation.
         """
-        self.next_transform: TransformBase | None = None
-        self.previous_transform: TransformBase | None = None
+        self.next_transform: TransformLinkBase | None = None
+        self.previous_transform: TransformLinkBase | None = None
 
 
-    def chain(self, other_transform: 'TransformBase') -> 'TransformBase':
+    def chain(self, other_transform: 'TransformLinkBase') -> 'TransformLinkBase':
         """
         Chain another transformation to this one.
         """
@@ -29,7 +29,7 @@ class TransformBase:
         raise NotImplementedError("_to_json method must be implemented by subclasses")
     
     @staticmethod
-    def _from_json( json_dict: dict[str, Any]) -> 'TransformBase':
+    def _from_json( json_dict: dict[str, Any]) -> 'TransformLinkBase':
         raise NotImplementedError("_from_json method must be implemented by subclasses")
 
     ###########################################################################

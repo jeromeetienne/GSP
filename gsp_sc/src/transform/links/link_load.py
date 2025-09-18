@@ -1,11 +1,11 @@
 from typing import Any
 import numpy as np
 
-from ..transform_base import TransformBase
+from ..transform_link_base import TransformLinkBase
 from ..transform_link_db import TransformLinkDB
 
 
-class TransformLoad(TransformBase):
+class TransformLinkLoad(TransformLinkBase):
 
     def __init__(self, data_url: str):
         """
@@ -29,9 +29,9 @@ class TransformLoad(TransformBase):
         }
     
     @staticmethod
-    def _from_json(json_dict: dict[str, Any]) -> TransformBase:
+    def _from_json(json_dict: dict[str, Any]) -> TransformLinkBase:
         data_url = json_dict["data_url"]
-        return TransformLoad(data_url)
+        return TransformLinkLoad(data_url)
     
 # Register the TransformLoad class in the TransformLinkDB
-TransformLinkDB.add_link("TransformLoad", TransformLoad)
+TransformLinkDB.add_link("TransformLoad", TransformLinkLoad)

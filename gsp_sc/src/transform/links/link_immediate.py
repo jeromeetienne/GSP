@@ -1,11 +1,11 @@
 from typing import Any
 import numpy as np
 
-from ..transform_base import TransformBase
+from ..transform_link_base import TransformLinkBase
 from ..transform_link_db import TransformLinkDB
 
 
-class TransformImmediate(TransformBase):
+class TransformLinkImmediate(TransformLinkBase):
 
     def __init__(self, np_array: np.ndarray) -> None:
         """
@@ -29,9 +29,9 @@ class TransformImmediate(TransformBase):
         }
     
     @staticmethod
-    def _from_json(json_dict: dict[str, Any]) -> TransformBase:
+    def _from_json(json_dict: dict[str, Any]) -> TransformLinkBase:
         np_array = np.array(json_dict["np_array"])
-        return TransformImmediate(np_array)
+        return TransformLinkImmediate(np_array)
     
 # Register the TransformImmediate class in the TransformLinkDB
-TransformLinkDB.add_link("TransformImmediate", TransformImmediate)
+TransformLinkDB.add_link("TransformImmediate", TransformLinkImmediate)

@@ -1,10 +1,10 @@
 from typing import Any
 import numpy as np
 
-from ..transform_base import TransformBase
+from ..transform_link_base import TransformLinkBase
 from ..transform_link_db import TransformLinkDB
 
-class TransformAssertShape(TransformBase):
+class TransformLinkAssertShape(TransformLinkBase):
 
     def __init__(self, expected_shape: tuple[int, ...]):
         """
@@ -29,9 +29,9 @@ class TransformAssertShape(TransformBase):
         }
     
     @staticmethod
-    def _from_json(json_dict: dict[str, Any]) -> TransformBase:
+    def _from_json(json_dict: dict[str, Any]) -> TransformLinkBase:
         expected_shape = tuple(json_dict["expected_shape"])
-        return TransformAssertShape(expected_shape)
+        return TransformLinkAssertShape(expected_shape)
 
 # Register the TransformAssertShape class in the TransformLinkDB
-TransformLinkDB.add_link("TransformAssertShape", TransformAssertShape)
+TransformLinkDB.add_link("TransformAssertShape", TransformLinkAssertShape)
