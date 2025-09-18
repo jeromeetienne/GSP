@@ -7,8 +7,6 @@ from gsp_sc.src.transforms import TransformLoad, TransformMathOp, TransformImmed
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 url_npy = f"{__dirname__}/data/sample.npy"
 
-###############################################################################
-
 myTransform1 = (
     TransformLoad(data_url=url_npy)
     .chain(TransformMathOp("add", 5))
@@ -28,3 +26,6 @@ myTransform2 = (
 
 np_array2 = myTransform2.run()
 print(f"Loaded array2: {np_array2}")
+
+print(f"Transform1 to JSON: {myTransform1.to_json()}")
+print(f"Transform2 to JSON: {myTransform2.to_json()}")

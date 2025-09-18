@@ -9,10 +9,11 @@ from .links import (
 from .transform_base import TransformBase
 import numpy as np
 
-
-
 class TransformHelper:
     def __init__(self, np_array: np.ndarray | None = None) -> None:
+        """
+        Initialize the TransformHelper with an optional initial numpy array.
+        """
         self._transform_chain: TransformBase | None = None
 
         if np_array is not None:
@@ -52,16 +53,25 @@ class TransformHelper:
     #
 
     def assert_shape(self, expected_shape: tuple[int, ...]) -> "TransformHelper":
+        """
+        Ensure the input array has the specified shape.
+        """
         new_transform = TransformAssertShape(expected_shape)
         
         return self.__chain(new_transform)
 
     def immediate(self, np_array: np.ndarray) -> "TransformHelper":
+        """
+        Use the provided numpy array as the initial data.
+        """
         new_transform = TransformImmediate(np_array)
 
         return self.__chain(new_transform)
 
     def load(self, data_url: str) -> "TransformHelper":
+        """
+        Load a numpy array from the specified .npy file URL.
+        """
         new_transform = TransformLoad(data_url)
         
         return self.__chain(new_transform)
@@ -69,6 +79,9 @@ class TransformHelper:
     def math_op(
         self, operation: Literal["add", "sub", "mul", "div"], operand: float
     ) -> "TransformHelper":
+        """
+        Perform a math operation on the data.
+        """
         new_transform = TransformMathOp(operation, operand)
 
         return self.__chain(new_transform)

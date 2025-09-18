@@ -18,3 +18,9 @@ class TransformLoad(TransformBase):
         np_array = np.load(self.__data_url)
         
         return np_array 
+    
+    def _to_json(self) -> dict:
+        return {
+            "type": "TransformLoad",
+            "data_url": self.__data_url
+        }

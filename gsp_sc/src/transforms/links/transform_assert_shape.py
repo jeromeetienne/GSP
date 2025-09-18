@@ -19,3 +19,9 @@ class TransformAssertShape(TransformBase):
             raise ValueError(f"Input array shape {np_array.shape} does not match the expected shape {self.__expected_shape}")
         
         return np_array 
+    
+    def _to_json(self) -> dict:
+        return {
+            "type": "TransformAssertShape",
+            "expected_shape": self.__expected_shape
+        }

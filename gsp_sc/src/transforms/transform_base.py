@@ -1,3 +1,5 @@
+import array
+import json
 import numpy as np
 
 # TODO
@@ -6,32 +8,76 @@ import numpy as np
 #   - add, sub, mul, div
 
 class TransformBase:
-    """
-    Base class for data transformations.
-    Each transformation can be chained to another transformation.
-    """
     def __init__(self):
+        """
+        Base class for data transformations.
+        Each transformation can be chained to another transformation.
+        """
         self.next_transform: TransformBase | None = None
         self.previous_transform: TransformBase | None = None
 
 
     def chain(self, other_transform: 'TransformBase') -> 'TransformBase':
+        """
+        Chain another transformation to this one.
+        """
         other_transform.previous_transform = self
         self.next_transform = other_transform
 
         return self.next_transform
     
+    ###########################################################################
+
     def _run(self, np_array: np.ndarray) -> np.ndarray:
         raise NotImplementedError("_run method must be implemented by subclasses")
+    
+    def _to_json(self) -> dict:
+        raise NotImplementedError("_to_json method must be implemented by subclasses")
+    
+    def _from_json(self, json_dict: dict) -> 'TransformBase':
+        raise NotImplementedError("_from_json method must be implemented by subclasses")
+
+    ###########################################################################
+
+    def from_json(self, json_dict: list[dict]) -> 'TransformBase':
+        """
+        Convert a JSON-serializable array to a transformation chain.
+        """
+        raise NotImplementedError("NOT YET IMPLEMENTED")
+
+    def to_json(self) -> list[dict]:
+        """
+        Convert the transformation chain to a JSON-serializable dictionary.
+        """
+
+        # Find the first transform in the chain
+        first_transform = self
+        while first_transform.previous_transform is not None:
+            first_transform = first_transform.previous_transform
+
+        # Traverse the chain and build the JSON array
+        json_array = []
+        current_transform = first_transform
+        while current_transform is not None:
+            # Convert this transform to JSON
+            json_array.append(current_transform._to_json())
+            # Move to the next transform
+            current_transform = current_transform.next_transform
+
+        return json_array
+
 
     def run(self) -> np.ndarray:
+        """
+        Run the chain of transformations and return the resulting numpy array.
+        """
         # Find the first transform in the chain
         first_transform = self
         while first_transform.previous_transform is not None:
             first_transform = first_transform.previous_transform
 
         # Run the chain of transforms
-        np_array = np.empty((0,))  # Start with an empty array
+        np_array = np.array([])  # Start with an empty array
         current_transform = first_transform
         while current_transform is not None:
             # Run this transform

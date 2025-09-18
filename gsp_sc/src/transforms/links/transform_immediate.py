@@ -17,3 +17,9 @@ class TransformImmediate(TransformBase):
         # Do nothing and just return the data
 
         return self.__np_array
+
+    def _to_json(self) -> dict:
+        return {
+            "type": "TransformImmediate",
+            "np_array": self.__np_array.tolist()
+        }

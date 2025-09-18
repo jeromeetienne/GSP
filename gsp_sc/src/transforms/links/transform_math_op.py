@@ -8,7 +8,9 @@ class TransformMathOp(TransformBase):
         Perform a math operation on the data.
         Supported operations: add, sub, mul, div
         """
+
         super().__init__()
+
         self.__operation = operation
         """The math operation to perform: add, sub, mul, div"""
 
@@ -28,3 +30,10 @@ class TransformMathOp(TransformBase):
             raise ValueError(f"Unsupported operation: {self.__operation}")
 
         return result
+    
+    def _to_json(self) -> dict:
+        return {
+            "type": "TransformMathOp",
+            "operation": self.__operation,
+            "operand": self.__operand
+        }
