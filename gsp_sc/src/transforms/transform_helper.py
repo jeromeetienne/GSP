@@ -19,6 +19,20 @@ class TransformHelper:
         if np_array is not None:
             self.immediate(np_array)
 
+    def get_transform_chain(self) -> TransformBase:
+        """
+        Get the current transformation chain.
+        """
+        if self._transform_chain is None:
+            raise ValueError("No transformation chain defined.")
+        return self._transform_chain
+    
+    def has_transform_chain(self) -> bool:
+        """
+        Check if a transformation chain is defined.
+        """
+        return self._transform_chain is not None
+
     def run(self) -> np.ndarray:
         """
         Run the transformation chain and return the resulting numpy array.
@@ -50,6 +64,7 @@ class TransformHelper:
 
 	#####################################################################################
     # Transformation methods
+    # FIXME those hardcoded strings are error-prone and should be avoided - have that to be dynamic - similar in transform_helper.py
     #
 
     def assert_shape(self, expected_shape: tuple[int, ...]) -> "TransformHelper":

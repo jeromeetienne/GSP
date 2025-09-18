@@ -1,3 +1,4 @@
+from typing import Any
 import numpy as np
 
 from ..transform_base import TransformBase
@@ -20,8 +21,13 @@ class TransformAssertShape(TransformBase):
         
         return np_array 
     
-    def _to_json(self) -> dict:
+    def _to_json(self) -> dict[str, Any]:
         return {
             "type": "TransformAssertShape",
             "expected_shape": self.__expected_shape
         }
+    
+    @staticmethod
+    def _from_json(json_dict: dict[str, Any]) -> TransformBase:
+        expected_shape = tuple(json_dict["expected_shape"])
+        return TransformAssertShape(expected_shape)

@@ -1,11 +1,5 @@
-import array
-import json
+from typing import Any
 import numpy as np
-
-# TODO
-# - TransformLoad load a .npy file
-# - TransformMathOp do math operation 
-#   - add, sub, mul, div
 
 class TransformBase:
     def __init__(self):
@@ -39,13 +33,9 @@ class TransformBase:
 
     ###########################################################################
 
-    def from_json(self, json_dict: list[dict]) -> 'TransformBase':
-        """
-        Convert a JSON-serializable array to a transformation chain.
-        """
-        raise NotImplementedError("NOT YET IMPLEMENTED")
 
-    def to_json(self) -> list[dict]:
+
+    def to_json(self) -> list[dict[str, Any]]:
         """
         Convert the transformation chain to a JSON-serializable dictionary.
         """

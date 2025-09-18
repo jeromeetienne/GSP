@@ -1,3 +1,4 @@
+from typing import Any
 import numpy as np
 
 from ..transform_base import TransformBase
@@ -19,8 +20,13 @@ class TransformLoad(TransformBase):
         
         return np_array 
     
-    def _to_json(self) -> dict:
+    def _to_json(self) -> dict[str, Any]:
         return {
             "type": "TransformLoad",
             "data_url": self.__data_url
         }
+    
+    @staticmethod
+    def _from_json(json_dict: dict[str, Any]) -> TransformBase:
+        data_url = json_dict["data_url"]
+        return TransformLoad(data_url)

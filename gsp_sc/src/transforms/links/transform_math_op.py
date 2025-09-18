@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Literal
+from typing import Literal, Any
 from ..transform_base import TransformBase
 
 class TransformMathOp(TransformBase):
@@ -31,9 +31,15 @@ class TransformMathOp(TransformBase):
 
         return result
     
-    def _to_json(self) -> dict:
+    def _to_json(self) -> dict[str, Any]:
         return {
             "type": "TransformMathOp",
             "operation": self.__operation,
             "operand": self.__operand
         }
+    
+    @staticmethod
+    def _from_json(json_dict: dict[str, Any]) -> TransformBase:
+        operation = json_dict["operation"]
+        operand = json_dict["operand"]
+        return TransformMathOp(operation, operand)
