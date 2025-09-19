@@ -1,7 +1,9 @@
 import os
-import gsp
 import argparse
 import sys
+
+import gsp
+import gsp_matplotlib
 
 from .camera import Camera
 from gsp.visual.visual import Visual
@@ -29,8 +31,8 @@ class _ExampleLauncher:
             gsp_core = gsp.core
             gsp_visual = gsp.visual
         elif args.command == "matplotlib_image" or args.command == "matplotlib_camera":
-            gsp_core = gsp.matplotlib.core
-            gsp_visual = gsp.matplotlib.visual
+            gsp_core = gsp_matplotlib.core
+            gsp_visual = gsp_matplotlib.visual
         else:
             raise ValueError(f"Unknown command: {args.command}")
 
