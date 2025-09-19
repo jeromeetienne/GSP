@@ -13,7 +13,7 @@ __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
 # Create a Transform chain
 transform_chain = (
-    TransformChain(np.array([1, 2, 3]))
+    TransformChain([1, 2, 3])
     .assert_shape((3,))
     .math_op("mul", 10)
     .get_transform_chain()
