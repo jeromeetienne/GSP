@@ -171,4 +171,9 @@ pixels = visual.Pixels(positions=point_positions, colors=point_colors)
 # Connect the camera to the viewport
 camera = Camera("perspective", theta=-30, phi=0, scale=5.0)
 camera.connect(viewport, "motion", pixels.render)
+
+import os
+__dirname__ = os.path.dirname(os.path.abspath(__file__))
+image_path = os.path.join(__dirname__, "output/lidar-point-cloud.png")
+camera.save(image_path)
 camera.run()
