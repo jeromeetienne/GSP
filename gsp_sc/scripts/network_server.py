@@ -30,7 +30,9 @@ def render_scene_json() -> Response:
         canvas=canvas_parsed, camera=camera_parsed, show_image=False
     )
 
+    ###############################################################################
     # Return the rendered image as a PNG file
+    #
     return send_file(
         io.BytesIO(image_png_data),
         mimetype="image/png",
