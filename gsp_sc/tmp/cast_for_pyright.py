@@ -1,4 +1,6 @@
-def fun()->int:
+from typing import Any
+
+def fun()->Any:
     return 1
 
 import typing
