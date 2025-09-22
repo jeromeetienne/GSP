@@ -67,13 +67,18 @@ def verify_file_content(expected_path: str, output_path: str) -> bool:
     file_ext = os.path.splitext(expected_path)[1].lower()
     if file_ext in [".png", ".jpg", ".jpeg"]:
         # Compare images files
-        # TODO dont do it byte by byte, but use an image library to compare
 
+        # Read images as np.ndarray using skimage 
         expected_image: np.ndarray = skimage.io.imread(expected_path)
         output_image: np.ndarray = skimage.io.imread(output_path)
-        score, diff = skimage.metrics.structural_similarity(expected_image, output_image, multichannel=True)
-        min_threshold = 0.99
-        content_match = score >= min_threshold
+
+        # structural similarity index to compare images perceptually - score between -1.0 and 1.0
+        score:float = skimage.metrics.structural_similarity(expected_image, output_image, channel_axis=-1) # type: ignore
+
+        # tolerance threshold - 1.0 is exact match
+        # Make this number less than 1.0 to allow for minor differences due to compression, etc.
+        tolerance_threshold = 0.99
+        content_match = score >= tolerance_threshold
     elif file_ext in [".json"]:
         # Compare json files
         expected_json = json.loads(expected_content)
