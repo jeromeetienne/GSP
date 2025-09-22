@@ -5,6 +5,8 @@ import uuid
 import mpl3d.camera
 
 class Camera:
+    __slots__ = ["uuid", "camera_type", "__mpl3d_camera"]
+    
     def __init__(self, camera_type: Literal["ortho", "perspective"]):
         self.uuid = str(uuid.uuid4())
         """The unique identifier of the camera."""
