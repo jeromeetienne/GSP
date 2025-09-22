@@ -48,7 +48,7 @@ class JsonParser:
                     pixels = Pixels(
                         positions=np.array(visual_info["positions"]),
                         sizes=np.array(visual_info["sizes"]),
-                        colors=visual_info["colors"],
+                        colors=np.array(visual_info["colors"]),
                     )
                     # restore the original uuid
                     pixels.uuid = visual_info["uuid"]

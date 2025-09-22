@@ -48,7 +48,7 @@ class JsonRenderer:
                         "uuid": pixels.uuid,
                         "positions": pixels.positions.tolist(),
                         "sizes": pixels.sizes.tolist(),
-                        "colors": pixels.colors,
+                        "colors": pixels.colors.tolist(),
                     }
                 elif isinstance(visual, Image):
                     image: Image = visual

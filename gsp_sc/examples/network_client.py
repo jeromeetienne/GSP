@@ -5,12 +5,14 @@ NOTE: This example requires the network server to be running. You can start the 
 `network_server.py` script in a separate terminal.
 """
 
+from matplotlib import colors
 import gsp_sc.src as gsp_sc
 import numpy as np
 import matplotlib.pyplot
 import matplotlib.image
 
 import os
+
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
 ###############################################################################
@@ -30,9 +32,8 @@ canvas.add(viewport=viewport)
 n_points = 1000
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
-pixels = gsp_sc.visuals.Pixels(
-    positions=positions_np, sizes=sizes_np, colors=gsp_sc.Constants.Green
-)
+colors_np = np.array([gsp_sc.Constants.Green])
+pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=colors_np)
 viewport.add(pixels)
 
 ###############################################################################
@@ -54,7 +55,7 @@ obj_mesh_path = f"{__dirname__}/data/bunny.obj"
 mesh = gsp_sc.visuals.Mesh.from_obj_file(
     obj_mesh_path,
     cmap=matplotlib.pyplot.get_cmap("magma"),
-    edgecolors=(0, 0, 0, 0.25), # type: ignore
+    edgecolors=(0, 0, 0, 0.25),  # type: ignore
 )
 viewport.add(mesh)
 
