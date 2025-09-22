@@ -18,7 +18,6 @@ import mpl3d.camera
 # local imports
 from ...core.canvas import Canvas
 from ...core.viewport import Viewport
-from ...core.visual_base import VisualBase
 from ...core.camera import Camera
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
@@ -186,10 +185,6 @@ class MatplotlibRenderer:
         full_uuid: str,
         camera: Camera,
     ) -> None:
-        # Notify pre-rendering event
-        # TODO add the renderer object as sender?
-        pixels.pre_rendering.send()
-
         if full_uuid in self._pathCollections:
             pathCollection = self._pathCollections[full_uuid]
         else:
@@ -206,22 +201,10 @@ class MatplotlibRenderer:
 
         transformed_positions: np.ndarray = mpl3d.glm.transform(pixel_positions, camera.transform)
 
-        # Notify post-transform event
-        pixels.post_transform.send(
-            self,
-            **{
-                "camera": camera,
-                "transformed_positions": transformed_positions,
-            },
-        )
-
         pathCollection.set_offsets(transformed_positions)
         pathCollection.set_sizes(pixels.sizes)
         pathCollection.set_color(pixels.colors.tolist())
         # pathCollection.set_edgecolor([0,0,0,1])
-
-        # Notify post-rendering event
-        pixels.post_rendering.send()
 
     def __render_image(
         self,
