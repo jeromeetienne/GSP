@@ -1,6 +1,11 @@
 # TODO
 - split matplotlib renderer in multiple files
   - one per visual type
+- make all visual accept TransformChain
+  - early support in Pixels
+  - generalize it to all parameters and all visuals
+- TODO remove the signals stuff... this is not matching the requirements
+  - use TransformChain instead
 - BUG in rendering the multi viewport, i have a single camera
 - add sanity check on the np.ndarray shapes type hinting
   - https://github.com/ramonhagenaars/nptyping/

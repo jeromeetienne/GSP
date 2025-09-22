@@ -46,3 +46,8 @@ classifiers = [
 Repository = "https://github.com/vispy/gsp.git"
 Bug-Tracker = "https://github.com/vispy/gsp/issues"
 Changelog = "https://github.com/me/spam/blob/master/CHANGELOG"
+
+
+# Configuration for the Black code formatter 
+[tool.black]
+line-length = 160   # to match the 79 character limit of PEP 8, but allow some extra space for longer lines

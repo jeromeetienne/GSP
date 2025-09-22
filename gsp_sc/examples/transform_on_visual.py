@@ -30,12 +30,12 @@ from gsp_sc.src.transform import TransformChain
 
 n_points = 300
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float64)
-
-position_chain = TransformChain(positions_np)
+# Use TransformChain to scale and translate positions
+position_chain = TransformChain(positions_np).math_op('mul', 1/3) .math_op('add', 0.2)
 
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
 colors_np = np.array([gsp_sc.Constants.Green])
-pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=colors_np)
+pixels = gsp_sc.visuals.Pixels(positions=position_chain, sizes=sizes_np, colors=colors_np)
 viewport.add(pixels)
 
 

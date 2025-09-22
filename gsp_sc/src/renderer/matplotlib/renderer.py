@@ -1,31 +1,29 @@
+# stdlib imports
 import io
 import os
-from unittest import result
+import numpy as np
+import typing
 
-
+# pip imports
 import matplotlib.collections
 import matplotlib.colors
-
-import mpl3d.glm
-import mpl3d.camera
-
-from ...core.canvas import Canvas
-from ...core.viewport import Viewport
-from ...core.visual_base import VisualBase
-from ...core.camera import Camera
-
-from ...visuals.pixels import Pixels
-from ...visuals.image import Image
-from ...visuals.mesh import Mesh
-
 import matplotlib.pyplot
 import matplotlib.axes
 import matplotlib.figure
 import matplotlib.collections
 import matplotlib.image
+import mpl3d.glm
+import mpl3d.camera
 
-import numpy as np
-import typing
+# local imports
+from ...core.canvas import Canvas
+from ...core.viewport import Viewport
+from ...core.visual_base import VisualBase
+from ...core.camera import Camera
+from ...visuals.pixels import Pixels
+from ...visuals.image import Image
+from ...visuals.mesh import Mesh
+from ...transform import TransformChain
 
 
 class MatplotlibRenderer:
@@ -76,23 +74,15 @@ class MatplotlibRenderer:
         # honor show_image option
         if show_image:
             # enter the matplotlib main loop IIF env.var GSP_SC_INTERACTIVE is not set to "False"
-            if (
-                "GSP_SC_INTERACTIVE" not in os.environ
-                or os.environ["GSP_SC_INTERACTIVE"] != "False"
-            ):
+            if "GSP_SC_INTERACTIVE" not in os.environ or os.environ["GSP_SC_INTERACTIVE"] != "False":
                 matplotlib.pyplot.show(block=True)
 
         # Handle interactive camera IIF env.var GSP_SC_INTERACTIVE is not set to "False"
-        if interactive and (
-            "GSP_SC_INTERACTIVE" not in os.environ
-            or os.environ["GSP_SC_INTERACTIVE"] != "False"
-        ):
+        if interactive and ("GSP_SC_INTERACTIVE" not in os.environ or os.environ["GSP_SC_INTERACTIVE"] != "False"):
             figure = matplotlib.pyplot.gcf()
             mpl_axes = figure.get_axes()[0]
 
-            mpl3d_cameras: list[mpl3d.camera.Camera] = [
-                camera.mpl3d_camera for camera in cameras
-            ]
+            mpl3d_cameras: list[mpl3d.camera.Camera] = [camera.mpl3d_camera for camera in cameras]
 
             # connect the camera events to the render function
             def camera_update(transform) -> None:
@@ -138,15 +128,11 @@ class MatplotlibRenderer:
         else:
             # print(f"Creating new figure {canvas.uuid}")
             figure = matplotlib.pyplot.figure(frameon=False, dpi=canvas.dpi)
-            figure.set_size_inches(
-                canvas.width / canvas.dpi, canvas.height / canvas.dpi
-            )
+            figure.set_size_inches(canvas.width / canvas.dpi, canvas.height / canvas.dpi)
             self._figures[canvas.uuid] = figure
 
         # sanity check - viewports and cameras must have the same length
-        assert len(viewports) == len(
-            cameras
-        ), "Number of viewports must be equal to number of cameras."
+        assert len(viewports) == len(cameras), "Number of viewports must be equal to number of cameras."
 
         for viewport, camera in zip(viewports, cameras):
             # create an axes for each viewport
@@ -191,9 +177,7 @@ class MatplotlibRenderer:
                         camera=camera,
                     )
                 else:
-                    raise NotImplementedError(
-                        f"Rendering for visual type {type(visual)} is not implemented."
-                    )
+                    raise NotImplementedError(f"Rendering for visual type {type(visual)} is not implemented.")
 
     def __render_pixels(
         self,
@@ -213,15 +197,23 @@ class MatplotlibRenderer:
             pathCollection = axes.scatter([], [])
             self._pathCollections[full_uuid] = pathCollection
 
-        transformed_positions: np.ndarray = mpl3d.glm.transform(
-            pixels.positions, camera.transform
-        )
+        # compute positions
+        pixel_positions = pixels.positions
+        if type(pixel_positions) is TransformChain:
+            pixel_positions = pixel_positions.run()
+        else:
+            pixel_positions = typing.cast(np.ndarray, pixel_positions)
+
+        transformed_positions: np.ndarray = mpl3d.glm.transform(pixel_positions, camera.transform)
 
         # Notify post-transform event
-        pixels.post_transform.send(self, **{
-            "camera": camera,
-            "transformed_positions": transformed_positions,
-        })
+        pixels.post_transform.send(
+            self,
+            **{
+                "camera": camera,
+                "transformed_positions": transformed_positions,
+            },
+        )
 
         pathCollection.set_offsets(transformed_positions)
         pathCollection.set_sizes(pixels.sizes)
@@ -266,9 +258,7 @@ class MatplotlibRenderer:
         # axes_image.set_extent(transformed_extent)
 
         positions = np.array([image.position])
-        transformed_positions: np.ndarray = mpl3d.glm.transform(
-            positions, camera.transform
-        )
+        transformed_positions: np.ndarray = mpl3d.glm.transform(positions, camera.transform)
         # FIXME should be divided by W after rotation
         # but there is nothing to compensate for the camera z
         transformed_extent = (
@@ -290,9 +280,7 @@ class MatplotlibRenderer:
 
         if full_uuid not in self._polyCollections:
             # print(f"Creating new PathCollection for mesh visual {full_uuid}")
-            self._polyCollections[full_uuid] = matplotlib.collections.PolyCollection(
-                [], clip_on=False, snap=False
-            )
+            self._polyCollections[full_uuid] = matplotlib.collections.PolyCollection([], clip_on=False, snap=False)
             axes.add_collection(self._polyCollections[full_uuid], autolim=False)
 
         polyCollection = self._polyCollections[full_uuid]
