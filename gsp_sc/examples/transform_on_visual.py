@@ -2,9 +2,15 @@
 Basic example of creating and rendering a simple GSP scene with matplotlib.
 """
 
-import numpy as np
+# stdlib imports
 import os
+
+# pip imports
+import numpy as np
+
+# local imports
 import gsp_sc.src as gsp_sc
+from gsp_sc.src.transform import TransformChain
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
@@ -25,26 +31,34 @@ canvas.add(viewport=viewport)
 # Add some random points
 #
 
-from gsp_sc.src.transform import TransformChain
-
-
 n_points = 300
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float64)
 # Use TransformChain to scale and translate positions
-position_chain = TransformChain(positions_np).math_op('mul', 1/3) .math_op('add', 0.2)
+position_chain = TransformChain(positions_np).math_op('mul', 1/3) .math_op('add', 0.2).complete()
 
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
 colors_np = np.array([gsp_sc.Constants.Green])
 pixels = gsp_sc.visuals.Pixels(positions=position_chain, sizes=sizes_np, colors=colors_np)
 viewport.add(pixels)
 
+###############################################################################
+# Export the scene to JSON
+
+camera = gsp_sc.core.Camera("perspective")
+json_renderer = gsp_sc.renderer.json.JsonRenderer()
+scene_json = json_renderer.render(canvas, camera)
+print(f"scene_json: {scene_json}")
+
+###############################################################################
+
+json_parser = gsp_sc.renderer.json.JsonParser()
+canvas_parsed, camera_parsed = json_parser.parse(scene_json)
 
 ###############################################################################
 # Render the scene with matplotlib
 #
-camera = gsp_sc.core.Camera(camera_type="perspective")
 renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-image_png_buffer = renderer.render(canvas, camera, interactive=True)
+image_png_buffer = renderer.render(canvas_parsed, camera_parsed, interactive=True)
 
 # Save the rendered image to a file
 image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}.png"

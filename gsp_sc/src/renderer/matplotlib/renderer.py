@@ -23,8 +23,7 @@ from ...core.camera import Camera
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...visuals.mesh import Mesh
-from ...transform import TransformChain
-
+from ...transform import TransformOrNdarray
 
 class MatplotlibRenderer:
     def __init__(self) -> None:
@@ -187,9 +186,8 @@ class MatplotlibRenderer:
         camera: Camera,
     ) -> None:
         # Notify pre-rendering event
-        # TODO add the renderer object as sender?
-        pixels.pre_rendering.send()
-        
+        pixels.pre_rendering.send(self)
+
         if full_uuid in self._pathCollections:
             pathCollection = self._pathCollections[full_uuid]
         else:
@@ -198,13 +196,10 @@ class MatplotlibRenderer:
             self._pathCollections[full_uuid] = pathCollection
 
         # compute positions
-        pixel_positions = pixels.positions
-        if type(pixel_positions) is TransformChain:
-            pixel_positions = pixel_positions.run()
-        else:
-            pixel_positions = typing.cast(np.ndarray, pixel_positions)
+        pixels_positions = TransformOrNdarray.to_ndarray(pixels.positions)
 
-        transformed_positions: np.ndarray = mpl3d.glm.transform(pixel_positions, camera.transform)
+        # apply camera transform to positions
+        transformed_positions: np.ndarray = mpl3d.glm.transform(pixels_positions, camera.transform)
 
         # Notify post-transform event
         pixels.post_transform.send(
@@ -214,7 +209,6 @@ class MatplotlibRenderer:
                 "transformed_positions": transformed_positions,
             },
         )
-
 
         pathCollection.set_offsets(transformed_positions)
         pathCollection.set_sizes(pixels.sizes)

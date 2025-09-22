@@ -1,5 +1,12 @@
+# stdlib imports
 from typing import Literal
+import typing
+from typing_extensions import deprecated
 
+# pip imports
+import numpy as np
+
+# local imports
 from .links import (
     TransformLinkLoad,
     TransformLinkMathOp,
@@ -7,13 +14,18 @@ from .links import (
     TransformLinkAssertShape,
 )
 from .transform_link_base import TransformLinkBase
-import numpy as np
 
 class TransformChain:
+    """
+    Helper class to build and manage a chain of transformations on numpy arrays.
+
+    Only sugar to make it easier for the user to build a chain of transformations. MUST NOT be used in the library
+    """
     def __init__(self, np_array: np.ndarray | list| None = None) -> None:
         """
         Initialize the TransformHelper with an optional initial numpy array.
         """
+        # TODO rename to _transform_link_head
         self._transform_chain: TransformLinkBase | None = None
 
         if isinstance(np_array, list):
@@ -21,7 +33,7 @@ class TransformChain:
         elif isinstance(np_array, np.ndarray):
             self.immediate(np_array)
 
-    def get_transform_chain(self) -> TransformLinkBase:
+    def get_link_head(self) -> TransformLinkBase:
         """
         Get the current transformation chain.
         """
@@ -29,10 +41,36 @@ class TransformChain:
             raise ValueError("No transformation chain defined.")
         return self._transform_chain
     
+    def complete(self) -> TransformLinkBase:
+        """
+        Complete the transformation chain and return the head link.
+        """
+        if self._transform_chain is None:
+            raise ValueError("No transformation chain defined.")
+        return self._transform_chain
+
+    def is_empty(self) -> bool:
+        """
+        Check if a transformation chain is defined.
+        """
+        return self._transform_chain is None
+
+    @deprecated("Use get_link_head() instead")
+    def get_transform_chain(self) -> TransformLinkBase:
+        """
+        Get the current transformation chain.
+        """
+        # TODO remove that duplicate of get_link_head()
+        if self._transform_chain is None:
+            raise ValueError("No transformation chain defined.")
+        return self._transform_chain
+    
+    @deprecated("Use is_empty() instead")
     def has_transform_chain(self) -> bool:
         """
         Check if a transformation chain is defined.
         """
+        # TODO remove that duplicate of is_empty()
         return self._transform_chain is not None
 
     def run(self) -> np.ndarray:
@@ -50,15 +88,15 @@ class TransformChain:
         # return the re
         return np_array
     
-    def __chain(self, new_transform: TransformLinkBase) -> "TransformChain":
+    def __chain(self, new_link: TransformLinkBase) -> "TransformChain":
         """
         Chain a new transformation to the existing transformation chain.
         """
 
         if self._transform_chain is None:
-            self._transform_chain = new_transform
+            self._transform_chain = new_link
         else:
-            self._transform_chain = self._transform_chain.chain(new_transform)
+            self._transform_chain = self._transform_chain.chain(new_link)
 
         return self
 

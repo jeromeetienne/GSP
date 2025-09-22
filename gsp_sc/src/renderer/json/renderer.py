@@ -1,12 +1,17 @@
+# stdlib imports
+import typing
 import json
 
-from ...core.canvas import Canvas
-from ...core.viewport import Viewport
-from ...core.camera import Camera
+# pip imports
+import numpy as np
 
+# local imports
+from ...core.canvas import Canvas
+from ...core.camera import Camera
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...visuals.mesh import Mesh
+from ...transform import TransformOrNdarray
 
 
 class JsonRenderer:
@@ -46,7 +51,7 @@ class JsonRenderer:
                     visual_dict = {
                         "type": "Pixels",
                         "uuid": pixels.uuid,
-                        "positions": pixels.positions.tolist(),
+                        "positions": TransformOrNdarray.to_json(pixels.positions),
                         "sizes": pixels.sizes.tolist(),
                         "colors": pixels.colors.tolist(),
                     }
@@ -74,14 +79,12 @@ class JsonRenderer:
                         "mode": mesh.mode,
                     }
                 else:
-                    raise NotImplementedError(
-                        f"Rendering for visual type {type(visual)} is not implemented."
-                    )
+                    raise NotImplementedError(f"Rendering for visual type {type(visual)} is not implemented.")
 
                 viewport_dict["visuals"].append(visual_dict)
 
             scene_dict["canvas"]["viewports"].append(viewport_dict)
 
-        scene_json = json.dumps(scene_dict)
+        scene_json = json.dumps(scene_dict, indent=4)
 
         return scene_json

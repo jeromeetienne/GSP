@@ -2,14 +2,14 @@ import numpy as np
 import nptyping
 
 from ..core.visual_base import VisualBase
-from ..transform import TransformChain
+from ..transform import TransformLinkBase
 
 class Pixels(VisualBase):
     __slots__ = ("positions", "sizes", "colors")
 
     def __init__(
         self,
-        positions: nptyping.NDArray[nptyping.Shape["*, 3"], nptyping.Float] | TransformChain,
+        positions: nptyping.NDArray[nptyping.Shape["*, 3"], nptyping.Float] | TransformLinkBase,
         sizes: nptyping.NDArray[nptyping.Shape["*"], nptyping.Float] = np.array([5.0]),
         colors: nptyping.NDArray[nptyping.Shape["*, 4"], nptyping.Float] = np.array([[0.0, 0.0, 1.0, 1.0]]),
     ) -> None:

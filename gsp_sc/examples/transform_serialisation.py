@@ -12,12 +12,7 @@ __dirname__ = os.path.dirname(os.path.abspath(__file__))
 #
 
 # Create a Transform chain
-transform_chain = (
-    TransformChain([1, 2, 3])
-    .assert_shape((3,))
-    .math_op("mul", 10)
-    .get_transform_chain()
-)
+transform_chain = TransformChain([1, 2, 3]).assert_shape((3,)).math_op("mul", 10).complete()
 print(f"transform_chain: {transform_chain}")
 
 # Convert to JSON
@@ -43,6 +38,4 @@ print(f"np_array_deserialized: {np_array}")
 # Validate the result
 #
 
-assert np.array_equal(
-    np_array, np.array([10, 20, 30])
-), "Deserialized transform did not produce the expected result"
+assert np.array_equal(np_array, np.array([10, 20, 30])), "Deserialized transform did not produce the expected result"

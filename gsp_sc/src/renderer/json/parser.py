@@ -1,15 +1,18 @@
-import numpy as np
+# stdlib imports
 import json
 
+# pip imports
+import numpy as np
 import matplotlib.pyplot
 
+# local imports
 from ...core.canvas import Canvas
 from ...core.viewport import Viewport
 from ...core.camera import Camera
-
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...visuals.mesh import Mesh
+from ...transform import TransformOrNdarray
 
 
 class JsonParser:
@@ -42,11 +45,11 @@ class JsonParser:
             # restore the original uuid
             viewport.uuid = viewport_info["uuid"]
             canvas.add(viewport)
-
+ 
             for visual_info in viewport_info["visuals"]:
                 if visual_info["type"] == "Pixels":
                     pixels = Pixels(
-                        positions=np.array(visual_info["positions"]),
+                        positions=TransformOrNdarray.from_json(visual_info["positions"]),
                         sizes=np.array(visual_info["sizes"]),
                         colors=np.array(visual_info["colors"]),
                     )

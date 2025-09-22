@@ -4,8 +4,6 @@ import blinker
 class VisualBase:
     __slots__ = ("uuid","pre_rendering","post_transform","post_rendering")
 
-
-
     def __init__(self) -> None:
         self.uuid = str(uuid.uuid4())
         """
