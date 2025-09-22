@@ -61,7 +61,7 @@ import json
 scene_json_obj = json.loads(scene_json)
 msgpack_output_path = f"{__dirname__}/output/{os.path.basename(__file__)}_scene.msgpack"
 from typing import cast
-scene_msgpack = cast(bytes, msgpack.packb(scene_json_obj, use_bin_type=True)) # type: ignore
+scene_msgpack = cast(bytes, msgpack.packb(scene_json_obj, use_bin_type=True))
 with open(msgpack_output_path, 'wb') as msgpack_file:
     msgpack_file.write(scene_msgpack)
 

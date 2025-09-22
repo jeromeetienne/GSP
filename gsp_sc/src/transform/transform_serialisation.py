@@ -74,6 +74,6 @@ class TransformSerialisation:
             raise ValueError(f"Unknown transform type: {class_name}")
 
         # call the static method _from_json of the link_class
-        link_instance = link_class._from_json(json_dict)    # type: ignore    
+        link_instance = link_class._from_json(json_dict)
 
         return link_instance
