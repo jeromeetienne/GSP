@@ -31,7 +31,7 @@ positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float64)
 sizes_np = np.ones((n_points,)).astype(np.float32)
 colors_np = np.random.uniform(0, 1, (n_points, 4)).astype(np.float32)
 colors_np[:, 3] = 1.0
-pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=colors_np)
+pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=colors_np) # type: ignore
 viewport.add(pixels)
 
 
@@ -51,7 +51,8 @@ def on_post_transform(
 
     # apply same sorting to pixels.positions and pixels.colors
     pixels.positions[:] = pixels.positions[indices]
-    pixels.colors[:] = pixels.colors[indices]
+    # TODO convert that into np_array 
+    pixels.colors[:] = pixels.colors[indices]   # type: ignore
 
     # Normalize z values to range 0-1
     z_coordinates = transformed_positions[:, 2] + camera.mpl3d_camera.zoom
