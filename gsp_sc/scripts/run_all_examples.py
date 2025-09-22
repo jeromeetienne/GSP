@@ -78,13 +78,10 @@ def main()->None:
     if not server_process:
         sys.exit(1)
 
-    script_paths = [
-        f"{__dirname__}/basic.py",
-        f"{__dirname__}/viewport_multiple.py",
-        f"{__dirname__}/serialisation_json_cycle.py",
-        f"{__dirname__}/serialisation_json_file.py",
-        f"{__dirname__}/network_client.py",
-    ]
+    # get script paths in the examples folder
+    examples_folder = f"{__dirname__}/../examples"
+    basenames = [basename for basename in os.listdir(examples_folder) if os.path.isfile(os.path.join(examples_folder, basename))]
+    script_paths = [os.path.abspath(os.path.join(examples_folder, basename)) for basename in basenames if basename.endswith(".py")]
 
     for script_path in script_paths:
         # display the basename of the script without new line, and flush the output
