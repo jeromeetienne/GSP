@@ -1,4 +1,6 @@
 # TODO
+- split matplotlib renderer in multiple files
+  - one per visual type
 - BUG in rendering the multi viewport, i have a single camera
 - add sanity check on the np.ndarray shapes type hinting
   - https://github.com/ramonhagenaars/nptyping/
