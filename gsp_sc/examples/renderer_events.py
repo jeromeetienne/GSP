@@ -50,8 +50,10 @@ def on_post_transform(
     indices = np.argsort(-transformed_positions[:, 2])
     transformed_positions[:] = transformed_positions[indices]
 
-    # NOTE: Trick to force the static typing of pixels.positions to np.ndarray (and never TransformChain)
+    # NOTE: Trick to force the static typing of pixels.positions/sizes/colors to np.ndarray (and never TransformChain)
     pixels.positions = typing.cast(np.ndarray, pixels.positions)
+    pixels.sizes = typing.cast(np.ndarray, pixels.sizes)
+    pixels.colors = typing.cast(np.ndarray, pixels.colors)
 
     # apply same sorting to pixels.positions and pixels.colors
     pixels.positions[:] = pixels.positions[indices]
