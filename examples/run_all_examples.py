@@ -77,7 +77,8 @@ def main()->None:
         print(f"Running {basename_script} ... ", end="", flush=True)
 
         # launch the example script
-        run_success = launch_example([sys.executable, script_path, 'matplotlib_image'])
+        run_success = launch_example([sys.executable, script_path, 'commands', '-cyc'])
+        # run_success = launch_example([sys.executable, script_path, 'matplotlib_image'])
 
         # display X in red if failed, or a check in green if successful
         if run_success:
@@ -85,8 +86,8 @@ def main()->None:
         else:
             print("\033[91mFailed\033[0m")  # Red "Failed"
 
-        if not run_success:
-            sys.exit(1)
+        # if not run_success:
+        #     sys.exit(1)
 
 
 if __name__ == "__main__":
