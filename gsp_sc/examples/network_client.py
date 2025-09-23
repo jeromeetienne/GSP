@@ -67,7 +67,7 @@ matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 image_png_data = matplotlib_renderer.render(canvas, camera)
 
 # Save the image to a file
-local_image_path = f"{__dirname__}/output/network_client_rendered_image.png"
+local_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_local_image.png"
 with open(local_image_path, "wb") as file_writer:
     file_writer.write(image_png_data)
 print(f"Image saved to {local_image_path}")
@@ -84,7 +84,7 @@ image_png_data = network_renderer.render(canvas, camera)
 ###############################################################################
 # Save the image to a file
 #
-server_image_path = f"{__dirname__}/output/network_server_rendered_image.png"
+server_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_server_image.png"
 with open(server_image_path, "wb") as file_writer:
     file_writer.write(image_png_data)
 print(f"Image saved to {server_image_path}")
