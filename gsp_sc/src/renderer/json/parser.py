@@ -14,7 +14,6 @@ from ...visuals.image import Image
 from ...visuals.mesh import Mesh
 from ...transform import TransformOrNdarray
 
-
 class JsonParser:
     """
     A parser to convert a JSON representation of a scene into GSP objects.
@@ -28,11 +27,11 @@ class JsonParser:
 
         camera_info = scene_dict["camera"]
         camera = Camera(camera_info["type"])
-        camera.uuid = camera_info["uuid"]   # restore the original uuid
+        camera.uuid = camera_info["uuid"]  # restore the original uuid
 
         canvas_info = scene_dict["canvas"]
         canvas = Canvas(canvas_info["width"], canvas_info["height"], canvas_info["dpi"])
-        canvas.uuid = canvas_info["uuid"]   # restore the original uuid
+        canvas.uuid = canvas_info["uuid"]  # restore the original uuid
 
         for viewport_info in canvas_info["viewports"]:
             viewport = Viewport(
@@ -45,7 +44,7 @@ class JsonParser:
             # restore the original uuid
             viewport.uuid = viewport_info["uuid"]
             canvas.add(viewport)
- 
+
             for visual_info in viewport_info["visuals"]:
                 if visual_info["type"] == "Pixels":
                     pixels = Pixels(
@@ -58,9 +57,7 @@ class JsonParser:
                     visual = pixels
                 elif visual_info["type"] == "Image":
                     image_data_shape = tuple(visual_info["image_data_shape"])
-                    image_data = np.array(visual_info["image_data"]).reshape(
-                        image_data_shape
-                    )
+                    image_data = np.array(visual_info["image_data"]).reshape(image_data_shape)
                     image = Image(
                         position=np.array(visual_info["position"]),
                         image_extent=visual_info["bounds"],
@@ -84,9 +81,7 @@ class JsonParser:
                     mesh.uuid = visual_info["uuid"]
                     visual = mesh
                 else:
-                    raise NotImplementedError(
-                        f"Parsing for visual type {visual_info['type']} is not implemented."
-                    )
+                    raise NotImplementedError(f"Parsing for visual type {visual_info['type']} is not implemented.")
 
                 viewport.add(visual)
 

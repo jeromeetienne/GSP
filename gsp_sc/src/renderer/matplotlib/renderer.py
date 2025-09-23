@@ -107,7 +107,7 @@ class MatplotlibRenderer:
 
     ###########################################################################
     ###########################################################################
-    # .__render() and helpers
+    # .__render() 
     ###########################################################################
     ###########################################################################
 
@@ -151,8 +151,8 @@ class MatplotlibRenderer:
             for visual in viewport.visuals:
                 full_uuid = visual.uuid + viewport.uuid
                 if isinstance(visual, Pixels):
-                    from .renderer_pixels import RendererPixels
-                    RendererPixels.render(
+                    from .renderer_pixels import MatplotlibRendererPixels
+                    MatplotlibRendererPixels.render(
                         self,
                         axes,
                         visual,
@@ -160,8 +160,8 @@ class MatplotlibRenderer:
                         camera=camera,
                     )
                 elif isinstance(visual, Image):
-                    from .renderer_image import RendererImage
-                    RendererImage.render(
+                    from .renderer_image import MatplotlibRendererImage
+                    MatplotlibRendererImage.render(
                         self,
                         axes,
                         visual,
@@ -169,8 +169,8 @@ class MatplotlibRenderer:
                         camera=camera,
                     )
                 elif isinstance(visual, Mesh):
-                    from .renderer_mesh import RendererMesh
-                    RendererMesh.render(
+                    from .renderer_mesh import MatplotlibRendererMesh
+                    MatplotlibRendererMesh.render(
                         self,
                         axes,
                         visual,

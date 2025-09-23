@@ -18,6 +18,8 @@ class TransformLinkLoad(TransformLinkBase):
         """The URL of the file to load"""
 
     def _run(self, np_array: np.ndarray) -> np.ndarray:
+        # TODO would be nice to cache it :)
+        # - else it will be downloaded at each rendering :)
         np_array = np.load(self.__data_url)
         
         return np_array 

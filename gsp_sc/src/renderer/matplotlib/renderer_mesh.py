@@ -13,7 +13,7 @@ from ...core.camera import Camera
 from ...visuals.mesh import Mesh
 from .renderer import MatplotlibRenderer
 
-class RendererMesh:
+class MatplotlibRendererMesh:
     @staticmethod
     def render(
         renderer: 'MatplotlibRenderer',

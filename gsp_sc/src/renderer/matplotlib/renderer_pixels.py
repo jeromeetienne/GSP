@@ -11,7 +11,7 @@ from ...visuals.pixels import Pixels
 from ...transform import TransformOrNdarray
 from .renderer import MatplotlibRenderer
 
-class RendererPixels:
+class MatplotlibRendererPixels:
     @staticmethod
     def render(
         renderer: 'MatplotlibRenderer',

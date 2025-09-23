@@ -10,10 +10,11 @@ from ...core.camera import Camera
 from ...visuals.image import Image
 from .renderer import MatplotlibRenderer
 
-class RendererImage:
+
+class MatplotlibRendererImage:
     @staticmethod
     def render(
-        renderer: 'MatplotlibRenderer',
+        renderer: "MatplotlibRenderer",
         axes: matplotlib.axes.Axes,
         image: Image,
         full_uuid: str,
