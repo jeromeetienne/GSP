@@ -61,26 +61,25 @@ def use(backend):
     """
 
     import inspect
-    from . import glm
+    from gsp_matplotlib import glm
     import numpy as np
 
     if backend == "matplotlib":
-        from . import transform
-        from . matplotlib import core
-        from . matplotlib import visual
+        from gsp import transform
+        from gsp_matplotlib import core
+        from gsp_matplotlib import visual
         import matplotlib.pyplot as plt
         inspect.stack()[1][0].f_globals["plt"] = plt
 
     else:
-        from . import core
-        from . import transform
+        from gsp import core
+        from gsp import transform
 
     inspect.stack()[1][0].f_globals["np"] = np
     inspect.stack()[1][0].f_globals["glm"] = glm
     inspect.stack()[1][0].f_globals["core"] = core
     inspect.stack()[1][0].f_globals["transform"] = transform
     inspect.stack()[1][0].f_globals["visual"] = visual
-
 
 def save(filename, format=None):
     """
