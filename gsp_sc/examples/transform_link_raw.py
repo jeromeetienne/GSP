@@ -1,6 +1,5 @@
-import gsp_sc.src as gsp_sc
-import numpy as np
 import os
+import numpy as np
 from gsp_sc.src.transform import TransformLinkLoad, TransformLinkMathOp, TransformLinkImmediate
 
 

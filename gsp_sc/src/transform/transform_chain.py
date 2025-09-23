@@ -19,7 +19,9 @@ class TransformChain:
     """
     Helper class to build and manage a chain of transformations on numpy arrays.
 
-    Only sugar to make it easier for the user to build a chain of transformations. MUST NOT be used in the library
+    Only eye-candy to make it easier for the user to build a chain of transformations.
+    
+    MUST NOT be used in the library
     """
     def __init__(self, np_array: np.ndarray | list| None = None) -> None:
         """
