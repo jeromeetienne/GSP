@@ -1,4 +1,9 @@
 # TODO
+- BUG the server rendered image still got some borders
+  - while when rendering locally it is ok...
+- the image is blank when interactive mode is on
+  - because plt.savefig is not called ?
+  - need to call it in the interactive loop ?
 - make all visual accept TransformChain
   - DONE for pixels on matplotlib+json renderer
   - generalize it to all parameters and all visuals

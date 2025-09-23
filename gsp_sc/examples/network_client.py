@@ -14,6 +14,9 @@ import matplotlib.image
 import os
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
+# Set random seed for reproducibility
+gsp_sc.core.Random.set_random_seed(10)
+np.random.seed(10)
 
 ###############################################################################
 # Create a GSP scene

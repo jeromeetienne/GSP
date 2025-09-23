@@ -1,6 +1,5 @@
 from .viewport import Viewport
-
-import uuid
+from .random import Random
 
 class Canvas:
     __slots__ = ("uuid", "width", "height", "dpi", "viewports")
@@ -15,7 +14,7 @@ class Canvas:
             dpi (float, optional): The DPI (dots per inch) of the canvas. Defaults to 100.0.
         """
 
-        self.uuid = str(uuid.uuid4())
+        self.uuid = Random.random_uuid()
         """unique identifier of the canvas"""
 
         self.width = width

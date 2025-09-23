@@ -7,6 +7,9 @@ import gsp_sc.src as gsp_sc
 
 # Setup __dirname__
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
+# Set random seed for reproducibility
+gsp_sc.core.Random.set_random_seed(10)
+np.random.seed(10)
 
 ###############################################################################
 # Create a GSP scene
@@ -59,7 +62,7 @@ viewport.add(mesh)
 #
 camera = gsp_sc.core.Camera(camera_type="perspective")
 renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-image_png_buffer = renderer.render(canvas, camera, interactive=True)
+image_png_buffer = renderer.render(canvas, camera, interactive=False, show_image=True)
 
 # Save the rendered image to a file
 image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}.png"

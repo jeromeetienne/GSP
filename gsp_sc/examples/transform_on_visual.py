@@ -15,6 +15,9 @@ import gsp_sc.src as gsp_sc
 from gsp_sc.src.transform import TransformChain
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
+# Set random seed for reproducibility
+gsp_sc.core.Random.set_random_seed(10)
+np.random.seed(10)
 
 ###############################################################################
 # Create a GSP scene
@@ -74,7 +77,7 @@ json_renderer = gsp_sc.renderer.json.JsonRenderer()
 scene_json = json_renderer.render(canvas, camera)
 
 # save to file as json
-json_output_path = f"{__dirname__}/output/{os.path.basename(__file__)}_scene.json"
+json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_scene.json"
 with open(json_output_path, 'w') as msgpack_file:
     msgpack_file.write(scene_json)
 

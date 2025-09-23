@@ -1,8 +1,9 @@
 import numpy as np
-import random
 
 
 class Random:
+    __np_random_generator = np.random.default_rng()
+
     @staticmethod
     def set_random_seed(seed: int):
         """Set the random seed for numpy for reproducibility.
@@ -10,11 +11,16 @@ class Random:
         Args:
             seed (int): The seed value to set.
         """
-        # Set the random seed for the built-in random module for reproducibility
-        random.seed(10)
-        
-        # Set the random seed for numpy for reproducibility
-        np.random.seed(seed)
+        Random.__np_random_generator = np.random.default_rng(seed)
+
+    @staticmethod
+    def random() -> float:
+        """Generate a random float between 0 and 1.
+
+        Returns:
+            float: A random float between 0 and 1.
+        """
+        return Random.__np_random_generator.random()
 
     @staticmethod
     def random_uuid() -> str:
@@ -23,8 +29,9 @@ class Random:
         Returns:
             str: A randomly generated UUID string.
         """
+
         # Generate 16 random bytes
-        bytes = [random.randint(0, 255) for _ in range(16)]
+        bytes = [Random.__np_random_generator.integers(0, 255) for _ in range(16)]
         # Set version to 4 (random)
         bytes[6] = (bytes[6] & 0x0F) | 0x40
         # Set variant to RFC 4122

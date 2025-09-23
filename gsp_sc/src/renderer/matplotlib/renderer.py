@@ -66,6 +66,17 @@ class MatplotlibRenderer:
 
         ################################################################################
 
+        image_png_data = b""
+
+        # honor return_image option
+        if return_image:
+            # Render the image to a PNG buffer
+            image_png_buffer = io.BytesIO()
+            matplotlib.pyplot.savefig(image_png_buffer, format="png")
+            image_png_buffer.seek(0)
+            image_png_data = image_png_buffer.getvalue()
+            image_png_buffer.close()
+
         # honor show_image option
         if show_image:
             # enter the matplotlib main loop IIF env.var GSP_SC_INTERACTIVE is not set to "False"
@@ -91,16 +102,6 @@ class MatplotlibRenderer:
             for mpl3d_camera in mpl3d_cameras:
                 mpl3d_camera.disconnect()
 
-        image_png_data = b""
-
-        # honor return_image option
-        if return_image:
-            # Render the image to a PNG buffer
-            image_png_buffer = io.BytesIO()
-            matplotlib.pyplot.savefig(image_png_buffer, format="png")
-            image_png_buffer.seek(0)
-            image_png_data = image_png_buffer.getvalue()
-            image_png_buffer.close()
 
         # return the PNG image data if requested else return empty bytes
         return image_png_data
@@ -146,6 +147,12 @@ class MatplotlibRenderer:
                 axes.set_ylim(-1, 1)
                 axes.get_xaxis().set_visible(False)
                 axes.get_yaxis().set_visible(False)
+                # Remove the borders
+                axes.spines['top'].set_visible(False)
+                axes.spines['right'].set_visible(False)
+                axes.spines['bottom'].set_visible(False)
+                axes.spines['left'].set_visible(False)
+                # cache the axes
                 self._axes[viewport.uuid] = axes
 
             for visual in viewport.visuals:
