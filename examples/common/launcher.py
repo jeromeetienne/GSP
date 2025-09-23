@@ -93,10 +93,11 @@ class _ExampleLauncher:
                     gsp.log.info("%s" % command)
 
                 # KEY: REQUIRED FOR THE GLOBALS - Super dirty!!!
-                gsp.use("matplotlib")
+                # gsp.use("matplotlib")
 
                 # TODO send matplotlib as namespace in command_queue.run
-                command_queue.run(globals(), locals())
+                # command_queue.run(command_namespaces, globals(), locals())
+                command_queue.run('gsp_matplotlib', None, { "gsp_matplotlib": gsp_matplotlib })
 
                 import matplotlib.pyplot as plt
 

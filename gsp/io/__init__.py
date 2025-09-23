@@ -6,7 +6,7 @@ from . mkdocs import mkdocs
 from . command import queue, record, command
 from . convert import convert, register, unregister, converters
 from . command import CID, Command, CommandQueue
-
+from . import json
 
 # class save:
 #     """

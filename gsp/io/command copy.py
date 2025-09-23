@@ -69,6 +69,114 @@ class NamedSingleton(type):
         return cls._instances[name]
 
 
+class CommandQueue(metaclass = NamedSingleton):
+    """
+    A command queue allows to store a list of Command that can be
+    ran later.
+    """
+
+    name = "default"
+    readonly = False
+    commands: list[Command] = None
+    active = None
+
+    def __init__(self, name : str = "active"):
+        """
+        Parameters
+        ----------
+        name:
+            Name of the queue. The default queue is the "active" one,
+            that is, the latest created one.
+        """
+
+        self.commands = []
+        self.name = name
+        self.readonly = False
+        CommandQueue.active = self
+
+
+    def __str__(self):
+
+        s = f'CommandQueue("{self.name}", '
+        if CommandQueue.active == self:
+            s += f"active, "
+        else:
+            s += f"not active, "
+        if self.readonly:
+            s += f'read-only) : {len(self)} command(s)\n'
+        else:
+            s += f'read-write) : {len(self)} command(s)\n'
+        for command in self.commands:
+            s +=   "  - " + str(command) + "\n"
+        return s
+
+    def empty (self):
+        """ Empty the queue """
+
+        self.commands = []
+        return self
+
+
+    def __len__(self):
+        """ Length of command queue. """
+
+        return len(self.commands)
+
+
+    def __getitem__(self, index):
+        """ Get command at provided index. """
+
+        return self.commands[index]
+
+
+    def run(self,  globals=None, locals=None):
+        """
+        Execute all commands in the queue, with the provided
+        globals and locals dictionary that must contain claases and
+        methids from all the commands.
+
+        Parameters
+        ----------
+
+        globals : dict
+
+            Dictionary containing the current scope's global variables
+
+        locals : dict
+
+            Dictionary containing the current scope's local variables
+        """
+
+        readonly = self.readonly
+        self.readonly = True
+        for command in self.commands:
+            command.execute(globals, locals)
+        self.readonly = readonly
+
+
+    def push(self, command):
+        """
+        Push a new command onto the queue unless it is in
+        read-only mode.
+
+        Parameters
+        ----------
+
+        command : Command
+
+            Command to be appended to the queue
+
+        Returns
+        -------
+
+        True if the command has been pushed to the queue, False else.
+        """
+
+        if not self.readonly:
+            self.commands.append(command)
+            return True
+        return False
+
 
 def get_default_args(func):
     """Retrieve default arguments and their values from a function. """
@@ -298,7 +406,7 @@ class Command:
                       % (key, type(value).__name__))
 
 
-    def execute(self, command_namespace:str, globals=None, locals=None):
+    def execute(self, globals=None, locals=None):
         """ Execute the command. """
 
         parameters = self.parameters.copy()
@@ -335,8 +443,7 @@ class Command:
             Object.objects[oid] = object
             return object
         elif self.methodname == "__init__":
-            source = f"{command_namespace}{self.classname}"
-            func = eval(source, globals, locals)
+            func = eval(self.classname, globals, locals)
             object = func(**parameters)
             object.id = oid
             Object.objects[oid] = object
@@ -345,112 +452,3 @@ class Command:
             name = self.methodname
             func = getattr(Object.objects[oid].__class__, name)
             return func(Object.objects[oid], **parameters)
-
-
-class CommandQueue(metaclass = NamedSingleton):
-    """
-    A command queue allows to store a list of Command that can be
-    ran later.
-    """
-
-    name = "default"
-    readonly = False
-    commands: list[Command] = None
-    active = None
-
-    def __init__(self, name : str = "active"):
-        """
-        Parameters
-        ----------
-        name:
-            Name of the queue. The default queue is the "active" one,
-            that is, the latest created one.
-        """
-
-        self.commands: list[Command] = []
-        self.name = name
-        self.readonly = False
-        CommandQueue.active = self
-
-
-    def __str__(self):
-
-        s = f'CommandQueue("{self.name}", '
-        if CommandQueue.active == self:
-            s += f"active, "
-        else:
-            s += f"not active, "
-        if self.readonly:
-            s += f'read-only) : {len(self)} command(s)\n'
-        else:
-            s += f'read-write) : {len(self)} command(s)\n'
-        for command in self.commands:
-            s +=   "  - " + str(command) + "\n"
-        return s
-
-    def empty (self):
-        """ Empty the queue """
-
-        self.commands = []
-        return self
-
-
-    def __len__(self):
-        """ Length of command queue. """
-
-        return len(self.commands)
-
-
-    def __getitem__(self, index):
-        """ Get command at provided index. """
-
-        return self.commands[index]
-
-
-    def run(self,  command_namespace:str, globals=None, locals=None):
-        """
-        Execute all commands in the queue, with the provided
-        globals and locals dictionary that must contain claases and
-        methids from all the commands.
-
-        Parameters
-        ----------
-
-        globals : dict
-
-            Dictionary containing the current scope's global variables
-
-        locals : dict
-
-            Dictionary containing the current scope's local variables
-        """
-
-        readonly = self.readonly
-        self.readonly = True
-        for command in self.commands:
-            command.execute(command_namespace, globals, locals)
-        self.readonly = readonly
-
-
-    def push(self, command):
-        """
-        Push a new command onto the queue unless it is in
-        read-only mode.
-
-        Parameters
-        ----------
-
-        command : Command
-
-            Command to be appended to the queue
-
-        Returns
-        -------
-
-        True if the command has been pushed to the queue, False else.
-        """
-
-        if not self.readonly:
-            self.commands.append(command)
-            return True
-        return False
