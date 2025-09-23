@@ -52,8 +52,8 @@ class JsonRenderer:
                         "type": "Pixels",
                         "uuid": pixels.uuid,
                         "positions": TransformOrNdarray.to_json(pixels.positions),
-                        "sizes": pixels.sizes.tolist(),
-                        "colors": pixels.colors.tolist(),
+                        "sizes": TransformOrNdarray.to_json(pixels.sizes),
+                        "colors": TransformOrNdarray.to_json(pixels.colors),
                     }
                 elif isinstance(visual, Image):
                     image: Image = visual

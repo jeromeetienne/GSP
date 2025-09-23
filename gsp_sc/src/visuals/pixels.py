@@ -9,9 +9,9 @@ class Pixels(VisualBase):
 
     def __init__(
         self,
-        positions: nptyping.NDArray[nptyping.Shape["*, 3"], nptyping.Float] | TransformLinkBase,
-        sizes: nptyping.NDArray[nptyping.Shape["*"], nptyping.Float] = np.array([5.0]),
-        colors: nptyping.NDArray[nptyping.Shape["*, 4"], nptyping.Float] = np.array([[0.0, 0.0, 1.0, 1.0]]),
+        positions: TransformLinkBase | nptyping.NDArray[nptyping.Shape["*, 3"], nptyping.Float],
+        sizes: TransformLinkBase | nptyping.NDArray[nptyping.Shape["*"], nptyping.Float] = np.array([5.0]),
+        colors: TransformLinkBase | nptyping.NDArray[nptyping.Shape["*, 4"], nptyping.Float] = np.array([[0.0, 0.0, 1.0, 1.0]]),
     ) -> None:
         """
         Initialize a Pixels visual.
@@ -28,8 +28,10 @@ class Pixels(VisualBase):
         # sanity check - np.ndarray type checking at runtime
         if type(positions) is np.ndarray:
             assert positions.shape[1:] == (3,), "Positions must have shape (N, 3) where N is the number of positions."
-        assert sizes.shape.__len__() == 1, "Sizes must have shape (N, 1) where N is the number of sizes."
-        assert colors.shape[1:] == (4,), "Colors must be a numpy array of shape (4,)"
+        if type(sizes) is np.ndarray:
+            assert sizes.shape.__len__() == 1, "Sizes must have shape (N, 1) where N is the number of sizes."
+        if type(colors) is np.ndarray:
+            assert colors.shape[1:] == (4,), "Colors must be a numpy array of shape (4,)"
 
         self.positions = positions
         self.sizes = sizes

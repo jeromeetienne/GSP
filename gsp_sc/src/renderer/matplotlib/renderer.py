@@ -211,8 +211,8 @@ class MatplotlibRenderer:
         )
 
         pathCollection.set_offsets(transformed_positions)
-        pathCollection.set_sizes(pixels.sizes)
-        pathCollection.set_color(pixels.colors.tolist())
+        pathCollection.set_sizes(TransformOrNdarray.to_ndarray(pixels.sizes))
+        pathCollection.set_color(TransformOrNdarray.to_ndarray(pixels.colors).tolist())
         # pathCollection.set_edgecolor([0,0,0,1])
 
         # Notify post-rendering event
