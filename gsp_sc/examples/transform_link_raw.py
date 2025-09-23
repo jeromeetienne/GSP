@@ -4,7 +4,7 @@ from gsp_sc.src.transform import TransformLinkLoad, TransformLinkMathOp, Transfo
 
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
-url_npy = f"{__dirname__}/data/sample.npy"
+url_npy = f"file://{__dirname__}/data/sample_positions_3d.npy"
 
 ###############################################################################
 

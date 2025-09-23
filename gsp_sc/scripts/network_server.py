@@ -7,6 +7,7 @@ Server example using Flask to render a scene from JSON input.
 
 from flask import Flask, request, send_file, Response
 import io
+import argparse
 import gsp_sc.src as gsp_sc
 
 flask_app = Flask(__name__)
@@ -44,4 +45,9 @@ def render_scene_json() -> Response:
 #######################################################################################
 
 if __name__ == "__main__":
+
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description="Run the network server for rendering. see ./examples/network_client.py for usage.")
+    args = parser.parse_args()
+
     flask_app.run(threaded=False, debug=False)  # Enable debug mode if desired

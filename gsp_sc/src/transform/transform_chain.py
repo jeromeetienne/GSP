@@ -79,7 +79,12 @@ class TransformChain:
         if self._link_head is None:
             self._link_head = new_link
         else:
-            self._link_head = self._link_head.chain(new_link)
+            # get the last link
+            last_link = self._link_head
+            while last_link.next_transform is not None:
+                last_link = last_link.next_transform
+            # chain the new link to the last link
+            last_link.chain(new_link)
 
         return self
 
