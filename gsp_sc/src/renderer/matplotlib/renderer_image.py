@@ -1,29 +1,13 @@
 # stdlib imports
-import io
-import os
 import numpy as np
-import typing
 
 # pip imports
-import matplotlib.collections
-import matplotlib.colors
-import matplotlib.pyplot
 import matplotlib.axes
-import matplotlib.figure
-import matplotlib.collections
-import matplotlib.image
 import mpl3d.glm
-import mpl3d.camera
 
 # local imports
-from ...core.canvas import Canvas
-from ...core.viewport import Viewport
-from ...core.visual_base import VisualBase
 from ...core.camera import Camera
-from ...visuals.pixels import Pixels
 from ...visuals.image import Image
-from ...visuals.mesh import Mesh
-from ...transform import TransformOrNdarray
 from .renderer import MatplotlibRenderer
 
 class RendererImage:

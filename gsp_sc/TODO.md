@@ -1,6 +1,6 @@
 # TODO
 - make all visual accept TransformChain
-  - early support in Pixels + matplotlib renderer
+  - DONE for pixels on matplotlib+json renderer
   - generalize it to all parameters and all visuals
 - keep the rendering events - useful for some tricks
   - can i emulate the stuff from nicolas 
