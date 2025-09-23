@@ -111,7 +111,7 @@ def main()->None:
     for script_path in script_paths:
         # display the basename of the script without new line, and flush the output
         basename_script = os.path.basename(script_path)
-        print(f"Running {basename_script} ... ", end="", flush=True)
+        print(f"Running {basename_script} without exceptions... ", end="", flush=True)
 
         # launch the example script
         run_success = launch_example([sys.executable, script_path, *example_args])

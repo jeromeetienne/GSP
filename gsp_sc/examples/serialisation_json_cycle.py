@@ -60,7 +60,7 @@ matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 rendered_image_png_data = matplotlib_renderer.render(canvas, camera=camera)
 
 # save the rendered image to a file
-rendered_image_path = f"{__dirname__}/output/serialisation_original_image.png"
+rendered_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_original_image.png"
 with open(rendered_image_path, "wb") as f:
     f.write(rendered_image_png_data)
 
@@ -72,7 +72,7 @@ print(f"original Rendered image saved to: {rendered_image_path}")
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
 scene_json = json_renderer.render(canvas, camera)
 
-json_output_path = f"{__dirname__}/output/serialisation_scene.json"
+json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_scene.json"
 with open(json_output_path, 'w') as json_file:
     json_file.write(scene_json)
 print(f"Scene exported to JSON and saved to {json_output_path}")
@@ -92,7 +92,7 @@ rendered_loaded_image_png_data = matplotlib_renderer.render(
 )
 
 # save the rendered loaded image to a file
-rendered_loaded_image_path = f"{__dirname__}/output/serialisation_parsed_image.png"
+rendered_loaded_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_parsed_image.png"
 with open(rendered_loaded_image_path, "wb") as f:
     f.write(rendered_loaded_image_png_data)
 
