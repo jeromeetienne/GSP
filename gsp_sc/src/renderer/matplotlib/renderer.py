@@ -25,6 +25,7 @@ from ...visuals.image import Image
 from ...visuals.mesh import Mesh
 from ...transform import TransformOrNdarray
 
+
 class MatplotlibRenderer:
     def __init__(self) -> None:
         self._figures: dict[str, matplotlib.figure.Figure] = {}
@@ -155,21 +156,27 @@ class MatplotlibRenderer:
             for visual in viewport.visuals:
                 full_uuid = visual.uuid + viewport.uuid
                 if isinstance(visual, Pixels):
-                    self.__render_pixels(
+                    from .renderer_pixels import RendererPixels
+                    RendererPixels.render(
+                        self,
                         axes,
                         visual,
                         full_uuid=full_uuid,
                         camera=camera,
                     )
                 elif isinstance(visual, Image):
-                    self.__render_image(
+                    from .renderer_image import RendererImage
+                    RendererImage.render(
+                        self,
                         axes,
                         visual,
                         full_uuid=full_uuid,
                         camera=camera,
                     )
                 elif isinstance(visual, Mesh):
-                    self.__render_mesh(
+                    from .renderer_mesh import RendererMesh
+                    RendererMesh.render(
+                        self,
                         axes,
                         visual,
                         full_uuid=full_uuid,
@@ -177,154 +184,3 @@ class MatplotlibRenderer:
                     )
                 else:
                     raise NotImplementedError(f"Rendering for visual type {type(visual)} is not implemented.")
-
-    def __render_pixels(
-        self,
-        axes: matplotlib.axes.Axes,
-        pixels: Pixels,
-        full_uuid: str,
-        camera: Camera,
-    ) -> None:
-        # Notify pre-rendering event
-        pixels.pre_rendering.send(self)
-
-        if full_uuid in self._pathCollections:
-            pathCollection = self._pathCollections[full_uuid]
-        else:
-            # print(f"Creating new PathCollection for pixels visual {full_uuid}")
-            pathCollection = axes.scatter([], [])
-            self._pathCollections[full_uuid] = pathCollection
-
-        # compute positions
-        pixels_positions = TransformOrNdarray.to_ndarray(pixels.positions)
-
-        # apply camera transform to positions
-        transformed_positions: np.ndarray = mpl3d.glm.transform(pixels_positions, camera.transform)
-
-        # Notify post-transform event
-        pixels.post_transform.send(
-            self,
-            **{
-                "camera": camera,
-                "transformed_positions": transformed_positions,
-            },
-        )
-
-        pathCollection.set_offsets(transformed_positions)
-        pathCollection.set_sizes(TransformOrNdarray.to_ndarray(pixels.sizes))
-        pathCollection.set_color(TransformOrNdarray.to_ndarray(pixels.colors).tolist())
-        # pathCollection.set_edgecolor([0,0,0,1])
-
-        # Notify post-rendering event
-        pixels.post_rendering.send()
-
-    def __render_image(
-        self,
-        axes: matplotlib.axes.Axes,
-        image: Image,
-        full_uuid: str,
-        camera: Camera,
-    ) -> None:
-        if full_uuid not in self._axesImages:
-            # print(f"Creating new AxesImage for image visual {full_uuid}")
-            self._axesImages[full_uuid] = axes.imshow(np.zeros((2, 2, 3)))
-
-        axes_image = self._axesImages[full_uuid]
-        axes_image.set_data(image.image_data)
-
-        #
-
-        # extent_3d = np.array([
-        #     [image.position[0]+image.image_extent[0], image.position[1]+image.image_extent[2], image.position[2]],
-        #     [image.position[0]+image.image_extent[1], image.position[1]+image.image_extent[2], image.position[2]],
-        #     [image.position[0]+image.image_extent[1], image.position[1]+image.image_extent[3], image.position[2]],
-        #     [image.position[0]+image.image_extent[0], image.position[1]+image.image_extent[3], image.position[2]],
-        # ])
-
-        # transformed_positions: np.ndarray = mpl3d.glm.transform(
-        #     V=extent_3d, mvp=camera.transform
-        # )
-        # transformed_extent = (
-        #     transformed_positions[0, 0],
-        #     transformed_positions[0, 1],
-        #     transformed_positions[0, 2],
-        #     transformed_positions[0, 3],
-        # )
-        # axes_image.set_extent(transformed_extent)
-
-        positions = np.array([image.position])
-        transformed_positions: np.ndarray = mpl3d.glm.transform(positions, camera.transform)
-        # FIXME should be divided by W after rotation
-        # but there is nothing to compensate for the camera z
-        transformed_extent = (
-            transformed_positions[0, 0] + image.image_extent[0],
-            transformed_positions[0, 0] + image.image_extent[1],
-            transformed_positions[0, 1] + image.image_extent[2],
-            transformed_positions[0, 1] + image.image_extent[3],
-        )
-        axes_image.set_extent(transformed_extent)
-
-    def __render_mesh(
-        self,
-        axes: matplotlib.axes.Axes,
-        mesh: Mesh,
-        full_uuid: str,
-        camera: Camera,
-    ) -> None:
-        transform = camera.transform
-
-        if full_uuid not in self._polyCollections:
-            # print(f"Creating new PathCollection for mesh visual {full_uuid}")
-            self._polyCollections[full_uuid] = matplotlib.collections.PolyCollection([], clip_on=False, snap=False)
-            axes.add_collection(self._polyCollections[full_uuid], autolim=False)
-
-        polyCollection = self._polyCollections[full_uuid]
-
-        T = mpl3d.glm.transform(mesh.vertices, transform)[mesh.faces]
-        Z = -T[:, :, 2].mean(axis=1)
-
-        if mesh.cmap is not None:
-            # Facecolors using depth buffer
-            norm = matplotlib.colors.Normalize(vmin=Z.min(), vmax=Z.max())
-            facecolors = mesh.cmap(norm(Z))
-        else:
-            facecolors = mesh.facecolors
-
-        edgecolors = mesh.edgecolors
-        linewidths = mesh.linewidths
-
-        # Back face culling
-        if mesh.mode == "front":
-            front, back = mpl3d.glm.frontback(T)
-            T, Z = T[front], Z[front]
-            if len(facecolors) == len(mesh.faces):
-                facecolors = facecolors[front]
-            if len(edgecolors) == len(mesh.faces):
-                edgecolors = edgecolors[front]
-
-        # Front face culling
-        elif mesh.mode == "back":
-            front, back = mpl3d.glm.frontback(T)
-            T, Z = T[back], Z[back]
-            if len(facecolors) == len(mesh.faces):
-                facecolors = facecolors[back]
-            if len(edgecolors) == len(mesh.faces):
-                edgecolors = edgecolors[back]
-
-        # Separate 2d triangles from zbuffer
-        triangles = T[:, :, :2]
-        antialiased = linewidths > 0
-
-        # Sort triangles according to z buffer
-        I = np.argsort(Z)
-        triangles = triangles[I, :]
-        if len(facecolors) == len(I):
-            facecolors = facecolors[I, :]
-        if len(edgecolors) == len(I):
-            edgecolors = edgecolors[I, :]
-
-        polyCollection.set_verts(triangles)
-        polyCollection.set_linewidth(linewidths)
-        polyCollection.set_facecolor(facecolors)  # type: ignore
-        polyCollection.set_edgecolor(edgecolors)  # type: ignore
-        polyCollection.set_antialiased(antialiased)
