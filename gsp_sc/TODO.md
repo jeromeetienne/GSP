@@ -1,6 +1,4 @@
 # TODO
-- split matplotlib renderer in multiple files
-  - one per visual type
 - make all visual accept TransformChain
   - early support in Pixels + matplotlib renderer
   - generalize it to all parameters and all visuals
@@ -12,7 +10,8 @@
   - https://github.com/beartype/beartype
 
 ---
-
+- DONE split matplotlib renderer in multiple files
+  - one per visual type
 - DONE support msgpack in serialisation
 - DONE Add mesh visual with hidden faces
 - DONE issue with serialisation: currently camera is not serialised

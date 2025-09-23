@@ -3,6 +3,7 @@ Run all example scripts in this directory sequentially.
 It helps testing that all examples run without errors.
 """
 
+from email.mime import base
 from posixpath import basename
 import subprocess
 import sys
@@ -81,6 +82,7 @@ def main()->None:
     # get script paths in the examples folder
     examples_folder = f"{__dirname__}/../examples"
     basenames = [basename for basename in os.listdir(examples_folder) if os.path.isfile(os.path.join(examples_folder, basename))]
+    basenames.sort()
     script_paths = [os.path.abspath(os.path.join(examples_folder, basename)) for basename in basenames if basename.endswith(".py")]
 
     for script_path in script_paths:

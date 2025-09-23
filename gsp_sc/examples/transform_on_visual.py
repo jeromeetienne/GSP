@@ -7,6 +7,8 @@ import os
 
 # pip imports
 import numpy as np
+import matplotlib.pyplot
+import matplotlib.image
 
 # local imports
 import gsp_sc.src as gsp_sc
@@ -28,7 +30,7 @@ viewport = gsp_sc.core.Viewport(
 canvas.add(viewport=viewport)
 
 ###############################################################################
-# Add some random points
+# Add some random points with transformed positions
 #
 
 n_points = 300
@@ -42,14 +44,45 @@ pixels = gsp_sc.visuals.Pixels(positions=position_chain, sizes=sizes_np, colors=
 viewport.add(pixels)
 
 ###############################################################################
+# Add an image to viewport
+#
+image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
+image_data_np = matplotlib.image.imread(image_path)
+image = gsp_sc.visuals.Image(
+    position=np.array([0.5, 0.5, 0.5]),
+    image_extent=(-1, +1, -1, +1),
+    image_data=image_data_np,
+)
+viewport.add(image)
+
+###############################################################################
+# Add a mesh
+#
+obj_mesh_path = f"{__dirname__}/data/bunny.obj"
+mesh = gsp_sc.visuals.Mesh.from_obj_file(
+    obj_mesh_path,
+    cmap=matplotlib.pyplot.get_cmap("magma"),
+    edgecolors=(0, 0, 0, 0.25),  # type: ignore
+)
+viewport.add(mesh)
+
+###############################################################################
 # Export the scene to JSON
 
 camera = gsp_sc.core.Camera("perspective")
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
 scene_json = json_renderer.render(canvas, camera)
-print(f"scene_json: {scene_json}")
+
+# save to file as json
+json_output_path = f"{__dirname__}/output/{os.path.basename(__file__)}_scene.json"
+with open(json_output_path, 'w') as msgpack_file:
+    msgpack_file.write(scene_json)
+
+print(f"Scene exported to JSON and saved to {json_output_path}. length={len(scene_json)}")
 
 ###############################################################################
+# Import the scene from JSON
+#
 
 json_parser = gsp_sc.renderer.json.JsonParser()
 canvas_parsed, camera_parsed = json_parser.parse(scene_json)

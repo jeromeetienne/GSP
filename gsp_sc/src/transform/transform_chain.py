@@ -25,8 +25,7 @@ class TransformChain:
         """
         Initialize the TransformHelper with an optional initial numpy array.
         """
-        # TODO rename to _transform_link_head
-        self._transform_chain: TransformLinkBase | None = None
+        self._link_head: TransformLinkBase | None = None
 
         if isinstance(np_array, list):
             self.immediate(np.array(np_array))
@@ -37,53 +36,35 @@ class TransformChain:
         """
         Get the current transformation chain.
         """
-        if self._transform_chain is None:
+        if self._link_head is None:
             raise ValueError("No transformation chain defined.")
-        return self._transform_chain
+        return self._link_head
     
     def complete(self) -> TransformLinkBase:
         """
         Complete the transformation chain and return the head link.
         """
-        if self._transform_chain is None:
+        if self._link_head is None:
             raise ValueError("No transformation chain defined.")
-        return self._transform_chain
+        return self._link_head
 
     def is_empty(self) -> bool:
         """
         Check if a transformation chain is defined.
         """
-        return self._transform_chain is None
-
-    @deprecated("Use get_link_head() instead")
-    def get_transform_chain(self) -> TransformLinkBase:
-        """
-        Get the current transformation chain.
-        """
-        # TODO remove that duplicate of get_link_head()
-        if self._transform_chain is None:
-            raise ValueError("No transformation chain defined.")
-        return self._transform_chain
-    
-    @deprecated("Use is_empty() instead")
-    def has_transform_chain(self) -> bool:
-        """
-        Check if a transformation chain is defined.
-        """
-        # TODO remove that duplicate of is_empty()
-        return self._transform_chain is not None
+        return self._link_head is None
 
     def run(self) -> np.ndarray:
         """
         Run the transformation chain and return the resulting numpy array.
         """
 
-        if self._transform_chain is None:
+        if self._link_head is None:
             # If no transforms, return empty array
             np_array = np.array([])
         else:
             # Run the chain of transforms
-            np_array = self._transform_chain.run()
+            np_array = self._link_head.run()
 
         # return the re
         return np_array
@@ -93,10 +74,10 @@ class TransformChain:
         Chain a new transformation to the existing transformation chain.
         """
 
-        if self._transform_chain is None:
-            self._transform_chain = new_link
+        if self._link_head is None:
+            self._link_head = new_link
         else:
-            self._transform_chain = self._transform_chain.chain(new_link)
+            self._link_head = self._link_head.chain(new_link)
 
         return self
 
