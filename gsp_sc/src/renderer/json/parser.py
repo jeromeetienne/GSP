@@ -50,8 +50,8 @@ class JsonParser:
                 if visual_info["type"] == "Pixels":
                     pixels = Pixels(
                         positions=TransformOrNdarray.from_json(visual_info["positions"]),
-                        sizes=np.array(visual_info["sizes"]),
-                        colors=np.array(visual_info["colors"]),
+                        sizes=TransformOrNdarray.from_json(visual_info["sizes"]),
+                        colors=TransformOrNdarray.from_json(visual_info["colors"]),
                     )
                     # restore the original uuid
                     pixels.uuid = visual_info["uuid"]
