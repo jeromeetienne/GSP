@@ -93,7 +93,7 @@ class _ExampleLauncher:
                     gsp.log.info("%s" % command)
 
                 # KEY: REQUIRED FOR THE GLOBALS - Super dirty!!!
-                # gsp.use("matplotlib")
+                gsp.use("matplotlib")
 
                 # TODO send matplotlib as namespace in command_queue.run
                 command_queue.run(globals(), locals())

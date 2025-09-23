@@ -22,8 +22,16 @@ core, visual, render = parse_args()
 canvas = core.Canvas(512, 512, 100.0)
 viewport = core.Viewport(canvas, 0, 0, 512, 512, [1,1,1,1])
 n = 250_000
-P = glm.to_vec3(np.random.uniform(-1, +1, (n,2)))
+
+# When using vec3 as input positions, the commands dont throw exceptions
+# P = glm.to_vec3(np.random.uniform(-1, +1, (n,2)))
+# pixels = visual.Pixels(P, colors=[0,0,0,1])
+
+# When using np.ndarray as input positions, the commands throw exceptions
+P = np.random.uniform(-1, +1, (n,3))
 pixels = visual.Pixels(P, colors=[0,0,0,1])
+pixels.render(viewport)
+
 pixels.render(viewport)
 
 # Show or save the result

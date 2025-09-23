@@ -27,6 +27,11 @@ class Pixels(visual.Pixels):
     @command("visual.Pixels")
     def __init__(self, positions : Transform | Buffer,
                        colors : Transform | Buffer | Color):
+        if isinstance(positions, Buffer):
+            positions = np.asarray(positions).reshape(-1,3)
+        if isinstance(colors, Buffer):
+            colors = np.asarray(colors).reshape(-1,4)
+
         super().__init__(positions, colors, __no_command__ = True)
 
 
