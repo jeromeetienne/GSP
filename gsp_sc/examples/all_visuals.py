@@ -5,6 +5,7 @@ import os
 
 import gsp_sc.src as gsp_sc
 
+# Setup __dirname__
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
 ###############################################################################

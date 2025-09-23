@@ -1,16 +1,13 @@
-from calendar import c
 import matplotlib.pyplot
 import mpl3d.glm
-from numpy.__config__ import show
-from numpy.matlib import mat
+import os
 
 import gsp_sc.src as gsp_sc
 import numpy as np
-import matplotlib.image
 
 
-import os
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
+
 
 canvas = gsp_sc.core.Canvas(width=512, height=512, dpi=100)
 

@@ -1,4 +1,5 @@
 from typing import Any
+import typing
 import numpy as np
 
 from ..transform_link_base import TransformLinkBase
@@ -16,12 +17,15 @@ class TransformLinkLoad(TransformLinkBase):
 
         self.__data_url = data_url
         """The URL of the file to load"""
+        self.__cached_data: np.ndarray | None = None
 
     def _run(self, np_array: np.ndarray) -> np.ndarray:
-        # TODO would be nice to cache it :)
-        # - else it will be downloaded at each rendering :)
-        np_array = np.load(self.__data_url)
-        
+        # Load the data from the file if not already loaded
+        if self.__cached_data is None:
+            self.__cached_data = np.load(self.__data_url)
+
+        # Return the cached data
+        np_array = typing.cast(np.ndarray,self.__cached_data)
         return np_array 
     
     def _to_json(self) -> dict[str, Any]:

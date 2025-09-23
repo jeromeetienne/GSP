@@ -1,11 +1,14 @@
-import uuid
+# pip imports
 import blinker
+
+# local imports
+from . random import Random
 
 class VisualBase:
     __slots__ = ("uuid","pre_rendering","post_transform","post_rendering")
 
     def __init__(self) -> None:
-        self.uuid = str(uuid.uuid4())
+        self.uuid = Random.random_uuid()
         """
         The unique identifier of the visual.
 

@@ -3,12 +3,13 @@ Run all example scripts in this directory sequentially.
 It helps testing that all examples run without errors.
 """
 
-from email.mime import base
-from posixpath import basename
+# stdlib imports
 import subprocess
 import sys
 import os
-from time import sleep
+
+# pip imports
+import argparse
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
@@ -73,7 +74,29 @@ def launch_network_server():
 # Main script logic
 #
 
+def split_argv():
+    if '--' not in sys.argv:
+        local_args = sys.argv[1:]
+        example_args = []
+    else:
+        separator_index = sys.argv.index('--')
+        local_args = sys.argv[1:separator_index]
+        example_args = sys.argv[separator_index + 1:]
+    return local_args, example_args
+
 def main()->None:
+    # Split local args and launcher.py args
+    local_args, example_args = split_argv()
+
+    # parse command line arguments
+    parser = argparse.ArgumentParser(description="Run all example scripts in this directory.")
+    parser.add_argument("--debug", action="store_true", help="Enable debug mode with more verbose output.")
+    args = parser.parse_args(local_args)
+
+    # Set debug mode
+    if args.debug:
+        print("Debug mode is enabled.")
+
     # Launch the network server
     server_process = launch_network_server()
     if not server_process:
@@ -87,11 +110,11 @@ def main()->None:
 
     for script_path in script_paths:
         # display the basename of the script without new line, and flush the output
-        basename_script = basename(script_path)
+        basename_script = os.path.basename(script_path)
         print(f"Running {basename_script} ... ", end="", flush=True)
 
         # launch the example script
-        run_success = launch_example([sys.executable, script_path])
+        run_success = launch_example([sys.executable, script_path, *example_args])
 
         # display X in red if failed, or a check in green if successful
         if run_success:

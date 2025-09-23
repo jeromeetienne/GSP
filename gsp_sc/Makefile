@@ -16,5 +16,8 @@ lint_examples: ## Run pyright type checker on ./examples
 run_all_examples: ## Run all examples to check they run without error
 	python scripts/run_all_examples.py
 
-test: lint run_all_examples ## Run all tests (lint and examples)
+check_expected_output: ## Check that the output files match the expected output files
+	python scripts/check_expected_output.py
+
+test: lint run_all_examples check_expected_output ## Run all tests
 	@echo "All tests passed!"
