@@ -30,6 +30,7 @@ from gsp.log import log
 from gsp.io import json
 from gsp.io.convert import register
 from gsp.io.command import Command, CommandQueue, command
+import gsp
 
 @register("float", "int")
 def float_to_int(value):
@@ -65,7 +66,8 @@ print("2. Commands execution")
 Object.objects = {}
 for command in queue:
     command.dump()
-queue.run(globals(), locals())
+# queue.run('gsp',globals(), locals())
+queue.run('', None, { "Foo": Foo })
 print(Object.objects[1])
 
 print()
@@ -80,6 +82,7 @@ queue = json.load(json_path)
 for command in queue:
     log.info("%s" % command)
 
-queue.run(globals(), locals())
+# queue.run(globals(), locals())
+queue.run('', None, { "Foo": Foo })
 print(Object.objects[1])
 print()
