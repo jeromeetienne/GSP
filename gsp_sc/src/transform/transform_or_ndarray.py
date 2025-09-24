@@ -10,6 +10,8 @@ from .transform_link_base import TransformLinkBase
 class TransformOrNdarray:
     """
     Utility class to handle inputs that can be either a numpy ndarray or a TransformLinkBase.
+
+    Used a lot in the visuals
     """
 
     @staticmethod

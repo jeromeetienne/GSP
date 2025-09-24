@@ -113,6 +113,11 @@ class TransformChain:
     def lambdaFunc(self, lambda_func: typing.Callable[[np.ndarray], np.ndarray] | str) -> "TransformChain":
         """
         Define a lambda function to apply to the numpy array
+
+        **NOTE**: some black magic is used to serialize the lambda function passed as arguement to a string.
+        don't use it more than once per lines of code, as it will not work.
+        If you hit issues, just pass the lambda function as a string.
+        e.g. 'lambda x: x + 1'
         """
         new_transform = TransformLinkLambda(lambda_func)
 
