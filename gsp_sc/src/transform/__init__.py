@@ -9,6 +9,7 @@ from .transform_or_ndarray import TransformOrNdarray
 
 from .links import TransformLinkAssertShape
 from .links import TransformLinkImmediate
+from .links import TransformLinkLambda
 from .links import TransformLinkLoad
 from .links import TransformLinkMathOp
 

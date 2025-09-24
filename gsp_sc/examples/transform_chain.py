@@ -14,3 +14,6 @@ print(f'np_array2:{np_array2}')
 
 np_array3 = TransformChain().run()
 print(f'np_array3:{np_array3}')
+
+np_array4 = TransformChain([1,2,3]).lambdaFunc(lambda x: x+1).run()
+print(f'np_array4:{np_array4}')

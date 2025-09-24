@@ -8,10 +8,11 @@ import numpy as np
 
 # local imports
 from .links import (
+    TransformLinkAssertShape,
+    TransformLinkImmediate,
+    TransformLinkLambda,
     TransformLinkLoad,
     TransformLinkMathOp,
-    TransformLinkImmediate,
-    TransformLinkAssertShape,
 )
 from .transform_link_base import TransformLinkBase
 
@@ -106,6 +107,14 @@ class TransformChain:
         Use the provided numpy array as the initial data.
         """
         new_transform = TransformLinkImmediate(np_array)
+
+        return self.__chain(new_transform)
+    
+    def lambdaFunc(self, lambda_func: typing.Callable[[np.ndarray], np.ndarray] | str) -> "TransformChain":
+        """
+        Define a lambda function to apply to the numpy array
+        """
+        new_transform = TransformLinkLambda(lambda_func)
 
         return self.__chain(new_transform)
 

@@ -38,11 +38,10 @@ canvas.add(viewport=viewport)
 
 n_points = 300
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float64)
-# Use TransformChain to scale and translate positions
-# position_chain = TransformChain(positions_np).math_op('mul', 1/3) .math_op('add', 0.2).complete()
 
+# Use TransformChain to scale and translate positions
 npy_url = f"file://{__dirname__}/data/sample_positions_3d.npy"
-position_chain = TransformChain().load(npy_url).math_op('mul', 1/3) .math_op('add', 0.2).complete()
+position_chain = TransformChain().load(npy_url).math_op('mul', 1/3).lambdaFunc(lambda x: x + 0.2).complete()
 
 sizes_np = np.array([1])
 colors_np = np.array([gsp_sc.Constants.Green])

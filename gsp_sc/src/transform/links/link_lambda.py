@@ -1,11 +1,16 @@
-import numpy as np
-from gsp_sc.src.transform import TransformLinkLoad, TransformLinkMathOp, TransformLinkImmediate, TransformLinkBase
+# stdlib imports
 import typing
 import inspect
 
-###############################################################################
+# pip imports
+import numpy as np
+
+# local imports
+from ..transform_link_base import TransformLinkBase
+from ..transform_link_db import TransformLinkDB
 
 class TransformLinkLambda(TransformLinkBase):
+
     def __init__(self, lambda_func: typing.Callable[[np.ndarray], np.ndarray] | str) -> None:
         """
         Ensure the input array has the specified shape.
@@ -19,12 +24,22 @@ class TransformLinkLambda(TransformLinkBase):
             lambda_function_source = TransformLinkLambda.lambda_to_str(lambda_func)
             self.__lambda_func_source = lambda_function_source
 
-
     def _run(self, np_array: np.ndarray) -> np.ndarray:
         value = eval(self.__lambda_func_source)(np_array)
         new_array = typing.cast(np.ndarray, value)
         return new_array
+
+    def _to_json(self) -> dict[str, typing.Any]:
+        return {
+            "type": "TransformLinkLambda",
+            "lambda_func_source": self.__lambda_func_source
+        }
     
+    @staticmethod
+    def _from_json(json_dict: dict[str, typing.Any]) -> TransformLinkBase:
+        lambda_func_source =  json_dict["lambda_func_source"]
+        return TransformLinkLambda(lambda_func_source)
+        
     @staticmethod
     def lambda_to_str(lambda_func: typing.Callable[[np.ndarray], np.ndarray]) -> str:
         lines, lineno = inspect.getsourcelines(lambda_func)
@@ -67,17 +82,6 @@ class TransformLinkLambda(TransformLinkBase):
         # This part would be reached if the lambda extends to the end of the string.
         return code_string[start_index:]
 
-    
-#################################################################################
 
-
-# source = TransformLinkLambda(lambda x: x+(1+(2/3)))
-
-l_str = TransformLinkLambda.lambda_to_str(lambda x: x+1)
-myTransform1 = (
-    TransformLinkImmediate(np.array([1,2,3]))
-                .chain(TransformLinkLambda(lambda x: x+(1+(2/3))))
-)
-# np_array1 = myTransform1.run()
-# print(f"Loaded array1: {np_array1}")
-
+# Register the TransformLinkLambda class in the TransformLinkDB
+TransformLinkDB.add_link("TransformLinkLambda", TransformLinkLambda)
