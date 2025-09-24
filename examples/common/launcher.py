@@ -13,7 +13,7 @@ from typing import Callable
 class _ExampleLauncher:
 
     @staticmethod
-    def parse_args(example_description: str | None = None) -> tuple[gsp.core, gsp.visual]:  # type: ignore
+    def preprocess(example_description: str | None = None) -> tuple[gsp.core, gsp.visual]:  # type: ignore
         """
         Parse command line arguments and return the appropriate gsp core and visual modules.
         It depends if the user wants to generate a command file or use matplotlib for rendering.
@@ -43,7 +43,7 @@ class _ExampleLauncher:
         return gsp_core, gsp_visual
 
     @staticmethod
-    def render(
+    def post_process(
         canvas: gsp.core.viewport.Canvas,
         viewport: gsp.core.viewport.Viewport|None,
         visuals: list[Visual],
@@ -97,10 +97,9 @@ class _ExampleLauncher:
 
                 # TODO send matplotlib as namespace in command_queue.run
                 # command_queue.run(command_namespaces, globals(), locals())
-                command_queue.run('gsp_matplotlib', None, { "gsp_matplotlib": gsp_matplotlib })
+                command_queue.run('gsp_matplotlib.', None, { "gsp_matplotlib": gsp_matplotlib })
 
                 import matplotlib.pyplot as plt
-
                 plt.show(block=True)
         elif args.command == "matplotlib_image":
             import matplotlib.pyplot as plt
@@ -198,17 +197,20 @@ def parse_args(
     Returns:
         tuple[gsp.core, gsp.visual, Callable]: The gsp core and visual modules, and a function to render the result of the example.
     """
-    core, visual = _ExampleLauncher.parse_args(example_description=example_description)
 
+    # Get the core and visual modules
+    core, visual = _ExampleLauncher.preprocess(example_description=example_description)
+
+    # define the render function
     def render_func(
         canvas: gsp.core.viewport.Canvas,
         viewports: list[gsp.core.viewport.Viewport],
         visuals: list[Visual],
         onRender: Callable[[gsp.core.viewport.Viewport, gsp_matplotlib.glm.mat4, gsp_matplotlib.glm.mat4, gsp_matplotlib.glm.mat4], None] | None = None,
     ) -> None:
-        # FIXME run all the viewports, for now just the first one
-        
-        first_viewport = viewports[0] if len(viewports) > 0 else None
-        _ExampleLauncher.render(canvas, first_viewport, visuals, onRender=onRender)
+        # render all viewports
+        for viewport in viewports:
+            _ExampleLauncher.post_process(canvas, viewport, visuals, onRender=onRender)
 
+    # return the core and visual modules, and the render function
     return core, visual, render_func
