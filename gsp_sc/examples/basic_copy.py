@@ -8,6 +8,7 @@ from gsp_sc.src.core.viewport import Viewport
 from gsp_sc.src.core.camera import Camera
 from gsp_sc.src.renderer.matplotlib import MatplotlibRenderer
 from gsp_sc.src.renderer.json import JsonRenderer
+from gsp_sc.src.renderer.network import NetworkRenderer
 from gsp_sc.src.visuals.pixels import Pixels
 
 # Create a GSP scene
@@ -29,3 +30,7 @@ png_image = renderer.render(canvas, camera)
 # Export the scene to JSON
 json_renderer = JsonRenderer()
 scene_json = json_renderer.render(canvas, camera)
+
+# Render the scene remotely (if you have a GSP server running)
+network_renderer = NetworkRenderer("http://localhost:5000")
+png_image2 = network_renderer.render(canvas, camera)
