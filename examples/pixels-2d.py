@@ -21,7 +21,7 @@ core, visual, render = parse_args()
 # Create a GSP scene
 canvas = core.Canvas(512, 512, 100.0)
 viewport = core.Viewport(canvas, 0, 0, 512, 512, [1,1,1,1])
-n = 250_000
+n = 1_000
 
 # When using vec3 as input positions, the commands dont throw exceptions
 P = glm.to_vec3(np.random.uniform(-1, +1, (n,2)))

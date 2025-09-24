@@ -21,7 +21,7 @@ core, visual, render = parse_args()
 # Create a GSP scene
 canvas = core.Canvas(512, 512, 100.0)
 viewport = core.Viewport(canvas, 0, 0, 512, 512, [1,1,1,1])
-n = 250_000
+n = 2_000
 P = glm.as_vec3(np.random.uniform(-1, +1, (n,3)))
 pixels = visual.Pixels(P, colors=[0,0,0,1])
 pixels.render(viewport)
