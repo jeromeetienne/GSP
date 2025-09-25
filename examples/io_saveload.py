@@ -50,6 +50,8 @@ class Foo(Object):
     def __repr__(self):
         return f"Foo(id={self.id}, value={self.value})"
 
+# Create a fake module to simulate a backend. typically it is `gsp` or `gsp_matplotlib`
+backend_module = type('backend_module', (), {'Foo': Foo})()
 
 print(f"—————{__doc__}—————\n")
 
@@ -67,7 +69,9 @@ Object.objects = {}
 for command in queue:
     command.dump()
 # queue.run('gsp',globals(), locals())
-queue.run('', None, { "Foo": Foo })
+
+
+queue.run(backend_module)
 print(Object.objects[1])
 
 print()
@@ -83,6 +87,6 @@ for command in queue:
     log.info("%s" % command)
 
 # queue.run(globals(), locals())
-queue.run('', None, { "Foo": Foo })
+queue.run(backend_module)
 print(Object.objects[1])
 print()

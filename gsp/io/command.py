@@ -298,7 +298,7 @@ class Command:
                       % (key, type(value).__name__))
 
 
-    def execute(self, command_namespace:str, globals=None, locals=None):
+    def execute(self, backend_module: types.ModuleType):
         """ Execute the command. """
 
         parameters = self.parameters.copy()
@@ -335,8 +335,8 @@ class Command:
             Object.objects[oid] = object
             return object
         elif self.methodname == "__init__":
-            source = f"{command_namespace}{self.classname}"
-            func = eval(source, globals, locals)
+            source = f"backend_module.{self.classname}"
+            func = eval(source, None, {'backend_module': backend_module})
             object = func(**parameters)
             object.id = oid
             Object.objects[oid] = object
@@ -407,7 +407,7 @@ class CommandQueue(metaclass = NamedSingleton):
         return self.commands[index]
 
 
-    def run(self,  command_namespace:str, globals=None, locals=None):
+    def run(self,  backend_module: types.ModuleType):
         """
         Execute all commands in the queue, with the provided
         globals and locals dictionary that must contain claases and
@@ -428,7 +428,7 @@ class CommandQueue(metaclass = NamedSingleton):
         readonly = self.readonly
         self.readonly = True
         for command in self.commands:
-            command.execute(command_namespace, globals, locals)
+            command.execute(backend_module)
         self.readonly = readonly
 
 

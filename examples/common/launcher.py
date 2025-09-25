@@ -97,7 +97,8 @@ class _ExampleLauncher:
 
                 # TODO send matplotlib as namespace in command_queue.run
                 # command_queue.run(command_namespaces, globals(), locals())
-                command_queue.run('gsp_matplotlib.', None, { "gsp_matplotlib": gsp_matplotlib })
+                # command_queue.run('gsp_matplotlib.', None, { "gsp_matplotlib": gsp_matplotlib })
+                command_queue.run(gsp_matplotlib)
 
                 import matplotlib.pyplot as plt
                 plt.show(block=True)
