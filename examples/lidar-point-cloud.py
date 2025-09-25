@@ -7,6 +7,8 @@ Display a point cloud of a terrain
 import numpy as np
 from common.launcher import parse_args
 import common.asset_downloader as asset_downloader
+import gsp_matplotlib
+from gsp_matplotlib import glm
 
 # Parse command line arguments
 core, visual, render = parse_args()
@@ -149,6 +151,8 @@ canvas = core.Canvas(width=canvas_width, height=canvas_height, dpi=100.0)
 viewport = core.Viewport(canvas, x=0, y=0, width=canvas_width, height=canvas_height, color=[1, 1, 1, 1])
 
 # Create a Pixels visual
+point_positions = glm.to_vec3(point_positions)
+point_colors = glm.to_vec4(point_colors)
 pixels = visual.Pixels(positions=point_positions, colors=point_colors)
 pixels.render(viewport)
 
