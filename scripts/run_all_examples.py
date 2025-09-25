@@ -10,7 +10,7 @@ import os
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 
-def launch_example(cmdline_args: list[str], debug: bool = False) -> bool:
+def launch_example(cmdline_args: list[str]) -> bool:
     """
     Launches the example script with the given command line arguments.
 
@@ -20,9 +20,6 @@ def launch_example(cmdline_args: list[str], debug: bool = False) -> bool:
     Returns:
         True if the script ran successfully, False otherwise.
     """
-
-    if debug:
-        print(f"Launching example with args: {cmdline_args}")
 
     try:
         # Add a environment variable to disable interactive mode in the example
@@ -61,46 +58,47 @@ def main()->None:
     # Split local args and launcher.py args
     local_args, launcher_args = split_argv()
 
+
     # parse command line arguments
-    parser = argparse.ArgumentParser(description="Run all example scripts in this directory.")
-    parser.add_argument("--debug", action="store_true", help="Enable debug mode with more verbose output.")
+    parser = argparse.ArgumentParser(
+        description="Run all example scripts in `./examples` sequentially.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+This script is useful to check that all example scripts run without exceptions.
+        
+Usage:
+    python scripts/run_all_examples.py [-- <args for example scripts>]
+
+Example:
+    # To run all the examples doing a commands cycle of each of them: aka serialize in commands, then deserialize and save the resulting canvas
+    python scripts/run_all_examples.py -- commands -cyc
+
+    # To run all the examples to save the canvas to a file in ./examples/output folder 
+    python scripts/run_all_examples.py -- matplotlib_image
+
+    # To run all the examples and stop on first error
+    python scripts/run_all_examples.py --stop-on-error
+    """,
+    )
+    parser.add_argument("--stop-on-error", action="store_true", help="Stop execution on first error.")
     args = parser.parse_args(local_args)
 
-    # Set debug mode
-    if args.debug:
-        print("Debug mode is enabled.")
-
     examples_folder = f"{__dirname__}/../examples"
-    script_paths = [
-        f"{examples_folder}/canvas-base.py",
-        f"{examples_folder}/canvas-save.py",
-        f"{examples_folder}/io_inheritance.py",
-        f"{examples_folder}/io_saveload.py",
-        f"{examples_folder}/lidar-point-cloud.py",
-        f"{examples_folder}/markers-2d.py",
-        f"{examples_folder}/markers-3d.py",
-        f"{examples_folder}/paths-2d.py",
-        f"{examples_folder}/paths-3d.py",
-        f"{examples_folder}/paths-regular-2d.py",
-        f"{examples_folder}/pixels-2d.py",
-        f"{examples_folder}/pixels-3d.py",
-        f"{examples_folder}/pixels-colormap.py",
-        f"{examples_folder}/pixels-colors.py",
-        f"{examples_folder}/pixels-interactive.py",
-        f"{examples_folder}/points-2d.py",
-        f"{examples_folder}/points-3d.py",
-        f"{examples_folder}/points-colormap.py",
-        f"{examples_folder}/polygons-2d.py",
-        f"{examples_folder}/segments-2d.py",
-        f"{examples_folder}/segments-fixed-size.py",
-        f"{examples_folder}/viewport-multiple.py",
-        f"{examples_folder}/viewport-with-margins.py",
-    ]
+
+    # List all .py files in the examples folder
+    basenames = os.listdir(examples_folder)
+    basenames = [b for b in basenames if b.endswith(".py")]
+    basenames.sort()
+
+    # Construct full paths
+    script_paths = [f"{examples_folder}/{basename}" for basename in basenames]
+
+    print(f"Running {len(script_paths)} examples to check if they run without exception...\n")
 
     for script_path in script_paths:
         # display the basename of the script without new line, and flush the output
         basename_script = os.path.basename(script_path)
-        print(f"Running {basename_script} ... ", end="", flush=True)
+        print(f"Running {basename_script}... ", end="", flush=True)
 
         # launch the example script
         run_success = launch_example([sys.executable, script_path, *launcher_args])
@@ -111,8 +109,9 @@ def main()->None:
         else:
             print("\033[91mFailed\033[0m")  # Red "Failed"
 
-        # if not run_success:
-        #     sys.exit(1)
+        # honor the --stop-on-error flag
+        if not run_success and args.stop_on_error:
+            sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -14,8 +14,11 @@ test_verbose: ## Run all tests with verbose output
 	cd tests
 	pytest -v
 
-test_examples: ## Run all example scripts
+test_examples_image: ## Run all example scripts
 	python ./scripts/run_all_examples.py -- matplotlib_image
+
+test_examples_commands: ## Run all example scripts
+	python ./scripts/run_all_examples.py -- commands -cyc
 
 # Linting targets
 
