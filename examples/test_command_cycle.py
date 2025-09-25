@@ -5,6 +5,7 @@ import numpy as np
 
 from common.launcher import parse_args
 from gsp_matplotlib import glm
+import gsp_matplotlib
 
 # Parse command line arguments
 core, visual, render = parse_args()
@@ -40,7 +41,7 @@ gsp.Object.objects = {}
 # load commands from file
 command_queue = gsp.io.json.load(commands_filename)
 
-command_queue.run(globals(), locals())
+command_queue.run(gsp_matplotlib)
 
 #####################################
 # Finally display the result via matplotlib
