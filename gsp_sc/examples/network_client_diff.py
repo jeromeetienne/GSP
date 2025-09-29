@@ -51,6 +51,7 @@ local_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.
 with open(local_image_path, "wb") as file_writer:
     file_writer.write(image_png_data)
 print(f"Image saved to {local_image_path}")
+
 ###############################################################################
 # Render the scene using a network renderer
 #
@@ -72,7 +73,7 @@ print(f"Image saved to {server_image_path}")
 # Modify the scene - move the points randomly
 
 # displacement_np = np.random.uniform(-0.1, 0.1, (1, 3)).astype(np.float32)
-sizes_np[0] = 40
+sizes_np[0] = 123.0
 pixels.sizes = sizes_np
 
 ###############################################################################

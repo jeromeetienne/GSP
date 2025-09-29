@@ -5,7 +5,7 @@ import json
 # pip imports
 import requests
 import uuid
-import jsondiff
+import jsonpatch
 
 # local imports
 from ...core.canvas import Canvas
@@ -56,19 +56,12 @@ class NetworkRenderer:
         # Build the payload
         if self.__diff_allowed and self.__absolute_scene is not None:
             # Diff rendering - compute the diff between the current scene and the last absolute scene
-            scene_diff = jsondiff.diff(self.__absolute_scene, scene_dict)
-            def convert_keys_to_str(d):
-                if not isinstance(d, dict):
-                    return d
-                return {str(k): convert_keys_to_str(v) for k, v in d.items()}
-            scene_diff = convert_keys_to_str(scene_diff)  # type: ignore
+            scene_diff = str(jsonpatch.JsonPatch.from_diff(self.__absolute_scene, scene_dict))
             payload: NetworkPayload = {
                 "client_id": self.__client_id,
                 "type": "diff",
                 "data": scene_diff,
             }
-            bla = json.dumps(payload)
-            print(f"Sending diff payload: {bla}")
         else:
             # Absolute rendering
             payload: NetworkPayload = {

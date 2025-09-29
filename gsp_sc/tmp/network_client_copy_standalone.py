@@ -10,6 +10,10 @@ import os
 
 # pip imports
 import numpy as np
+# import jsondiff
+import json
+import jsonpatch
+
 
 # local imports
 import gsp_sc.src as gsp_sc
@@ -35,7 +39,7 @@ viewport = gsp_sc.core.Viewport(
 canvas.add(viewport=viewport)
 
 # Add some random points
-n_points = 1
+n_points = 10
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
 colors_np = np.array([gsp_sc.Constants.Green])
@@ -47,7 +51,7 @@ viewport.add(pixels)
 #   Render the scene in JSON format
 #
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
-scene_dict = json_renderer.render(canvas, camera)
+scene_dict1 = json_renderer.render(canvas, camera)
 # print(f"Initial scene JSON:\n{scene_dict}")
 
 ###############################################################################
@@ -67,18 +71,32 @@ scene_dict2 = json_renderer.render(canvas, camera)
 ###############################################################################
 #   Compute the diff between the two scene JSONs and reconstruct the second scene from the first and the diff
 #
-import jsondiff
-import json
-scene_diff = jsondiff.diff(scene_dict, scene_dict2)
+# scene_diff = jsondiff.diff(scene_dict1, scene_dict2)
+scene_diff = jsonpatch.JsonPatch.from_diff(scene_dict1, scene_dict2)
 print(f"Scene diff JSON:\n{scene_diff}")
 
 
-scene_diff_json = json.dumps(scene_diff)
+# def convert_keys_symbol_to_str(data):
+#     if not isinstance(data, dict):
+#         return data
+#     data_dict: dict = data
+#     result = {}
+#     for key, value in data_dict.items():
+#         if hasattr(key, "__module__") and key.__module__ == "symbol":
+#             key = str(key)
+#         result[key] = convert_keys_symbol_to_str(value)
+#     return result
+
+# scene_diff = convert_keys_symbol_to_str(scene_diff)
+scene_diff_json = str(scene_diff)
 
 
 ###############################################################################
 #   Reconstruct the second scene from the first and the diff
 #
-scene_diff_reconstructed = json.loads(scene_diff_json)
-scene_dict3 = jsondiff.patch(scene_dict, scene_diff_reconstructed)
-print(f"Reconstructed scene JSON:\n{scene_dict3}")
+# scene_diff_reconstructed = json.loads(scene_diff_json)
+# scene_dict3 = jsondiff.patch(scene_dict1, scene_diff_reconstructed)
+# scene_dict3 = DeepDiff(scene_dict1, scene_diff_reconstructed)
+scene_dict3 = jsonpatch.apply_patch(scene_dict1, scene_diff_json)
+print(f"Reconstructed scene JSON:=")
+print(json.dumps(scene_dict3, indent=4))

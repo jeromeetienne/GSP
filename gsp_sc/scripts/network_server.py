@@ -9,7 +9,7 @@ import io
 
 # pip imports
 from flask import Flask, request, send_file, Response
-import jsondiff
+import jsonpatch
 
 # local imports
 import argparse
@@ -34,25 +34,27 @@ def render_scene_json() -> Response:
     ###############################################################################
     #   Parse the payload
     #
-
+    client_id = payload["client_id"]
     if payload["type"] == "absolute":
         # Store the absolute scene for this client
-        absolute_scenes[payload["client_id"]] = payload["data"]
+        absolute_scenes[client_id] = payload["data"]
         scene_dict: SceneDict = payload["data"]
+        # log the operation
+        print(f"Rendering absolute scene for client_id={client_id}. Scene size: {len(str(scene_dict))} bytes")
     elif payload["type"] == "diff":
-        old_scene_dict = absolute_scenes.get(payload["client_id"])
+        old_scene_dict = absolute_scenes.get(client_id)
         # If no previous absolute scene exists, return an error
         if old_scene_dict is None:
             return Response("Diff resource not found. Resend as 'absolute'.", status=410)
         # Reconstruct the absolute scene by applying the diff
         scene_diff = payload["data"]
-        scene_dict = jsondiff.patch(old_scene_dict, scene_diff)
+        scene_dict = jsonpatch.apply_patch(old_scene_dict, scene_diff)
         # Update the stored absolute scene 
-        absolute_scenes[payload["client_id"]] = scene_dict
+        absolute_scenes[client_id] = scene_dict
+        # log the operation
+        print(f"Rendering diff scene for client_id={client_id}. Diff size: {len(str(scene_diff))} bytes, Full scene size: {len(str(scene_dict))} bytes")
     else:
         assert False, f"Unknown rendering type: {payload['type']}"
-
-    # scene_dict: SceneDict = payload["data"]
 
     ###############################################################################
     # Load the scene from JSON
@@ -82,7 +84,6 @@ def render_scene_json() -> Response:
 #######################################################################################
 
 if __name__ == "__main__":
-
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Run the network server for rendering. see ./examples/network_client.py for usage.")
     args = parser.parse_args()
