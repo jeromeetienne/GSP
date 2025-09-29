@@ -1,5 +1,6 @@
 # stdlib imports
 import json
+from typing import Any
 
 # pip imports
 import numpy as np
@@ -9,6 +10,7 @@ import matplotlib.pyplot
 from ...core.canvas import Canvas
 from ...core.viewport import Viewport
 from ...core.camera import Camera
+from ...core.types import SceneDict
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...visuals.mesh import Mesh
@@ -22,8 +24,11 @@ class JsonParser:
     def __init__(self) -> None:
         pass
 
-    def parse(self, scene_json: str) -> tuple[Canvas, Camera]:
-        scene_dict = json.loads(scene_json)
+    def parse(self, _scene: str | SceneDict) -> tuple[Canvas, Camera]:
+        if(isinstance(_scene, dict)):
+            scene_dict: SceneDict = _scene
+        else:
+            scene_dict: SceneDict = json.loads(_scene)
 
         camera_info = scene_dict["camera"]
         camera = Camera(camera_info["type"])

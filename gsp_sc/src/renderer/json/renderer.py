@@ -8,6 +8,7 @@ import numpy as np
 # local imports
 from ...core.canvas import Canvas
 from ...core.camera import Camera
+from ...core.types import SceneDict
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...visuals.mesh import Mesh
@@ -18,9 +19,9 @@ class JsonRenderer:
     def __init__(self) -> None:
         pass
 
-    def render(self, canvas: Canvas, camera: Camera) -> str:
+    def render(self, canvas: Canvas, camera: Camera) -> SceneDict:
 
-        scene_dict = {
+        scene_dict: SceneDict = {
             "camera": {
                 "uuid": camera.uuid,
                 "type": camera.camera_type,
@@ -85,6 +86,4 @@ class JsonRenderer:
 
             scene_dict["canvas"]["viewports"].append(viewport_dict)
 
-        scene_json = json.dumps(scene_dict, indent=4)
-
-        return scene_json
+        return scene_dict
