@@ -14,7 +14,7 @@ lint_examples: ## Run pyright type checker on ./examples
 ##########################################################################
 
 network_server_dev: ## Run the network server in development mode
-	watchmedo auto-restart -d ./src -p="*.py" -R  -- python ./scripts/network_server.py  
+	watchmedo auto-restart -d ./src -d ./scripts -p="*.py" -R  -- python ./scripts/network_server.py
 
 network_server: ## Run the network server
 	python ./scripts/network_server.py

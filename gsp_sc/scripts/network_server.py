@@ -38,6 +38,7 @@ def render_scene_json() -> Response:
     if payload["type"] == "absolute":
         # Store the absolute scene for this client
         absolute_scenes[payload["client_id"]] = payload["data"]
+        scene_dict: SceneDict = payload["data"]
     elif payload["type"] == "diff":
         old_scene_dict = absolute_scenes.get(payload["client_id"])
         # If no previous absolute scene exists, return an error
@@ -46,15 +47,12 @@ def render_scene_json() -> Response:
         # Reconstruct the absolute scene by applying the diff
         scene_diff = payload["data"]
         scene_dict = jsondiff.patch(old_scene_dict, scene_diff)
-        # Update the stored absolute scene
+        # Update the stored absolute scene 
         absolute_scenes[payload["client_id"]] = scene_dict
     else:
         assert False, f"Unknown rendering type: {payload['type']}"
 
-    # sanity check - only absolute rendering is supported in this example
-    assert payload["type"] == "absolute", "Only 'absolute' rendering type is supported in this example. Not yet implemented: 'diff'"
-
-    scene_dict: SceneDict = payload["data"]
+    # scene_dict: SceneDict = payload["data"]
 
     ###############################################################################
     # Load the scene from JSON
