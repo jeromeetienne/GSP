@@ -47,7 +47,7 @@ matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 image_png_data = matplotlib_renderer.render(canvas, camera)
 
 # Save the image to a file
-local_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_local_image_1.png"
+local_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_local_image_pre_diff.png"
 with open(local_image_path, "wb") as file_writer:
     file_writer.write(image_png_data)
 print(f"Image saved to {local_image_path}")
@@ -64,15 +64,14 @@ image_png_data = network_renderer.render(canvas, camera)
 ###############################################################################
 # Save the image to a file
 #
-server_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_server_image_1.png"
+server_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_server_image_pre_diff.png"
 with open(server_image_path, "wb") as file_writer:
     file_writer.write(image_png_data)
 print(f"Image saved to {server_image_path}")
 
 ###############################################################################
-# Modify the scene - move the points randomly
+# Modify the scene - change the size of the first point
 
-# displacement_np = np.random.uniform(-0.1, 0.1, (1, 3)).astype(np.float32)
 sizes_np[0] = 123.0
 pixels.sizes = sizes_np
 
@@ -82,7 +81,7 @@ pixels.sizes = sizes_np
 image_png_data = matplotlib_renderer.render(canvas, camera)
 
 # Save the image to a file
-local_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_local_image_2.png"
+local_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_local_image_post_diff.png"
 with open(local_image_path, "wb") as file_writer:
     file_writer.write(image_png_data)
 print(f"Image saved to {local_image_path}")
@@ -95,7 +94,7 @@ image_png_data = network_renderer.render(canvas, camera)
 ###############################################################################
 # Save the image to a file
 #
-server_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_server_image_2.png"
+server_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_server_image_post_diff.png"
 with open(server_image_path, "wb") as file_writer:
     file_writer.write(image_png_data)
 print(f"Image saved to {server_image_path}")
