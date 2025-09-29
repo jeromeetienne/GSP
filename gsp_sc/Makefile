@@ -11,7 +11,6 @@ lint_src: ## Run pyright type checker on ./src
 lint_examples: ## Run pyright type checker on ./examples
 	pyright examples/
 
-
 ##########################################################################
 
 network_server_dev: ## Run the network server in development mode
