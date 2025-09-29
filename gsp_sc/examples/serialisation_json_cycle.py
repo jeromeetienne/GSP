@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.image as mpl_img
 
 import os
+import json
 
 
 
@@ -70,7 +71,8 @@ print(f"original Rendered image saved to: {rendered_image_path}")
 # Export the scene to JSON
 #
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
-scene_json = json_renderer.render(canvas, camera)
+scene_dict = json_renderer.render(canvas, camera)
+scene_json = json.dumps(scene_dict, indent=4)
 
 json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_scene.json"
 with open(json_output_path, 'w') as json_file:

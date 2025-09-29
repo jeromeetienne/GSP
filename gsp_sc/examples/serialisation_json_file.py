@@ -6,6 +6,7 @@ import gsp_sc.src as gsp_sc
 import numpy as np
 import os
 import msgpack
+import json
 
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
@@ -36,7 +37,9 @@ viewport.add(pixels)
 #
 camera = gsp_sc.core.Camera("perspective")
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
-scene_json = json_renderer.render(canvas, camera)
+scene_dict = json_renderer.render(canvas, camera)
+scene_json = json.dumps(scene_dict, indent=4)
+
 
 # save to file as json
 json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_scene.json"

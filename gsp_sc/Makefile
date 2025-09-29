@@ -1,6 +1,9 @@
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sed 's/:.*##/:/' | column -t -s:
 
+clean_output: ## Remove all generated output files
+	rm -f examples/output/*
+
 ##############################################################################
 
 lint: lint_src lint_examples ## Run pyright type checker on src and examples
