@@ -20,8 +20,8 @@ from ..json.renderer import JsonRenderer
 class NetworkPayload(TypedDict):
     client_id: str
     """Unique client ID for the server to identify the client."""
-    type: Literal["absolute", "diff"]  # or other literal string values if any
-    """Type of rendering to perform. "absolute" to always render the full scene, "diff" to only render changes since last call."""
+    type: Literal["absolute", "json_diff"]  # or other literal string values if any
+    """Type of rendering to perform. "absolute" to always render the full scene, "json_diff" to only render changes since last call."""
     data: SceneDict|Any  # or a more specific type if you know the structure of scene_json
     """The scene data in JSON format."""
 
@@ -59,7 +59,7 @@ class NetworkRenderer:
             scene_diff = str(jsonpatch.JsonPatch.from_diff(self.__absolute_scene, scene_dict))
             payload: NetworkPayload = {
                 "client_id": self.__client_id,
-                "type": "diff",
+                "type": "json_diff",
                 "data": scene_diff,
             }
         else:

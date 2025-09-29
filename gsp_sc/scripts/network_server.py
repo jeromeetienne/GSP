@@ -41,7 +41,7 @@ def render_scene_json() -> Response:
         scene_dict: SceneDict = payload["data"]
         # log the operation
         print(f"Rendering absolute scene for client_id={client_id}. Scene size: {len(str(scene_dict))} bytes")
-    elif payload["type"] == "diff":
+    elif payload["type"] == "json_diff":
         old_scene_dict = absolute_scenes.get(client_id)
         # If no previous absolute scene exists, return an error
         if old_scene_dict is None:
