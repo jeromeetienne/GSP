@@ -91,39 +91,47 @@ class DeltaNdarray(np.ndarray):
     #
 
     def to_json(self) -> dict[str, Any]:
-        delta_data = self.get_delta()
-        if delta_data is not None:
-            delta_slice = self.get_delta_slices()
-            assert delta_slice is not None, "Delta slice should not be None if delta data exists"
-            # There are modifications, serialize only the delta region
-            json_dict = {
-                "slices": DeltaNdarray.slice_to_json(delta_slice),
-                "data": delta_data.tolist(),
-            }
-        else:
-            # No modifications, serialize the whole array
+        delta_slices = self.get_delta_slices()
+
+        # No modifications, serialize the whole array
+        if delta_slices is None:
             json_dict = {
                 "slices": None,
                 "data": self.tolist(),
             }
+            return json_dict
+
+        # There are modifications, serialize only the delta region
+        delta_data = self.get_delta()
+
+        # Ensure the delta_data is valid
+        assert delta_data is not None, "Delta data should not be None if delta slices exists"
+
+        # Serialize the slices and the delta data
+        json_dict = {
+            "slices": DeltaNdarray.slice_to_json(delta_slices),
+            "data": delta_data.tolist(),
+        }
         return json_dict
 
     @staticmethod
     def from_json(json_dict: dict[str, Any], previous_arr: 'DeltaNdarray|None', in_place: bool = False) -> "DeltaNdarray":
 
+        # No modifications, create a new DeltaNdarray with the full data
         if json_dict["slices"] is None:
-            # No modifications, create a new DeltaNdarray with the full data
             new_arr = DeltaNdarray(np.array(json_dict["data"]))
             return new_arr
 
-        # from here, there are modifications to apply
+        # from here, there are modifications to apply, so we need the previous array
         assert previous_arr is not None, "previous_arr must be provided if there are modifications to apply"
 
         # honor the in_place flag
         new_arr = previous_arr if in_place else DeltaNdarray(np.copy(previous_arr))
 
-        # reconstruct the delta region
+        # deserialize the slices
         slices = DeltaNdarray.slice_from_json(json_dict["slices"])
+
+        # apply the patch
         new_arr.patch(slices, np.array(json_dict["data"]))
 
         return new_arr
@@ -148,9 +156,10 @@ class DeltaNdarray(np.ndarray):
         return slices_tuple
 
 
+###############################################################################
+#   Example usage
+#
 if __name__ == "__main__":
-    # Example usage
-
     delta_arr = DeltaNdarray(np.zeros((5, 5), dtype=int))
     # print(arr.get_delta())
     print("Initial array:\n", delta_arr)
@@ -166,8 +175,12 @@ if __name__ == "__main__":
     print("\nSerialized to JSON:", delta_arr_json_str)
 
     # Deserialize from JSON
-    delta_arr_loaded = DeltaNdarray.from_json(json.loads(delta_arr_json_str), delta_arr)
-    print("\nDeserialized array:\n", delta_arr_loaded)
+    delta_arr_loaded = DeltaNdarray.from_json(json.loads(delta_arr_json_str), delta_arr, in_place=False)
+    print("\nDeserialized array:\n", delta_arr_loaded, "\nis delta_arr:", delta_arr_loaded is delta_arr)
+
+    # Deserialize from JSON in-place
+    delta_arr_loaded_inplace = DeltaNdarray.from_json(json.loads(delta_arr_json_str), delta_arr, in_place=True)
+    print("\nDeserialized array (in-place):\n", delta_arr_loaded_inplace, "\nis delta_arr:", delta_arr_loaded_inplace is delta_arr)
 
     delta_arr.clear_delta()
     print("\nAfter clearing delta:", delta_arr.get_delta_slices())

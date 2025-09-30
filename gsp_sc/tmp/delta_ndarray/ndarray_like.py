@@ -13,7 +13,7 @@ from gsp_sc.tmp.delta_ndarray.delta_ndarray import DeltaNdarray
 from gsp_sc.src.transform import TransformLinkImmediate, TransformLinkLambda
 
 
-NdarrayLikeVariableType = Union[np.ndarray, TransformLinkBase, DeltaNdarray]
+NdarrayLikeVariableType = np.ndarray | TransformLinkBase | DeltaNdarray
 
 NdarrayLikeSerializedType = dict[str, Any]
 
@@ -46,9 +46,13 @@ class NdarrayLikeUtils:
             raise TypeError("Input must be either a numpy ndarray or a TransformLinkBase instance.")
 
     @staticmethod
-    def from_json(serialized_data: NdarrayLikeSerializedType, previous_ndarray_like: NdarrayLikeVariableType | None) -> NdarrayLikeVariableType:
+    def from_json(serialized_data: NdarrayLikeSerializedType, previous_ndarray_like: NdarrayLikeVariableType | None = None) -> NdarrayLikeVariableType:
         """
         Convert a JSON-serializable format to either a TransformLinkBase or a numpy ndarray.
+
+        arguments:
+            serialized_data: The JSON-serializable dictionary.
+            previous_ndarray_like: Optional previous NdarrayLikeVariableType, required if serialized_data is of type DeltaNdarray
         """
 
         if serialized_data["type"] == "transform_links":
@@ -96,7 +100,7 @@ if __name__ == "__main__":
     assert isinstance(arr, NdarrayLikeVariableType), "np.ndarray should be a valid NdarrayLikeVariableType"
     serialized_arr = NdarrayLikeUtils.to_json(arr)
     print("Serialized ndarray:", serialized_arr)
-    deserialized_arr = NdarrayLikeUtils.from_json(serialized_arr, None)
+    deserialized_arr = NdarrayLikeUtils.from_json(serialized_arr)
     print("Deserialized ndarray:", deserialized_arr)
 
     # Example 2: Using DeltaNdarray
@@ -104,7 +108,7 @@ if __name__ == "__main__":
     assert isinstance(delta, NdarrayLikeVariableType), "DeltaNdarray should be a valid NdarrayLikeVariableType"
     serialized_delta = NdarrayLikeUtils.to_json(delta)
     print("Serialized DeltaNdarray:", serialized_delta)
-    deserialized_delta = NdarrayLikeUtils.from_json(serialized_delta, None)
+    deserialized_delta = NdarrayLikeUtils.from_json(serialized_delta)
     print("Deserialized DeltaNdarray:", deserialized_delta)
 
     # Example 3: Using TransformLinkBase chain
@@ -112,5 +116,5 @@ if __name__ == "__main__":
     assert isinstance(transformLinks, NdarrayLikeVariableType), "TransformLinkBase should be a valid NdarrayLikeVariableType"
     serialized_transform = NdarrayLikeUtils.to_json(transformLinks)
     print("Serialized TransformLinkBase:", serialized_transform)
-    deserialized_transform = typing.cast(TransformLinkBase, NdarrayLikeUtils.from_json(serialized_transform, None))
+    deserialized_transform = typing.cast(TransformLinkBase, NdarrayLikeUtils.from_json(serialized_transform))
     print("Deserialized TransformLinkBase run result:", deserialized_transform.run())
