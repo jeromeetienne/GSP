@@ -13,7 +13,7 @@ from gsp_sc.tmp.delta_ndarray.delta_ndarray import DeltaNdarray
 from gsp_sc.src.transform import TransformLinkImmediate, TransformLinkLambda
 
 
-NdarrayLikeVariableType = np.ndarray | TransformLinkBase | DeltaNdarray
+NdarrayLikeVariableType = TransformLinkBase | DeltaNdarray | np.ndarray
 
 NdarrayLikeSerializedType = dict[str, Any]
 
@@ -59,15 +59,15 @@ class NdarrayLikeUtils:
             json_array = typing.cast(list[dict[str, Any]], serialized_data["data"])
             link_head = TransformSerialisation.from_json(json_array)
             return link_head
+        elif serialized_data["type"] == "delta_ndarray":
+            assert isinstance(previous_ndarray_like, DeltaNdarray | None), "previous_ndarray_like must be DeltaNdarray or None"
+            delta_array = DeltaNdarray.from_json(serialized_data["data"], previous_ndarray_like, in_place=True)
+            return delta_array
         elif serialized_data["type"] == "ndarray":
             if not isinstance(serialized_data["data"], list):
                 raise TypeError("Expected 'data' to be a list.")
             array_np = np.array(serialized_data["data"])
             return array_np
-        elif serialized_data["type"] == "delta_ndarray":
-            assert isinstance(previous_ndarray_like, DeltaNdarray | None), "previous_ndarray_like must be DeltaNdarray or None"
-            delta_array = DeltaNdarray.from_json(serialized_data["data"], previous_ndarray_like, in_place=True)
-            return delta_array
         else:
             raise TypeError("Input list elements must be either dicts or numeric types.")
 

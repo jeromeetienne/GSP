@@ -17,6 +17,7 @@ def test_delta_ndarray_setitem_and_delta_tracking() -> None:
 def test_delta_ndarray_clear_delta() -> None:
     arr = DeltaNdarray(np.zeros((3, 3), dtype=int))
     arr[0, 0] = 1
+    assert arr.is_modified() is True
     assert arr.get_delta_slices() == (slice(0, 1), slice(0, 1))
     arr.clear_delta()
     assert arr.is_modified() is False
