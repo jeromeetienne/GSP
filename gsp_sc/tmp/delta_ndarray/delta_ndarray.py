@@ -66,15 +66,19 @@ class DeltaNdarray(np.ndarray):
             if self._delta_max[axis] is None or stop > self._delta_max[axis]:
                 self._delta_max[axis] = stop
 
+    def is_modified(self) -> bool:
+        delta_slices = self.get_delta_slices()
+        return delta_slices is not None
+
     def get_delta_slices(self) -> None | tuple[slice, ...]:
         if any(m is None for m in self._delta_min):
             return None  # No changes
         return tuple(slice(self._delta_min[i], self._delta_max[i]) for i in range(self.ndim))
 
-    def get_delta(self) -> None | np.ndarray:
+    def get_delta(self) -> np.ndarray:
         slices = self.get_delta_slices()
-        if slices is None:
-            return None
+        assert slices is not None, "No modifications to get delta from"
+
         return self[slices]
 
     def clear_delta(self) -> None:

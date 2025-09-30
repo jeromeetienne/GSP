@@ -2,5 +2,12 @@
         "makefile.configureOnOpen": false,
         "python.analysis.languageServerMode": "full",
         "python.analysis.typeCheckingMode": "basic",
-        "python.formatting.blackArgs": ["--line-length=120"],
+        "python.formatting.blackArgs": [
+                "--line-length=120"
+        ],
+        "python.testing.pytestArgs": [
+                "gsp_sc/tests"
+        ],
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true,
 }

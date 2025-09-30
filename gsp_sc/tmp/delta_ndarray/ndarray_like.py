@@ -34,13 +34,13 @@ class NdarrayLikeUtils:
             link_head = typing.cast(TransformLinkBase, data)
             serialized_dict = {"type": "transform_links", "data": TransformSerialisation.to_json(link_head)}
             return serialized_dict
-        elif isinstance(data, np.ndarray):
-            ndarray = typing.cast(np.ndarray, data)
-            serialized_dict = {"type": "ndarray", "data": ndarray.tolist()}
-            return serialized_dict
         elif isinstance(data, DeltaNdarray):
             delta_array = typing.cast(DeltaNdarray, data)
             serialized_dict = {"type": "delta_ndarray", "data": delta_array.to_json()}
+            return serialized_dict
+        elif isinstance(data, np.ndarray):
+            ndarray = typing.cast(np.ndarray, data)
+            serialized_dict = {"type": "ndarray", "data": ndarray.tolist()}
             return serialized_dict
         else:
             raise TypeError("Input must be either a numpy ndarray or a TransformLinkBase instance.")
