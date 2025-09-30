@@ -20,9 +20,10 @@ NdarrayLikeSerializedType = dict[str, Any]
 
 class NdarrayLikeUtils:
     """
-    Utility class to handle inputs that can be either a numpy ndarray or a TransformLinkBase.
+    Utility class to handle inputs that can be either a numpy ndarray or a TransformLinkBase chain or a DeltaNdarray.
+    This class provides methods to serialize/deserialize them to/from JSON-compatible formats.
 
-    Used a lot in the visuals
+
     """
 
     @staticmethod
@@ -72,7 +73,7 @@ class NdarrayLikeUtils:
             raise TypeError("Input list elements must be either dicts or numeric types.")
 
     @staticmethod
-    def to_ndarray(data: np.ndarray | TransformLinkBase | DeltaNdarray) -> np.ndarray:
+    def to_numpy(data: np.ndarray | TransformLinkBase | DeltaNdarray) -> np.ndarray:
         """
         Convert the input data to a numpy ndarray.
         """

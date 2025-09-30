@@ -40,21 +40,21 @@ def test_to_json_and_from_json_with_transform_link_base():
     assert isinstance(deserialized, TransformLinkBase)
     np.testing.assert_array_equal(deserialized.run(), arr + 1)
 
-def test_to_ndarray_with_ndarray():
+def test_to_numpy_with_ndarray():
     arr = np.array([1, 2, 3])
-    result = NdarrayLikeUtils.to_ndarray(arr)
+    result = NdarrayLikeUtils.to_numpy(arr)
     np.testing.assert_array_equal(result, arr)
 
-def test_to_ndarray_with_transform_link_base():
+def test_to_numpy_with_transform_link_base():
     arr = np.array([1, 2, 3])
     link = TransformLinkImmediate(arr).chain(TransformLinkLambda(lambda x: x * 2))
-    result = NdarrayLikeUtils.to_ndarray(link)
+    result = NdarrayLikeUtils.to_numpy(link)
     np.testing.assert_array_equal(result, arr * 2)
 
-def test_to_ndarray_with_delta_ndarray():
+def test_to_numpy_with_delta_ndarray():
     arr = [[9, 8], [7, 6]]
     delta = DeltaNdarray(arr)
-    result = NdarrayLikeUtils.to_ndarray(delta)
+    result = NdarrayLikeUtils.to_numpy(delta)
     np.testing.assert_array_equal(result, np.array(arr))
 
 def test_to_json_invalid_type():
