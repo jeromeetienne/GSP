@@ -1,7 +1,6 @@
 # stdlib imports
 from typing import Literal
 import typing
-from typing_extensions import deprecated
 
 # pip imports
 import numpy as np

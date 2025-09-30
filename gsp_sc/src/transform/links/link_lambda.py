@@ -56,7 +56,8 @@ class TransformLinkLambda(TransformLinkBase):
     @staticmethod
     def __extract_lambda_from_sourcelines(code_string: str) -> str:
         """
-        Parses a string containing a Python call to extract a lambda function.
+        Parses a string containing a Python call to extract a lambda function. 
+        Super black magic.
 
         This function finds the 'lambda' keyword and then scans the string,
         balancing parentheses to correctly identify the end of the lambda

@@ -1,4 +1,7 @@
+from typing import Any
 import numpy as np
+import json
+
 
 class DeltaNdarray(np.ndarray):
     """
@@ -17,7 +20,7 @@ class DeltaNdarray(np.ndarray):
     Here we took the policy to have a single bounding box for all modifications.
     This may produce a larger bounding box than strictly necessary if modifications
     are scattered. To track per indice modifications, would reduce the serialised size
-    further, but would increase the local memory usage. 
+    further, but would increase the local memory usage.
 
     ### Possible other policies
     - Track per indice modifications (more memory usage, smaller serialised size)
@@ -25,22 +28,22 @@ class DeltaNdarray(np.ndarray):
     - Track multiple bounding boxes (more memory usage, smaller serialised size, more complex code/maintenance)
     """
 
-    def __new__(cls, input_array):
+    def __new__(cls, input_array) -> "DeltaNdarray":
         obj = np.asarray(input_array).view(cls)
         obj._reset_delta()
         return obj
 
-    def _reset_delta(self):
+    def _reset_delta(self) -> None:
         self._delta_min = [None] * self.ndim
         self._delta_max = [None] * self.ndim
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value) -> None:
         # Update delta bounds
         idx = self._normalize_key(key)
         self._update_delta_bounds(idx)
         super().__setitem__(key, value)
 
-    def _normalize_key(self, key):
+    def _normalize_key(self, key) -> list[tuple[int, int]]:
         # Convert key to a tuple of slices/indices for each axis
         if not isinstance(key, tuple):
             key = (key,)
@@ -48,7 +51,7 @@ class DeltaNdarray(np.ndarray):
         idx = []
         for i, k in enumerate(key):
             if isinstance(k, int):
-                idx.append((k, k+1))
+                idx.append((k, k + 1))
             elif isinstance(k, slice):
                 start, stop, step = k.indices(self.shape[i])
                 idx.append((start, stop))
@@ -56,36 +59,115 @@ class DeltaNdarray(np.ndarray):
                 raise TypeError(f"Unsupported index type: {type(k)}")
         return idx
 
-    def _update_delta_bounds(self, idx):
+    def _update_delta_bounds(self, idx) -> None:
         for axis, (start, stop) in enumerate(idx):
             if self._delta_min[axis] is None or start < self._delta_min[axis]:
                 self._delta_min[axis] = start
             if self._delta_max[axis] is None or stop > self._delta_max[axis]:
                 self._delta_max[axis] = stop
 
-    def get_delta_slice(self):
+    def get_delta_slices(self) -> None | tuple[slice, ...]:
         if any(m is None for m in self._delta_min):
             return None  # No changes
         return tuple(slice(self._delta_min[i], self._delta_max[i]) for i in range(self.ndim))
 
-    def get_delta(self):
-        s = self.get_delta_slice()
-        if s is None:
+    def get_delta(self) -> None | np.ndarray:
+        slices = self.get_delta_slices()
+        if slices is None:
             return None
-        return self[s]
+        return self[slices]
 
-    def clear_delta(self):
+    def clear_delta(self) -> None:
         self._reset_delta()
+
+    def patch(self, slices: tuple[slice, ...], delta: np.ndarray) -> None:
+        if slices is None:
+            raise ValueError("Invalid slices")
+        self[slices] = delta
+
+
+    ###############################################################################
+    #   JSON serialisation
+    #
+
+    def to_json(self) -> dict[str, Any]:
+        delta_data = self.get_delta()
+        if delta_data is not None:
+            delta_slice = self.get_delta_slices()
+            assert delta_slice is not None, "Delta slice should not be None if delta data exists"
+            # There are modifications, serialize only the delta region
+            json_dict = {
+                "slices": DeltaNdarray.slice_to_json(delta_slice),
+                "data": delta_data.tolist(),
+            }
+        else:
+            # No modifications, serialize the whole array
+            json_dict = {
+                "slices": None,
+                "data": self.tolist(),
+            }
+        return json_dict
+
+    @staticmethod
+    def from_json(json_dict: dict[str, Any], previous_arr: 'DeltaNdarray|None', in_place: bool = False) -> "DeltaNdarray":
+
+        if json_dict["slices"] is None:
+            # No modifications, create a new DeltaNdarray with the full data
+            new_arr = DeltaNdarray(np.array(json_dict["data"]))
+            return new_arr
+
+        # from here, there are modifications to apply
+        assert previous_arr is not None, "previous_arr must be provided if there are modifications to apply"
+
+        # honor the in_place flag
+        new_arr = previous_arr if in_place else DeltaNdarray(np.copy(previous_arr))
+
+        # reconstruct the delta region
+        slices = DeltaNdarray.slice_from_json(json_dict["slices"])
+        new_arr.patch(slices, np.array(json_dict["data"]))
+
+        return new_arr
+
+    ###############################################################################
+    #   Slice to/from JSON
+    #
+    @staticmethod
+    def slice_to_json(slices: tuple[slice, ...]) -> dict[str, Any]:
+        """
+        Convert a tuple of slices to a JSON-serializable dictionary.
+        """
+        slice_dict = {"slices": [{"start": _slice.start, "stop": _slice.stop, "step": _slice.step} for _slice in slices]}
+        return slice_dict
+
+    @staticmethod
+    def slice_from_json(slice_dict: dict[str, Any]) -> tuple[slice, ...]:
+        """
+        Convert a JSON-serializable dictionary back to a tuple of slices.
+        """
+        slices_tuple = tuple(slice(_slice["start"], _slice["stop"], _slice["step"]) for _slice in slice_dict["slices"])
+        return slices_tuple
 
 
 if __name__ == "__main__":
     # Example usage
-    arr = DeltaNdarray(np.zeros((5, 5), dtype=int))
-    print("Initial array:\n", arr)
-    arr[1, 2] = 10
-    arr[3:5, 1:4] = 5
-    print("\nModified array:\n", arr)
-    print("\nDelta slice:", arr.get_delta_slice())
-    print("Delta region:\n", arr.get_delta())
-    arr.clear_delta()
-    print("\nAfter clearing delta:", arr.get_delta_slice())
+
+    delta_arr = DeltaNdarray(np.zeros((5, 5), dtype=int))
+    # print(arr.get_delta())
+    print("Initial array:\n", delta_arr)
+    delta_arr[1, 2] = 10
+    delta_arr[3:5, 1:4] = 5
+    print("\nModified array:\n", delta_arr)
+    print("\nDelta slice:", delta_arr.get_delta_slices())
+    print("Delta region:\n", delta_arr.get_delta())
+
+    # Serialize to JSON
+    delta_arr_json_dict = delta_arr.to_json()
+    delta_arr_json_str = json.dumps(delta_arr_json_dict, indent=4)
+    print("\nSerialized to JSON:", delta_arr_json_str)
+
+    # Deserialize from JSON
+    delta_arr_loaded = DeltaNdarray.from_json(json.loads(delta_arr_json_str), delta_arr)
+    print("\nDeserialized array:\n", delta_arr_loaded)
+
+    delta_arr.clear_delta()
+    print("\nAfter clearing delta:", delta_arr.get_delta_slices())
