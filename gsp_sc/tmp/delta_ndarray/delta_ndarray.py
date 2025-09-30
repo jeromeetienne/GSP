@@ -67,26 +67,46 @@ class DeltaNdarray(np.ndarray):
                 self._delta_max[axis] = stop
 
     def is_modified(self) -> bool:
-        delta_slices = self.get_delta_slices()
-        return delta_slices is not None
+        slices = self._get_delta_slices()
+        return slices is not None
 
-    def get_delta_slices(self) -> None | tuple[slice, ...]:
+    def _get_delta_slices(self) -> None | tuple[slice, ...]:
         if any(m is None for m in self._delta_min):
             return None  # No changes
         return tuple(slice(self._delta_min[i], self._delta_max[i]) for i in range(self.ndim))
 
+    def get_delta_slices(self) -> tuple[slice, ...]:
+        """
+        Return the slices that define the bounding box of all modifications.
+        Raises a ValueError if there are no modifications (use is_modified() to check).
+        """
+        slices = self._get_delta_slices()
+        if slices is None:
+            raise ValueError("No modifications to get delta slices from (use is_modified() to check)")
+
+        return slices
+
     def get_delta(self) -> np.ndarray:
+        """
+        Return the modified region of the array.
+        Raises an assertion error if there are no modifications (use is_modified() to check).
+        """
         slices = self.get_delta_slices()
-        assert slices is not None, "No modifications to get delta from"
+        assert slices is not None, "No modifications to get delta from (use is_modified() to check)"
 
         return self[slices]
 
     def clear_delta(self) -> None:
+        """ 
+        Clear the modification tracking.
+        After calling this method, the array is considered unmodified until further changes are made.
+        """
         self._reset_delta()
 
     def patch(self, slices: tuple[slice, ...], delta: np.ndarray) -> None:
-        if slices is None:
-            raise ValueError("Invalid slices")
+        """
+        Apply a patch to the array at the specified slices with the provided delta data.
+        """
         self[slices] = delta
 
 
@@ -95,10 +115,9 @@ class DeltaNdarray(np.ndarray):
     #
 
     def to_json(self) -> dict[str, Any]:
-        delta_slices = self.get_delta_slices()
 
         # No modifications, serialize the whole array
-        if delta_slices is None:
+        if self.is_modified() is False:
             json_dict = {
                 "slices": None,
                 "data": self.tolist(),
@@ -106,6 +125,7 @@ class DeltaNdarray(np.ndarray):
             return json_dict
 
         # There are modifications, serialize only the delta region
+        delta_slices = self.get_delta_slices()
         delta_data = self.get_delta()
 
         # Ensure the delta_data is valid
