@@ -41,10 +41,13 @@ class NetworkRenderer:
 
         self.__server_url = server_url
         """URL of the server, e.g. "http://localhost:5000/"."""
+
         self.__client_id = str(uuid.uuid4())
         """Unique client ID for the server to identify the client."""
+
         self.__diff_allowed = diff_allowed
         """True to allow diff rendering, False to always render the full scene."""
+
         self.__absolute_scene: SceneDict | None = None
         """The last absolute scene data sent to the server, or None if none has been sent."""
 
