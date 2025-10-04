@@ -95,8 +95,8 @@ class _ExampleLauncher:
                 command_queue.run(gsp_matplotlib)
 
                 # Display the result using matplotlib (just to debug)
-                import matplotlib.pyplot as plt
-                plt.show(block=True)
+                # import matplotlib.pyplot as plt
+                # plt.show(block=True)
         elif args.command == "matplotlib_image":
             import matplotlib.pyplot as plt
 
