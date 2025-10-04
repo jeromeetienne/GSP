@@ -1,9 +1,12 @@
 from typing import Any
 import numpy as np
 import json
+import typing
 
 
+# TODO to rename DiffableNdarray ?
 class DeltaNdarray(np.ndarray):
+
     """
     A NumPy ndarray subclass that tracks the minimal bounding box of all modifications made to its elements.
     It works for n-dimensional arrays.
@@ -30,17 +33,27 @@ class DeltaNdarray(np.ndarray):
 
     def __new__(cls, input_array) -> "DeltaNdarray":
         obj = np.asarray(input_array).view(cls)
-        obj._reset_delta()
+        obj._delta_min = typing.cast(list[int | None], [None] * obj.ndim)
+        obj._delta_max = typing.cast(list[int | None], [None] * obj.ndim)
         return obj
+    
+    def __array_finalize__(self, obj):
+        # This method is called automatically after the object is created,
+        # both when new instances are created and when slicing happens.
+        if obj is None:
+            return
+        # Copy the attribute from the original object (if it exists)
+        self._delta_min = obj._delta_min if hasattr(obj, '_delta_min') else [None] * self.ndim
+        self._delta_max = obj._delta_max if hasattr(obj, '_delta_max') else [None] * self.ndim
 
     def _reset_delta(self) -> None:
-        self._delta_min = [None] * self.ndim
-        self._delta_max = [None] * self.ndim
+        self._delta_min: list[int | None] = [None] * self.ndim
+        self._delta_max: list[int | None] = [None] * self.ndim
 
     def __setitem__(self, key, value) -> None:
         # Update delta bounds
         idx = self._normalize_key(key)
-        self._update_delta_bounds(idx)
+        self._update_delta_minmax(idx)
         super().__setitem__(key, value)
 
     def _normalize_key(self, key) -> list[tuple[int, int]]:
@@ -59,43 +72,58 @@ class DeltaNdarray(np.ndarray):
                 raise TypeError(f"Unsupported index type: {type(k)}")
         return idx
 
-    def _update_delta_bounds(self, idx) -> None:
+    def _update_delta_minmax(self, idx) -> None:
         for axis, (start, stop) in enumerate(idx):
             if self._delta_min[axis] is None or start < self._delta_min[axis]:
                 self._delta_min[axis] = start
             if self._delta_max[axis] is None or stop > self._delta_max[axis]:
                 self._delta_max[axis] = stop
 
-    def is_modified(self) -> bool:
-        slices = self._get_delta_slices()
-        return slices is not None
-
     def _get_delta_slices(self) -> None | tuple[slice, ...]:
         if any(m is None for m in self._delta_min):
             return None  # No changes
         return tuple(slice(self._delta_min[i], self._delta_max[i]) for i in range(self.ndim))
 
+    ###############################################################################
+    #   Public API
+    #
+
+
+    def copy(self, order="C") -> "DeltaNdarray":
+        """
+        Create a copy of the DeltaNdarray, including its modification tracking state.
+        """
+        new_copy = super().copy(order=order).view(DeltaNdarray)
+        new_copy._delta_min = self._delta_min.copy()
+        new_copy._delta_max = self._delta_max.copy()
+        return new_copy
+
+    def is_modified(self) -> bool:
+        slices = self._get_delta_slices()
+        return slices is not None
+
     def get_delta_slices(self) -> tuple[slice, ...]:
         """
         Return the slices that define the bounding box of all modifications.
-        Raises a ValueError if there are no modifications (use is_modified() to check).
+        Raises a assertion error if there are no modifications (use is_modified() to check).
         """
-        slices = self._get_delta_slices()
-        if slices is None:
-            raise ValueError("No modifications to get delta slices from (use is_modified() to check)")
+        delta_slices = self._get_delta_slices()
+        assert delta_slices is not None, "No modifications to get delta slices from (use is_modified() to check)"
 
-        return slices
+        return delta_slices
 
-    def get_delta(self) -> np.ndarray:
+    def get_delta_data(self) -> np.ndarray:
         """
         Return the modified region of the array.
         Raises an assertion error if there are no modifications (use is_modified() to check).
         """
-        slices = self.get_delta_slices()
-        assert slices is not None, "No modifications to get delta from (use is_modified() to check)"
+        delta_slices = self._get_delta_slices()
+        assert delta_slices is not None, "No modifications to get delta data from (use is_modified() to check)"
 
-        return self[slices]
+        delta_data: np.ndarray = self[delta_slices]
 
+        return delta_data
+    
     def clear_delta(self) -> None:
         """ 
         Clear the modification tracking.
@@ -103,108 +131,36 @@ class DeltaNdarray(np.ndarray):
         """
         self._reset_delta()
 
-    def patch(self, slices: tuple[slice, ...], delta: np.ndarray) -> None:
+    def apply_patch(self, delta_slices: tuple[slice, ...], delta_region: np.ndarray) -> None:
         """
         Apply a patch to the array at the specified slices with the provided delta data.
         """
-        self[slices] = delta
-
-
-    ###############################################################################
-    #   JSON serialisation
-    #
-
-    def to_json(self) -> dict[str, Any]:
-
-        # No modifications, serialize the whole array
-        if self.is_modified() is False:
-            json_dict = {
-                "slices": None,
-                "data": self.tolist(),
-            }
-            return json_dict
-
-        # There are modifications, serialize only the delta region
-        delta_slices = self.get_delta_slices()
-        delta_data = self.get_delta()
-
-        # Ensure the delta_data is valid
-        assert delta_data is not None, "Delta data should not be None if delta slices exists"
-
-        # Serialize the slices and the delta data
-        json_dict = {
-            "slices": DeltaNdarray.slice_to_json(delta_slices),
-            "data": delta_data.tolist(),
-        }
-        return json_dict
-
-    @staticmethod
-    def from_json(json_dict: dict[str, Any], previous_arr: 'DeltaNdarray|None', in_place: bool = False) -> "DeltaNdarray":
-
-        # No modifications, create a new DeltaNdarray with the full data
-        if json_dict["slices"] is None:
-            new_arr = DeltaNdarray(np.array(json_dict["data"]))
-            return new_arr
-
-        # from here, there are modifications to apply, so we need the previous array
-        assert previous_arr is not None, "previous_arr must be provided if there are modifications to apply"
-
-        # honor the in_place flag
-        new_arr = previous_arr if in_place else DeltaNdarray(np.copy(previous_arr))
-
-        # deserialize the slices
-        slices = DeltaNdarray.slice_from_json(json_dict["slices"])
-
-        # apply the patch
-        new_arr.patch(slices, np.array(json_dict["data"]))
-
-        return new_arr
-
-    ###############################################################################
-    #   Slice to/from JSON
-    #
-    @staticmethod
-    def slice_to_json(slices: tuple[slice, ...]) -> dict[str, Any]:
-        """
-        Convert a tuple of slices to a JSON-serializable dictionary.
-        """
-        slice_dict = {"slices": [{"start": _slice.start, "stop": _slice.stop, "step": _slice.step} for _slice in slices]}
-        return slice_dict
-
-    @staticmethod
-    def slice_from_json(slice_dict: dict[str, Any]) -> tuple[slice, ...]:
-        """
-        Convert a JSON-serializable dictionary back to a tuple of slices.
-        """
-        slices_tuple = tuple(slice(_slice["start"], _slice["stop"], _slice["step"]) for _slice in slice_dict["slices"])
-        return slices_tuple
+        self[delta_slices] = delta_region
 
 
 ###############################################################################
 #   Example usage
 #
 if __name__ == "__main__":
-    delta_arr = DeltaNdarray(np.zeros((5, 5), dtype=int))
-    # print(arr.get_delta())
+    ###############################################################################
+    #   Example usage without modifications
+    #
+    delta_arr = DeltaNdarray(np.arange(25).reshape(5,5))
+
+    print('*' * 80)
     print("Initial array:\n", delta_arr)
-    delta_arr[1, 2] = 10
-    delta_arr[3:5, 1:4] = 5
-    print("\nModified array:\n", delta_arr)
-    print("\nDelta slice:", delta_arr.get_delta_slices())
-    print("Delta region:\n", delta_arr.get_delta())
+    print("Is modified:", delta_arr.is_modified())
+    assert delta_arr.is_modified() == False, "Array should be marked as modified"
+    
+    ###############################################################################
+    #   Example usage with modifications
+    #
 
-    # Serialize to JSON
-    delta_arr_json_dict = delta_arr.to_json()
-    delta_arr_json_str = json.dumps(delta_arr_json_dict, indent=4)
-    print("\nSerialized to JSON:", delta_arr_json_str)
+    delta_arr[1, 2] = -50
+    delta_arr[3:5, 1:4] = -60
+    assert delta_arr.is_modified() == True, "Array should be marked as modified"
 
-    # Deserialize from JSON
-    delta_arr_loaded = DeltaNdarray.from_json(json.loads(delta_arr_json_str), delta_arr, in_place=False)
-    print("\nDeserialized array:\n", delta_arr_loaded, "\nis delta_arr:", delta_arr_loaded is delta_arr)
-
-    # Deserialize from JSON in-place
-    delta_arr_loaded_inplace = DeltaNdarray.from_json(json.loads(delta_arr_json_str), delta_arr, in_place=True)
-    print("\nDeserialized array (in-place):\n", delta_arr_loaded_inplace, "\nis delta_arr:", delta_arr_loaded_inplace is delta_arr)
-
-    delta_arr.clear_delta()
-    print("\nAfter clearing delta:", delta_arr.get_delta_slices())
+    print("Is modified:", delta_arr.is_modified())
+    print("Delta slice:", delta_arr.get_delta_slices())
+    print("Delta region:\n", delta_arr.get_delta_data())
+    print("Modified array:\n", delta_arr)
