@@ -17,9 +17,9 @@ __dirname__ = os.path.dirname(os.path.abspath(__file__))
 gsp_sc.core.Random.set_random_seed(10)
 np.random.seed(10)
 
-###############################################################################
+# =============================================================================
 # Create a GSP scene
-#
+# =============================================================================
 canvas = gsp_sc.core.Canvas(width=512, height=512, dpi=100)
 camera = gsp_sc.core.Camera("perspective")
 
@@ -32,9 +32,9 @@ viewport = gsp_sc.core.Viewport(
 )
 canvas.add(viewport=viewport)
 
-###############################################################################
+# =============================================================================
 # Add some random points with transformed positions
-#
+# =============================================================================
 
 n_points = 300
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float64)
@@ -48,9 +48,9 @@ colors_np = np.array([gsp_sc.Constants.Green])
 pixels = gsp_sc.visuals.Pixels(positions=position_chain, sizes=sizes_np, colors=colors_np)
 viewport.add(pixels)
 
-###############################################################################
+# ==============================================================================
 # Render locally the scene
-#
+# ==============================================================================
 
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 image_png_data = matplotlib_renderer.render(canvas, camera)
@@ -61,18 +61,19 @@ with open(local_image_path, "wb") as file_writer:
     file_writer.write(image_png_data)
 print(f"Image saved to {local_image_path}")
 
-# ###############################################################################
+# ==============================================================================
 # Render the scene using a network renderer
-#
+# ==============================================================================
 camera = gsp_sc.core.Camera("perspective")
 network_renderer = gsp_sc.renderer.network.NetworkRenderer(
     server_url="http://localhost:5000/"
 )
 image_png_data = network_renderer.render(canvas, camera)
 
-###############################################################################
+# ==============================================================================
 # Save the image to a file
-#
+# ==============================================================================
+
 server_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_server_image.png"
 with open(server_image_path, "wb") as file_writer:
     file_writer.write(image_png_data)

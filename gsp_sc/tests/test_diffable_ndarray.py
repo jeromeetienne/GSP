@@ -1,10 +1,10 @@
 import numpy as np
-from gsp_sc.tmp.delta_ndarray.delta_ndarray import DeltaNdarray
+from gsp_sc.tmp.delta_ndarray.diffable_ndarray import DiffableNdarray
 
 
 def test_delta_ndarray_setitem_and_delta_tracking() -> None:
     # Create a 4x4 DeltaNdarray initialized with zeros
-    arr = DeltaNdarray(np.zeros((4, 4), dtype=int))
+    arr = DiffableNdarray(np.zeros((4, 4), dtype=int))
     # The array should not be marked as modified initially
     assert arr.is_modified() is False
 
@@ -16,31 +16,31 @@ def test_delta_ndarray_setitem_and_delta_tracking() -> None:
     assert arr.is_modified() is True
 
     # Get the slices covering the modified region
-    slices = arr.get_delta_slices()
+    slices = arr.get_diff_slices()
     assert slices == (slice(1, 3), slice(1, 3))
 
     # Get the data corresponding to the modified region
-    delta = arr.get_delta_data()
+    delta = arr.get_diff_data()
     assert np.array_equal(delta, arr[1:3, 1:3])
 
 
 def test_delta_ndarray_clear_delta() -> None:
     # Create a 3x3 DeltaNdarray initialized with zeros
-    arr = DeltaNdarray(np.zeros((3, 3), dtype=int))
+    arr = DiffableNdarray(np.zeros((3, 3), dtype=int))
     # Modify one element in the array
     arr[0, 0] = 1
     # The array should now be marked as modified
     assert arr.is_modified() is True
     # The delta slices should cover only the modified element
-    assert arr.get_delta_slices() == (slice(0, 1), slice(0, 1))
+    assert arr.get_diff_slices() == (slice(0, 1), slice(0, 1))
     # Clear the delta tracking
-    arr.clear_delta()
+    arr.clear_diff()
     # The array should no longer be marked as modified
     assert arr.is_modified() is False
 
 def test_delta_ndarray_apply_patch() -> None:
     # Create a 3x3 DeltaNdarray initialized with zeros
-    arr = DeltaNdarray(np.zeros((3, 3), dtype=int))
+    arr = DiffableNdarray(np.zeros((3, 3), dtype=int))
     # Define the patch slices and patch data to apply
     patch_slices = (slice(0, 2), slice(0, 2))
     patch_data = np.array([[1, 2], [3, 4]])
@@ -51,19 +51,19 @@ def test_delta_ndarray_apply_patch() -> None:
     # The array should be marked as modified
     assert arr.is_modified() is True
     # The delta slices should match the patch slices
-    assert arr.get_delta_slices() == patch_slices
+    assert arr.get_diff_slices() == patch_slices
     # The delta data should match the patch data
-    assert np.array_equal(arr.get_delta_data(), patch_data)
+    assert np.array_equal(arr.get_diff_data(), patch_data)
 
 def test_delta_ndarray_no_modifications() -> None:
-    arr = DeltaNdarray(np.zeros((2, 2), dtype=int))
+    arr = DiffableNdarray(np.zeros((2, 2), dtype=int))
 
     # Initially, the array should not be marked as modified
     assert arr.is_modified() is False
 
     # Attempting to get delta slices or data should raise an assertion error
     try:
-        arr.get_delta_slices()
+        arr.get_diff_slices()
     except AssertionError as e:
         assert str(e) == "No modifications to get delta slices from (use is_modified() to check)"
     else:
@@ -71,7 +71,7 @@ def test_delta_ndarray_no_modifications() -> None:
 
     # Attempting to get delta data should raise an assertion error
     try:
-        arr.get_delta_data()
+        arr.get_diff_data()
     except AssertionError as e:
         assert str(e) == "No modifications to get delta data from (use is_modified() to check)"
     else:
@@ -79,7 +79,7 @@ def test_delta_ndarray_no_modifications() -> None:
 
 def test_delta_ndarray_copy() -> None:
     # Create a DeltaNdarray
-    arr = DeltaNdarray(np.zeros((2, 2), dtype=int))
+    arr = DiffableNdarray(np.zeros((2, 2), dtype=int))
 
     # Modify the array
     arr[0, 0] = 1
@@ -90,7 +90,7 @@ def test_delta_ndarray_copy() -> None:
     arr_copy = arr.copy()
 
     # Clear the delta tracking in the original array
-    arr.clear_delta()
+    arr.clear_diff()
 
     # Check if the copied array is equal to the original and also marked as modified
     assert np.array_equal(arr_copy, arr) is True, "Copied array should be equal to the original"

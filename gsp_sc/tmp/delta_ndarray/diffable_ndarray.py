@@ -1,11 +1,7 @@
-from typing import Any
 import numpy as np
-import json
 import typing
 
-
-# TODO to rename DiffableNdarray ?
-class DeltaNdarray(np.ndarray):
+class DiffableNdarray(np.ndarray):
 
     """
     A NumPy ndarray subclass that tracks the minimal bounding box of all modifications made to its elements.
@@ -31,7 +27,7 @@ class DeltaNdarray(np.ndarray):
     - Track multiple bounding boxes (more memory usage, smaller serialised size, more complex code/maintenance)
     """
 
-    def __new__(cls, input_array) -> "DeltaNdarray":
+    def __new__(cls, input_array) -> "DiffableNdarray":
         obj = np.asarray(input_array).view(cls)
         obj._delta_min = typing.cast(list[int | None], [None] * obj.ndim)
         obj._delta_max = typing.cast(list[int | None], [None] * obj.ndim)
@@ -46,7 +42,7 @@ class DeltaNdarray(np.ndarray):
         self._delta_min = obj._delta_min if hasattr(obj, '_delta_min') else [None] * self.ndim
         self._delta_max = obj._delta_max if hasattr(obj, '_delta_max') else [None] * self.ndim
 
-    def _reset_delta(self) -> None:
+    def _reset_diff(self) -> None:
         self._delta_min: list[int | None] = [None] * self.ndim
         self._delta_max: list[int | None] = [None] * self.ndim
 
@@ -72,14 +68,14 @@ class DeltaNdarray(np.ndarray):
                 raise TypeError(f"Unsupported index type: {type(k)}")
         return idx
 
-    def _update_delta_minmax(self, idx) -> None:
+    def _update_diff_minmax(self, idx) -> None:
         for axis, (start, stop) in enumerate(idx):
             if self._delta_min[axis] is None or start < self._delta_min[axis]:
                 self._delta_min[axis] = start
             if self._delta_max[axis] is None or stop > self._delta_max[axis]:
                 self._delta_max[axis] = stop
 
-    def _get_delta_slices(self) -> None | tuple[slice, ...]:
+    def _get_diff_slices(self) -> None | tuple[slice, ...]:
         if any(m is None for m in self._delta_min):
             return None  # No changes
         return tuple(slice(self._delta_min[i], self._delta_max[i]) for i in range(self.ndim))
@@ -89,11 +85,11 @@ class DeltaNdarray(np.ndarray):
     #
 
 
-    def copy(self, order="C") -> "DeltaNdarray":
+    def copy(self, order="C") -> "DiffableNdarray":
         """
         Create a copy of the DeltaNdarray, including its modification tracking state.
         """
-        new_copy = super().copy(order=order).view(DeltaNdarray)
+        new_copy = super().copy(order=order).view(DiffableNdarray)
         new_copy._delta_min = self._delta_min.copy()
         new_copy._delta_max = self._delta_max.copy()
         return new_copy
@@ -102,40 +98,40 @@ class DeltaNdarray(np.ndarray):
         slices = self._get_delta_slices()
         return slices is not None
 
-    def get_delta_slices(self) -> tuple[slice, ...]:
+    def get_diff_slices(self) -> tuple[slice, ...]:
         """
         Return the slices that define the bounding box of all modifications.
         Raises a assertion error if there are no modifications (use is_modified() to check).
         """
-        delta_slices = self._get_delta_slices()
-        assert delta_slices is not None, "No modifications to get delta slices from (use is_modified() to check)"
+        diff_slices = self._get_diff_slices()
+        assert diff_slices is not None, "No modifications to get diff slices from (use is_modified() to check)"
 
-        return delta_slices
+        return diff_slices
 
-    def get_delta_data(self) -> np.ndarray:
+    def get_diff_data(self) -> np.ndarray:
         """
         Return the modified region of the array.
         Raises an assertion error if there are no modifications (use is_modified() to check).
         """
-        delta_slices = self._get_delta_slices()
-        assert delta_slices is not None, "No modifications to get delta data from (use is_modified() to check)"
+        diff_slices = self._get_diff_slices()
+        assert diff_slices is not None, "No modifications to get diff data from (use is_modified() to check)"
 
-        delta_data: np.ndarray = self[delta_slices]
+        diff_data: np.ndarray = self[diff_slices]
 
-        return delta_data
+        return diff_data
     
-    def clear_delta(self) -> None:
+    def clear_diff(self) -> None:
         """ 
         Clear the modification tracking.
         After calling this method, the array is considered unmodified until further changes are made.
         """
-        self._reset_delta()
+        self._reset_diff()
 
-    def apply_patch(self, delta_slices: tuple[slice, ...], delta_region: np.ndarray) -> None:
+    def apply_patch(self, diff_slices: tuple[slice, ...], diff_region: np.ndarray) -> None:
         """
-        Apply a patch to the array at the specified slices with the provided delta data.
+        Apply a patch to the array at the specified slices with the provided diff data.
         """
-        self[delta_slices] = delta_region
+        self[diff_slices] = diff_region
 
 
 ###############################################################################
@@ -145,22 +141,22 @@ if __name__ == "__main__":
     ###############################################################################
     #   Example usage without modifications
     #
-    delta_arr = DeltaNdarray(np.arange(25).reshape(5,5))
+    diffable_arr = DiffableNdarray(np.arange(25).reshape(5,5))
 
     print('*' * 80)
-    print("Initial array:\n", delta_arr)
-    print("Is modified:", delta_arr.is_modified())
-    assert delta_arr.is_modified() == False, "Array should be marked as modified"
+    print("Initial array:\n", diffable_arr)
+    print("Is modified:", diffable_arr.is_modified())
+    assert diffable_arr.is_modified() == False, "Array should be marked as modified"
     
     ###############################################################################
     #   Example usage with modifications
     #
 
-    delta_arr[1, 2] = -50
-    delta_arr[3:5, 1:4] = -60
-    assert delta_arr.is_modified() == True, "Array should be marked as modified"
+    diffable_arr[1, 2] = -50
+    diffable_arr[3:5, 1:4] = -60
+    assert diffable_arr.is_modified() == True, "Array should be marked as modified"
 
-    print("Is modified:", delta_arr.is_modified())
-    print("Delta slice:", delta_arr.get_delta_slices())
-    print("Delta region:\n", delta_arr.get_delta_data())
-    print("Modified array:\n", delta_arr)
+    print("Is modified:", diffable_arr.is_modified())
+    print("Delta slice:", diffable_arr.get_diff_slices())
+    print("Delta region:\n", diffable_arr.get_diff_data())
+    print("Modified array:\n", diffable_arr)

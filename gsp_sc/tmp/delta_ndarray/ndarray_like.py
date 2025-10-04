@@ -1,7 +1,6 @@
 # stdlib imports
 import typing
-from typing import Any, Optional
-from typing import Union
+from typing import Any
 
 # pip imports
 import numpy as np
@@ -9,12 +8,11 @@ import numpy as np
 # local imports
 from gsp_sc.src.transform import TransformSerialisation
 from gsp_sc.src.transform.transform_link_base import TransformLinkBase
-from gsp_sc.tmp.delta_ndarray.delta_ndarray import DeltaNdarray
-from gsp_sc.tmp.delta_ndarray.delta_ndarray_serialisation import DeltaNdarraySerialisation
+from gsp_sc.tmp.delta_ndarray.diffable_ndarray import DiffableNdarray
+from gsp_sc.tmp.delta_ndarray.diffable_ndarray_serialisation import DiffableNdarraySerialisation
 from gsp_sc.src.transform import TransformLinkImmediate, TransformLinkLambda
 
-
-NdarrayLikeVariableType = TransformLinkBase | DeltaNdarray | np.ndarray
+NdarrayLikeVariableType = TransformLinkBase | DiffableNdarray | np.ndarray
 
 NdarrayLikeSerializedType = dict[str, Any]
 
@@ -36,9 +34,9 @@ class NdarrayLikeUtils:
             link_head = typing.cast(TransformLinkBase, data)
             serialized_dict = {"type": "transform_links", "data": TransformSerialisation.to_json(link_head)}
             return serialized_dict
-        elif isinstance(data, DeltaNdarray):
-            delta_array = typing.cast(DeltaNdarray, data)
-            serialized_dict = {"type": "delta_ndarray", "data": DeltaNdarraySerialisation.to_json(delta_array)}
+        elif isinstance(data, DiffableNdarray):
+            delta_array = typing.cast(DiffableNdarray, data)
+            serialized_dict = {"type": "delta_ndarray", "data": DiffableNdarraySerialisation.to_json(delta_array)}
             return serialized_dict
         elif isinstance(data, np.ndarray):
             ndarray = typing.cast(np.ndarray, data)
@@ -62,8 +60,8 @@ class NdarrayLikeUtils:
             link_head = TransformSerialisation.from_json(json_array)
             return link_head
         elif serialized_data["type"] == "delta_ndarray":
-            assert isinstance(previous_ndarray_like, DeltaNdarray | None), "previous_ndarray_like must be DeltaNdarray or None"
-            delta_array = DeltaNdarraySerialisation.from_json(serialized_data["data"], previous_ndarray_like)
+            assert isinstance(previous_ndarray_like, DiffableNdarray | None), "previous_ndarray_like must be DeltaNdarray or None"
+            delta_array = DiffableNdarraySerialisation.from_json(serialized_data["data"], previous_ndarray_like)
             return delta_array
         elif serialized_data["type"] == "ndarray":
             if not isinstance(serialized_data["data"], list):
@@ -74,7 +72,7 @@ class NdarrayLikeUtils:
             raise TypeError("Input list elements must be either dicts or numeric types.")
 
     @staticmethod
-    def to_numpy(data: np.ndarray | TransformLinkBase | DeltaNdarray) -> np.ndarray:
+    def to_numpy(data: np.ndarray | TransformLinkBase | DiffableNdarray) -> np.ndarray:
         """
         Convert the input data to a numpy ndarray.
         """
@@ -86,8 +84,8 @@ class NdarrayLikeUtils:
         elif isinstance(data, np.ndarray):
             array_np = typing.cast(np.ndarray, data)
             return array_np
-        elif isinstance(data, DeltaNdarray):
-            delta_array = typing.cast(DeltaNdarray, data)
+        elif isinstance(data, DiffableNdarray):
+            delta_array = typing.cast(DiffableNdarray, data)
             return delta_array
         else:
             raise TypeError("Input must be either a numpy ndarray or a TransformLinkBase instance.")
@@ -106,7 +104,7 @@ if __name__ == "__main__":
     print("Deserialized ndarray:", deserialized_arr)
 
     # Example 2: Using DeltaNdarray
-    delta = DeltaNdarray([[10, 20], [30, 40]])
+    delta = DiffableNdarray([[10, 20], [30, 40]])
     assert isinstance(delta, NdarrayLikeVariableType), "DeltaNdarray should be a valid NdarrayLikeVariableType"
     serialized_delta = NdarrayLikeUtils.to_json(delta)
     print("Serialized DeltaNdarray:", serialized_delta)
