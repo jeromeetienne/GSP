@@ -12,11 +12,12 @@ __dirname__ = os.path.dirname(os.path.abspath(__file__))
 core, visual, render = parse_args()
 
 ########################################################################################
-
+#  Create a canvas and a viewport
 canvas = core.Canvas(256, 256, 100.0)
 viewport = core.Viewport(canvas, 0, 0, 256, 256, [1, 1, 1, 1])
 
-######
+###############################################################################
+#   Create a cube with paths
 
 cube_path_positions = glm.vec3(8)
 cube_path_positions[...] = [
@@ -57,6 +58,7 @@ paths_visual = visual.Paths(
 )
 paths_visual.render(viewport)
 
+###############################################################################
 # Read the image_data numpy array from a file and create a texture
 image_path = f"{__dirname__}/images/UV_Grid_Sm.jpg"
 image_data = mpl_img.imread(image_path)
