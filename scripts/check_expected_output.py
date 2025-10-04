@@ -93,17 +93,15 @@ def verify_file_content(expected_path: str, output_path: str) -> bool:
 
 
 def main() -> None:
-    expected_folder = f"{__dirname__}/expected/"
-    output_folder = f"{__dirname__}/output/"
+    expected_folder = f"{__dirname__}/../examples/expected/"
+    output_folder = f"{__dirname__}/../examples/output/"
 
     # get all basename of files in output directory
     expected_basenames = [basename for basename in os.listdir(expected_folder)]
+    # keep only .png and .json files
+    expected_basenames = [basename for basename in expected_basenames if basename.endswith(".png") or basename.endswith(".json")]
 
     for basename_file in expected_basenames:
-        # Keep only .png and .json files
-        if not (basename_file.endswith(".png") or basename_file.endswith(".json")):
-            continue
-
         expected_path = f"{expected_folder}{basename_file}"
         output_path = f"{output_folder}{basename_file}"
 
