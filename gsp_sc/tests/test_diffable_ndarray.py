@@ -1,9 +1,9 @@
 import numpy as np
-from gsp_sc.tmp.delta_ndarray.diffable_ndarray import DiffableNdarray
+from gsp_sc.src.diffable_ndarray.diffable_ndarray import DiffableNdarray
 
 
-def test_delta_ndarray_setitem_and_delta_tracking() -> None:
-    # Create a 4x4 DeltaNdarray initialized with zeros
+def test_diffable_ndarray_setitem_and_diff_tracking() -> None:
+    # Create a 4x4 DiffableNdarray initialized with zeros
     arr = DiffableNdarray(np.zeros((4, 4), dtype=int))
     # The array should not be marked as modified initially
     assert arr.is_modified() is False
@@ -20,26 +20,26 @@ def test_delta_ndarray_setitem_and_delta_tracking() -> None:
     assert slices == (slice(1, 3), slice(1, 3))
 
     # Get the data corresponding to the modified region
-    delta = arr.get_diff_data()
-    assert np.array_equal(delta, arr[1:3, 1:3])
+    diff = arr.get_diff_data()
+    assert np.array_equal(diff, arr[1:3, 1:3])
 
 
-def test_delta_ndarray_clear_delta() -> None:
-    # Create a 3x3 DeltaNdarray initialized with zeros
+def test_diffable_ndarray_clear_diff() -> None:
+    # Create a 3x3 DiffableNdarray initialized with zeros
     arr = DiffableNdarray(np.zeros((3, 3), dtype=int))
     # Modify one element in the array
     arr[0, 0] = 1
     # The array should now be marked as modified
     assert arr.is_modified() is True
-    # The delta slices should cover only the modified element
+    # The diff slices should cover only the modified element
     assert arr.get_diff_slices() == (slice(0, 1), slice(0, 1))
-    # Clear the delta tracking
+    # Clear the diff tracking
     arr.clear_diff()
     # The array should no longer be marked as modified
     assert arr.is_modified() is False
 
-def test_delta_ndarray_apply_patch() -> None:
-    # Create a 3x3 DeltaNdarray initialized with zeros
+def test_diffable_ndarray_apply_patch() -> None:
+    # Create a 3x3 DiffableNdarray initialized with zeros
     arr = DiffableNdarray(np.zeros((3, 3), dtype=int))
     # Define the patch slices and patch data to apply
     patch_slices = (slice(0, 2), slice(0, 2))
@@ -50,35 +50,35 @@ def test_delta_ndarray_apply_patch() -> None:
     assert np.array_equal(arr, np.array([[1, 2, 0], [3, 4, 0], [0, 0, 0]]))
     # The array should be marked as modified
     assert arr.is_modified() is True
-    # The delta slices should match the patch slices
+    # The diff slices should match the patch slices
     assert arr.get_diff_slices() == patch_slices
-    # The delta data should match the patch data
+    # The diff data should match the patch data
     assert np.array_equal(arr.get_diff_data(), patch_data)
 
-def test_delta_ndarray_no_modifications() -> None:
+def test_diffable_ndarray_no_modifications() -> None:
     arr = DiffableNdarray(np.zeros((2, 2), dtype=int))
 
     # Initially, the array should not be marked as modified
     assert arr.is_modified() is False
 
-    # Attempting to get delta slices or data should raise an assertion error
+    # Attempting to get diff slices or data should raise an assertion error
     try:
         arr.get_diff_slices()
     except AssertionError as e:
-        assert str(e) == "No modifications to get delta slices from (use is_modified() to check)"
+        assert str(e) == "No modifications to get diff slices from (use is_modified() to check)"
     else:
-        assert False, "Expected an AssertionError when getting delta data from unmodified array"
+        assert False, "Expected an AssertionError when getting diff data from unmodified array"
 
-    # Attempting to get delta data should raise an assertion error
+    # Attempting to get diff data should raise an assertion error
     try:
         arr.get_diff_data()
     except AssertionError as e:
-        assert str(e) == "No modifications to get delta data from (use is_modified() to check)"
+        assert str(e) == "No modifications to get diff data from (use is_modified() to check)"
     else:
-        assert False, "Expected an AssertionError when getting delta data from unmodified array"
+        assert False, "Expected an AssertionError when getting diff data from unmodified array"
 
-def test_delta_ndarray_copy() -> None:
-    # Create a DeltaNdarray
+def test_diffable_ndarray_copy() -> None:
+    # Create a DiffableNdarray
     arr = DiffableNdarray(np.zeros((2, 2), dtype=int))
 
     # Modify the array
@@ -89,7 +89,7 @@ def test_delta_ndarray_copy() -> None:
     # Create a copy of the array
     arr_copy = arr.copy()
 
-    # Clear the delta tracking in the original array
+    # Clear the diff tracking in the original array
     arr.clear_diff()
 
     # Check if the copied array is equal to the original and also marked as modified

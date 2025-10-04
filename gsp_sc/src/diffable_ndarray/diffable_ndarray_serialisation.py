@@ -1,12 +1,13 @@
-from dataclasses import dataclass
-from re import split
-from tracemalloc import start
+# stdlib imports
 from typing import Any
-import numpy as np
-from gsp_sc.tmp.delta_ndarray.diffable_ndarray import DiffableNdarray
 from dataclasses import dataclass
 
-# TODO to rename DiffableNdarray ?
+# pip imports
+import numpy as np
+
+# local imports
+from gsp_sc.src.diffable_ndarray.diffable_ndarray import DiffableNdarray
+
 class DiffableNdarraySerialisation:
     ###############################################################################
     #   JSON serialisation
@@ -15,7 +16,7 @@ class DiffableNdarraySerialisation:
     @staticmethod
     def to_json(diff_ndarray: DiffableNdarray, diff_allowed: bool = False) -> dict[str, Any]:
         """
-        Serialize the DeltaNdarray to a JSON-serializable dictionary.
+        Serialize the DiffableNdarray to a JSON-serializable dictionary.
         """
 
         # No modifications, serialize the whole array
@@ -47,10 +48,10 @@ class DiffableNdarraySerialisation:
     @staticmethod
     def from_json(json_dict: dict[str, Any], previous_arr: "DiffableNdarray|None", in_place: bool = False) -> "DiffableNdarray":
         """
-        Deserialize a JSON-serializable dictionary back to a DeltaNdarray.
+        Deserialize a JSON-serializable dictionary back to a DiffableNdarray.
         """
 
-        # No modifications, create a new DeltaNdarray with the full data
+        # No modifications, create a new DiffableNdarray with the full data
         if json_dict["slices"] is None:
             new_arr = DiffableNdarray(np.array(json_dict["data"]))
             return new_arr

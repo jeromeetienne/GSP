@@ -8,9 +8,9 @@ import numpy as np
 # local imports
 from gsp_sc.src.transform import TransformSerialisation
 from gsp_sc.src.transform.transform_link_base import TransformLinkBase
-from gsp_sc.tmp.delta_ndarray.diffable_ndarray import DiffableNdarray
-from gsp_sc.tmp.delta_ndarray.diffable_ndarray_serialisation import DiffableNdarraySerialisation
 from gsp_sc.src.transform import TransformLinkImmediate, TransformLinkLambda
+from gsp_sc.src.diffable_ndarray.diffable_ndarray import DiffableNdarray
+from gsp_sc.src.diffable_ndarray.diffable_ndarray_serialisation import DiffableNdarraySerialisation
 
 NdarrayLikeVariableType = TransformLinkBase | DiffableNdarray | np.ndarray
 

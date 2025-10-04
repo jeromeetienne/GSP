@@ -29,8 +29,8 @@ class DiffableNdarray(np.ndarray):
 
     def __new__(cls, input_array) -> "DiffableNdarray":
         obj = np.asarray(input_array).view(cls)
-        obj._delta_min = typing.cast(list[int | None], [None] * obj.ndim)
-        obj._delta_max = typing.cast(list[int | None], [None] * obj.ndim)
+        obj._diff_min = typing.cast(list[int | None], [None] * obj.ndim)
+        obj._diff_max = typing.cast(list[int | None], [None] * obj.ndim)
         return obj
     
     def __array_finalize__(self, obj):
@@ -39,17 +39,17 @@ class DiffableNdarray(np.ndarray):
         if obj is None:
             return
         # Copy the attribute from the original object (if it exists)
-        self._delta_min = obj._delta_min if hasattr(obj, '_delta_min') else [None] * self.ndim
-        self._delta_max = obj._delta_max if hasattr(obj, '_delta_max') else [None] * self.ndim
+        self._diff_min = obj._diff_min if hasattr(obj, '_diff_min') else [None] * self.ndim
+        self._diff_max = obj._diff_max if hasattr(obj, '_diff_max') else [None] * self.ndim
 
     def _reset_diff(self) -> None:
-        self._delta_min: list[int | None] = [None] * self.ndim
-        self._delta_max: list[int | None] = [None] * self.ndim
+        self._diff_min: list[int | None] = [None] * self.ndim
+        self._diff_max: list[int | None] = [None] * self.ndim
 
     def __setitem__(self, key, value) -> None:
-        # Update delta bounds
+        # Update diff bounds
         idx = self._normalize_key(key)
-        self._update_delta_minmax(idx)
+        self._update_diff_minmax(idx)
         super().__setitem__(key, value)
 
     def _normalize_key(self, key) -> list[tuple[int, int]]:
@@ -70,32 +70,31 @@ class DiffableNdarray(np.ndarray):
 
     def _update_diff_minmax(self, idx) -> None:
         for axis, (start, stop) in enumerate(idx):
-            if self._delta_min[axis] is None or start < self._delta_min[axis]:
-                self._delta_min[axis] = start
-            if self._delta_max[axis] is None or stop > self._delta_max[axis]:
-                self._delta_max[axis] = stop
+            if self._diff_min[axis] is None or start < self._diff_min[axis]:
+                self._diff_min[axis] = start
+            if self._diff_max[axis] is None or stop > self._diff_max[axis]:
+                self._diff_max[axis] = stop
 
     def _get_diff_slices(self) -> None | tuple[slice, ...]:
-        if any(m is None for m in self._delta_min):
+        if any(m is None for m in self._diff_min):
             return None  # No changes
-        return tuple(slice(self._delta_min[i], self._delta_max[i]) for i in range(self.ndim))
+        return tuple(slice(self._diff_min[i], self._diff_max[i]) for i in range(self.ndim))
 
     ###############################################################################
     #   Public API
     #
 
-
     def copy(self, order="C") -> "DiffableNdarray":
         """
-        Create a copy of the DeltaNdarray, including its modification tracking state.
+        Create a copy of the DiffableNdarray, including its modification tracking state.
         """
         new_copy = super().copy(order=order).view(DiffableNdarray)
-        new_copy._delta_min = self._delta_min.copy()
-        new_copy._delta_max = self._delta_max.copy()
+        new_copy._diff_min = self._diff_min.copy()
+        new_copy._diff_max = self._diff_max.copy()
         return new_copy
 
     def is_modified(self) -> bool:
-        slices = self._get_delta_slices()
+        slices = self._get_diff_slices()
         return slices is not None
 
     def get_diff_slices(self) -> tuple[slice, ...]:
@@ -157,6 +156,6 @@ if __name__ == "__main__":
     assert diffable_arr.is_modified() == True, "Array should be marked as modified"
 
     print("Is modified:", diffable_arr.is_modified())
-    print("Delta slice:", diffable_arr.get_diff_slices())
-    print("Delta region:\n", diffable_arr.get_diff_data())
+    print("Diff slice:", diffable_arr.get_diff_slices())
+    print("Diff region:\n", diffable_arr.get_diff_data())
     print("Modified array:\n", diffable_arr)
