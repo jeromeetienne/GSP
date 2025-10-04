@@ -8,5 +8,6 @@ from . markers import Markers
 from . segments import Segments
 from . paths import Paths
 from . polygons import Polygons
-# from . image import Image
+from . image import Image
+from . volume import Volume
 # from . mesh import Mesh
