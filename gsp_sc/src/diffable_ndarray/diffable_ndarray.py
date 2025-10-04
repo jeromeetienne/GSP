@@ -1,8 +1,8 @@
 import numpy as np
 import typing
 
-class DiffableNdarray(np.ndarray):
 
+class DiffableNdarray(np.ndarray):
     """
     A NumPy ndarray subclass that tracks the minimal bounding box of all modifications made to its elements.
     It works for n-dimensional arrays.
@@ -29,18 +29,21 @@ class DiffableNdarray(np.ndarray):
 
     def __new__(cls, input_array) -> "DiffableNdarray":
         obj = np.asarray(input_array).view(cls)
+        obj._uuid = DiffableNdarray.get_new_uuid()
         obj._diff_min = typing.cast(list[int | None], [None] * obj.ndim)
         obj._diff_max = typing.cast(list[int | None], [None] * obj.ndim)
         return obj
-    
+
     def __array_finalize__(self, obj):
         # This method is called automatically after the object is created,
         # both when new instances are created and when slicing happens.
         if obj is None:
             return
         # Copy the attribute from the original object (if it exists)
-        self._diff_min = obj._diff_min if hasattr(obj, '_diff_min') else [None] * self.ndim
-        self._diff_max = obj._diff_max if hasattr(obj, '_diff_max') else [None] * self.ndim
+        # FIXME what is the difference with __new__ ? when it comes to those attributes ?
+        self._uuid = obj._uuid if hasattr(obj, "_uuid") else DiffableNdarray.get_new_uuid()
+        self._diff_min = obj._diff_min if hasattr(obj, "_diff_min") else [None] * self.ndim
+        self._diff_max = obj._diff_max if hasattr(obj, "_diff_max") else [None] * self.ndim
 
     def _reset_diff(self) -> None:
         self._diff_min: list[int | None] = [None] * self.ndim
@@ -84,11 +87,32 @@ class DiffableNdarray(np.ndarray):
     #   Public API
     #
 
+    @staticmethod
+    def get_new_uuid() -> str:
+        uuid = f"{hex(np.random.randint(0, 2**32, dtype=np.uint32))[2:]}"
+        uuid += "-"
+        uuid += f"{hex(np.random.randint(0, 2**16, dtype=np.uint32))[2:]}"
+        uuid += "-"
+        uuid += f"{hex(np.random.randint(0, 2**16, dtype=np.uint32))[2:]}"
+        uuid += "-"
+        uuid += f"{hex(np.random.randint(0, 2**16, dtype=np.uint32))[2:]}"
+        uuid += "-"
+        uuid += f"{hex(np.random.randint(0, 2**32, dtype=np.uint32))[2:]}"
+        return uuid
+
+    def get_uuid(self) -> str:
+        """
+        Return the unique identifier of this DiffableNdarray instance.
+        """
+        return self._uuid
+
     def copy(self, order="C") -> "DiffableNdarray":
         """
         Create a copy of the DiffableNdarray, including its modification tracking state.
+        NOTE: it gets a different UUID.
         """
         new_copy = super().copy(order=order).view(DiffableNdarray)
+        new_copy._uuid = DiffableNdarray.get_new_uuid()
         new_copy._diff_min = self._diff_min.copy()
         new_copy._diff_max = self._diff_max.copy()
         return new_copy
@@ -118,9 +142,9 @@ class DiffableNdarray(np.ndarray):
         diff_data: np.ndarray = self[diff_slices]
 
         return diff_data
-    
+
     def clear_diff(self) -> None:
-        """ 
+        """
         Clear the modification tracking.
         After calling this method, the array is considered unmodified until further changes are made.
         """
@@ -140,13 +164,13 @@ if __name__ == "__main__":
     ###############################################################################
     #   Example usage without modifications
     #
-    diffable_arr = DiffableNdarray(np.arange(25).reshape(5,5))
+    diffable_arr = DiffableNdarray(np.arange(25).reshape(5, 5))
 
-    print('*' * 80)
+    print("*" * 80)
     print("Initial array:\n", diffable_arr)
     print("Is modified:", diffable_arr.is_modified())
     assert diffable_arr.is_modified() == False, "Array should be marked as modified"
-    
+
     ###############################################################################
     #   Example usage with modifications
     #

@@ -1,3 +1,3 @@
 from .diffable_ndarray import DiffableNdarray
 from .diffable_ndarray_serialisation import DiffableNdarraySerialisation
-# from .ndarray_like import ndarray_like
+from .ndarray_like import NdarrayLikeUtils, NdarrayLikeSerializedType, NdarrayLikeVariableType

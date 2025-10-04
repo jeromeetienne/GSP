@@ -6,7 +6,8 @@ from dataclasses import dataclass
 import numpy as np
 
 # local imports
-from gsp_sc.src.diffable_ndarray.diffable_ndarray import DiffableNdarray
+from .diffable_ndarray import DiffableNdarray
+
 
 class DiffableNdarraySerialisation:
     ###############################################################################
@@ -22,6 +23,7 @@ class DiffableNdarraySerialisation:
         # No modifications, serialize the whole array
         if diff_allowed == False or diff_ndarray.is_modified() is False:
             json_dict = {
+                "uuid": diff_ndarray.get_uuid(),
                 "slices": None,
                 "data": diff_ndarray.tolist(),
             }
@@ -40,6 +42,7 @@ class DiffableNdarraySerialisation:
 
         # Serialize the slices and the delta region
         json_dict = {
+            "uuid": diff_ndarray.get_uuid(),
             "slices": diff_slices_dict,
             "data": diff_data_dict,
         }
@@ -60,7 +63,7 @@ class DiffableNdarraySerialisation:
         assert previous_arr is not None, "previous_arr must be provided if there are modifications to apply"
 
         # honor the in_place flag
-        new_arr = previous_arr.copy() if not in_place else previous_arr
+        new_arr = previous_arr if in_place else previous_arr.copy()
 
         # deserialize the slices and the delta region
         diff_slices = DiffableNdarraySerialisation._slice_from_json(json_dict["slices"])
@@ -79,15 +82,15 @@ class DiffableNdarraySerialisation:
         """
         Convert a tuple of slices to a JSON-serializable dictionary.
         """
-        slice_dict = {
-            "slices": []
-        }
+        slice_dict = {"slices": []}
         for _slice in slices:
             assert _slice.step in (None, 1), "Only slices with step=1 or step=None are supported"
-            slice_dict["slices"].append({
-                "start": _slice.start,
-                "stop": _slice.stop,
-            })
+            slice_dict["slices"].append(
+                {
+                    "start": _slice.start,
+                    "stop": _slice.stop,
+                }
+            )
         return slice_dict
 
     @staticmethod

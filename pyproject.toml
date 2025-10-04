@@ -1,5 +1,5 @@
 # See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
- 
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -13,31 +13,38 @@ dependencies = [
   "pyyaml",
 
   # Needed for testing
-  "pytest", 
+  "pytest",
 
   # Needed for documentation
   "mkdocs",
   "mkdocs-material",
   "mkdocstrings[python]",
-  "markdown-exec", # markdown-exec - Needed by mkdocs build
+  "markdown-exec",        # markdown-exec - Needed by mkdocs build
 ]
 requires-python = ">=3.11"
 
-authors = [
-  {name = "Nicolas P. Rougier", email = "nicolas.rougier@gmail.com"}
-]
+authors = [{ name = "Nicolas P. Rougier", email = "nicolas.rougier@gmail.com" }]
 maintainers = [
-  {name = "Nicolas P. Rougier", email = "nicolas.rougier@gmail.com"}
+  { name = "Nicolas P. Rougier", email = "nicolas.rougier@gmail.com" },
 ]
 
 description = "Graphic Server Protocol"
 readme = "README.md"
-license = {file = "LICENSE"}
-keywords = ["scientific", "graphics", "visualization", "dataviz",
-            "vispy", "matplotlib", "vulkan", "gpu", "3d"]
+license = { file = "LICENSE" }
+keywords = [
+  "scientific",
+  "graphics",
+  "visualization",
+  "dataviz",
+  "vispy",
+  "matplotlib",
+  "vulkan",
+  "gpu",
+  "3d",
+]
 classifiers = [
   "Development Status :: 4 - Beta",
-  "Programming Language :: Python"
+  "Programming Language :: Python",
 ]
 
 [project.urls]

@@ -6,15 +6,19 @@ from typing import Any
 import numpy as np
 
 # local imports
-from gsp_sc.src.transform import TransformSerialisation
-from gsp_sc.src.transform.transform_link_base import TransformLinkBase
-from gsp_sc.src.transform import TransformLinkImmediate, TransformLinkLambda
-from gsp_sc.src.diffable_ndarray.diffable_ndarray import DiffableNdarray
-from gsp_sc.src.diffable_ndarray.diffable_ndarray_serialisation import DiffableNdarraySerialisation
+from ..transform import TransformSerialisation
+from ..transform.transform_link_base import TransformLinkBase
+from ..transform import TransformLinkImmediate, TransformLinkLambda
+from .diffable_ndarray import DiffableNdarray
+from .diffable_ndarray_serialisation import DiffableNdarraySerialisation
 
 NdarrayLikeVariableType = TransformLinkBase | DiffableNdarray | np.ndarray
 
 NdarrayLikeSerializedType = dict[str, Any]
+
+
+from_json_diffable_ndarray_db: dict[str, DiffableNdarray] = {}
+"""A simple in-memory database to store DiffableNdarray instances by their UUIDs during deserialization."""
 
 
 class NdarrayLikeUtils:
@@ -22,7 +26,7 @@ class NdarrayLikeUtils:
     Utility class to handle inputs that can be either a numpy ndarray or a TransformLinkBase chain or a DeltaNdarray.
     This class provides methods to serialize/deserialize them to/from JSON-compatible formats.
 
-
+    NOTE: once you sent a DiffableNdarray through to_json, its diff tracking is cleared.
     """
 
     @staticmethod
@@ -35,8 +39,9 @@ class NdarrayLikeUtils:
             serialized_dict = {"type": "transform_links", "data": TransformSerialisation.to_json(link_head)}
             return serialized_dict
         elif isinstance(data, DiffableNdarray):
-            delta_array = typing.cast(DiffableNdarray, data)
-            serialized_dict = {"type": "delta_ndarray", "data": DiffableNdarraySerialisation.to_json(delta_array)}
+            diffable_array = typing.cast(DiffableNdarray, data)
+            serialized_dict = {"type": "delta_ndarray", "data": DiffableNdarraySerialisation.to_json(diffable_array, diff_allowed=True)}
+            diffable_array.clear_diff()  # Clear the diff tracking after serialization
             return serialized_dict
         elif isinstance(data, np.ndarray):
             ndarray = typing.cast(np.ndarray, data)
@@ -46,13 +51,12 @@ class NdarrayLikeUtils:
             raise TypeError("Input must be either a numpy ndarray or a TransformLinkBase instance.")
 
     @staticmethod
-    def from_json(serialized_data: NdarrayLikeSerializedType, previous_ndarray_like: NdarrayLikeVariableType | None = None) -> NdarrayLikeVariableType:
+    def from_json(serialized_data: NdarrayLikeSerializedType, diffable_ndarray_db=from_json_diffable_ndarray_db) -> NdarrayLikeVariableType:
         """
         Convert a JSON-serializable format to either a TransformLinkBase or a numpy ndarray.
 
-        arguments:
-            serialized_data: The JSON-serializable dictionary.
-            previous_ndarray_like: Optional previous NdarrayLikeVariableType, required if serialized_data is of type DeltaNdarray
+        Arguments:
+            serialized_data (NdarrayLikeSerializedType): The JSON-serializable dictionary.
         """
 
         if serialized_data["type"] == "transform_links":
@@ -60,9 +64,15 @@ class NdarrayLikeUtils:
             link_head = TransformSerialisation.from_json(json_array)
             return link_head
         elif serialized_data["type"] == "delta_ndarray":
-            assert isinstance(previous_ndarray_like, DiffableNdarray | None), "previous_ndarray_like must be DeltaNdarray or None"
-            delta_array = DiffableNdarraySerialisation.from_json(serialized_data["data"], previous_ndarray_like)
-            return delta_array
+            # 1. try to get a previous ndarray with the same uuid in our database
+            serialized_uuid = serialized_data["data"]["uuid"]
+            previous_diffable_array = diffable_ndarray_db[serialized_uuid] if serialized_uuid in diffable_ndarray_db else None
+            # 2. create a new delta_array from the serialized data and the previous one
+            new_diffable_array = DiffableNdarraySerialisation.from_json(serialized_data["data"], previous_diffable_array, in_place=True)
+            # 3. update the database with the new diffable_array and return it
+            diffable_ndarray_db[serialized_uuid] = new_diffable_array
+            # 4. return the new diffable_array
+            return new_diffable_array
         elif serialized_data["type"] == "ndarray":
             if not isinstance(serialized_data["data"], list):
                 raise TypeError("Expected 'data' to be a list.")
@@ -93,7 +103,7 @@ class NdarrayLikeUtils:
 
 ###############################################################################
 #   Example usage
-#
+# deserialized2
 if __name__ == "__main__":
     # Example 1: Using a numpy ndarray
     arr = np.array([[1, 2, 3], [4, 5, 6]])

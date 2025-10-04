@@ -39,15 +39,15 @@ def test_diffable_ndarray_serialisation_with_modifications_without_previous_arr(
     assert json_dict["slices"] is not None
     
     # Assert that the serialized data matches the modified region of the array
-    delta_slices = arr.get_diff_slices()
-    assert json_dict["slices"] == DiffableNdarraySerialisation._slice_to_json(delta_slices)
+    diff_slices = arr.get_diff_slices()
+    assert json_dict["slices"] == DiffableNdarraySerialisation._slice_to_json(diff_slices)
 
     # Assert that the serialized data matches the modified region of the array
-    delta_data = arr.get_diff_data()
-    assert json_dict["data"] == delta_data.tolist()
+    diff_data = arr.get_diff_data()
+    assert json_dict["data"] == diff_data.tolist()
     
     # Deserialize the JSON back into a DiffableNdarray using the original array as previous_arr
-    new_arr = DiffableNdarraySerialisation.from_json(json_dict, previous_arr=arr)
+    new_arr = DiffableNdarraySerialisation.from_json(json_dict, previous_arr=arr, in_place=False)
     
     # Assert that the deserialized array matches the modified original array
     assert np.array_equal(new_arr, arr)
@@ -70,12 +70,12 @@ def test_diffable_ndarray_serialisation_with_modifications_with_previous_arr() -
     assert json_dict["slices"] is not None
     
     # Assert that the serialized data matches the modified region of the array
-    delta_slices = arr.get_diff_slices()
-    assert json_dict["slices"] == DiffableNdarraySerialisation._slice_to_json(delta_slices)
+    diff_slices = arr.get_diff_slices()
+    assert json_dict["slices"] == DiffableNdarraySerialisation._slice_to_json(diff_slices)
 
     # Assert that the serialized data matches the modified region of the array
-    delta_data = arr.get_diff_data()
-    assert json_dict["data"] == delta_data.tolist()
+    diff_data = arr.get_diff_data()
+    assert json_dict["data"] == diff_data.tolist()
     
     # Create a previous array identical to the original unmodified array
     previous_arr = DiffableNdarray(np.arange(16).reshape(4, 4))
