@@ -10,6 +10,7 @@ import numpy as np
 from gsp_sc.src.transform import TransformSerialisation
 from gsp_sc.src.transform.transform_link_base import TransformLinkBase
 from gsp_sc.tmp.delta_ndarray.delta_ndarray import DeltaNdarray
+from gsp_sc.tmp.delta_ndarray.delta_ndarray_serialisation import DeltaNdarraySerialisation
 from gsp_sc.src.transform import TransformLinkImmediate, TransformLinkLambda
 
 
@@ -37,7 +38,7 @@ class NdarrayLikeUtils:
             return serialized_dict
         elif isinstance(data, DeltaNdarray):
             delta_array = typing.cast(DeltaNdarray, data)
-            serialized_dict = {"type": "delta_ndarray", "data": delta_array.to_json()}
+            serialized_dict = {"type": "delta_ndarray", "data": DeltaNdarraySerialisation.to_json(delta_array)}
             return serialized_dict
         elif isinstance(data, np.ndarray):
             ndarray = typing.cast(np.ndarray, data)
@@ -62,7 +63,7 @@ class NdarrayLikeUtils:
             return link_head
         elif serialized_data["type"] == "delta_ndarray":
             assert isinstance(previous_ndarray_like, DeltaNdarray | None), "previous_ndarray_like must be DeltaNdarray or None"
-            delta_array = DeltaNdarray.from_json(serialized_data["data"], previous_ndarray_like, in_place=True)
+            delta_array = DeltaNdarraySerialisation.from_json(serialized_data["data"], previous_ndarray_like)
             return delta_array
         elif serialized_data["type"] == "ndarray":
             if not isinstance(serialized_data["data"], list):
