@@ -37,7 +37,7 @@ viewport.add(pixels)
 ###############################################################################
 # Add an image to viewport
 #
-image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
+image_path = f"{__dirname__}/images/UV_Grid_Sm.jpg"
 image_data_np = matplotlib.image.imread(image_path)
 image = gsp_sc.visuals.Image(
     position=np.array([0.5, 0.5, 0.5]),
@@ -62,7 +62,7 @@ viewport.add(mesh)
 #
 camera = gsp_sc.core.Camera(camera_type="perspective")
 renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-image_png_buffer = renderer.render(canvas, camera, interactive=False, show_image=True)
+image_png_buffer = renderer.render(canvas, camera, interactive=True)
 
 # Save the rendered image to a file
 image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}.png"

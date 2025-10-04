@@ -38,7 +38,7 @@ viewport2.add(pixels)
 ###############################################################################
 # Add an image to viewport1
 #
-image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
+image_path = f"{__dirname__}/images/UV_Grid_Sm.jpg"
 image_data_np = matplotlib.image.imread(image_path)
 image_position = np.array([0, 0, 0])
 image = gsp_sc.visuals.Image(

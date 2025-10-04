@@ -50,7 +50,7 @@ viewport.add(pixels)
 ###############################################################################
 # Add an image to viewport
 #
-image_path = f"{__dirname__}/../../examples/images/UV_Grid_Sm.jpg"
+image_path = f"{__dirname__}/images/UV_Grid_Sm.jpg"
 image_data_np = matplotlib.image.imread(image_path)
 image = gsp_sc.visuals.Image(
     position=np.array([0.5, 0.5, 0.5]),
