@@ -1,4 +1,3 @@
-
 # GSP 
 
 # Design 
@@ -30,12 +29,15 @@ There are three main design goals for GSP:
   - datoviz presents another implementation in C++/python using Vulkan
 
 
-## Remote data
+# Remote data
 - Another key aspect of GSP is the support of remote data
   - in europe, there is an important law that states that data should stay in the country of origin
   - the name of this law is GDPR
   - https://gdpr.eu/
   - so to be compliant with this law, we need to be able to visualize data that is not local to the developer machine
+
+## How to modify remote data before visualizing it
+- TODO talk about transforms 
 
 
 ## Maintenable
@@ -43,6 +45,8 @@ There are three main design goals for GSP:
 - by separating the scene description from the rendering, we can focus on each part independently
 - the scene description is simple enough to be easily understood and modified
 - the rendering can be improved independently, and multiple renderers can coexist
+- tools will be provided to ensure compliance
+  - json schema to validate the scene description
 
 ---
 

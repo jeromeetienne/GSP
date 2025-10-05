@@ -12,3 +12,5 @@
 - it needs to have a simple and well-documented API
 - it needs to support common data formats
   - produce images in svg or pdf format to include in my papers
+
+# 3. As a researcher, I want to create interactive visualizations of my data that can be shared with collaborators, so that we can explore the data together.
