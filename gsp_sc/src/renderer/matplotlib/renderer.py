@@ -34,6 +34,16 @@ class MatplotlibRenderer:
         self._axesImages: dict[str, matplotlib.image.AxesImage] = {}
         """Mapping from visual UUID to matplotlib AxesImage. For Image visuals."""
 
+    def close(self) -> None:
+        """Close all matplotlib figures managed by this renderer."""
+        for figure in self._figures.values():
+            matplotlib.pyplot.close(figure)
+        self._figures.clear()
+        self._axes.clear()
+        self._pathCollections.clear()
+        self._polyCollections.clear()
+        self._axesImages.clear()
+
     def render(
         self,
         canvas: Canvas,
