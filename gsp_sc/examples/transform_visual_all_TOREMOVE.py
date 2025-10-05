@@ -79,9 +79,9 @@ scene_dict = json_renderer.render(canvas, camera)
 scene_json = json.dumps(scene_dict, indent=4)
 
 # save to file as json
-json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_scene.json"
-with open(json_output_path, "w") as msgpack_file:
-    msgpack_file.write(scene_json)
+json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}.gsp.json"
+with open(json_output_path, "w") as file_writer:
+    file_writer.write(scene_json)
 
 print(f"Scene exported to JSON and saved to {json_output_path}. length={len(scene_json)}")
 

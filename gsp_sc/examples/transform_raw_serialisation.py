@@ -22,7 +22,7 @@ json_array = TransformSerialisation.to_json(transform_chain)
 print(f"json_array: {json.dumps(json_array, indent=8)}")
 
 # Write it in a file
-file_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}.json"
+file_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}.transform.json"
 with open(file_path, "w") as file_writer:
     json.dump(json_array, file_writer)
 

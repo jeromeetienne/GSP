@@ -11,7 +11,6 @@ import os
 import json
 
 
-
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 # Set random seed for reproducibility
 gsp_sc.core.Random.set_random_seed(10)
@@ -35,9 +34,7 @@ n_points = 100
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.random.uniform(5, 10, n_points).astype(np.float32)
 colors_np = np.array([[0, 1, 0, 0.5]], dtype=np.float32)
-pixels = gsp_sc.visuals.Pixels(
-    positions=positions_np, sizes=sizes_np, colors=colors_np
-)
+pixels = gsp_sc.visuals.Pixels(positions=positions_np, sizes=sizes_np, colors=colors_np)
 viewport1.add(pixels)
 viewport2.add(pixels)
 
@@ -74,8 +71,8 @@ json_renderer = gsp_sc.renderer.json.JsonRenderer()
 scene_dict = json_renderer.render(canvas, camera)
 scene_json = json.dumps(scene_dict, indent=4)
 
-json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_scene.json"
-with open(json_output_path, 'w') as json_file:
+json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}.gsp.json"
+with open(json_output_path, "w") as json_file:
     json_file.write(scene_json)
 print(f"Scene exported to JSON and saved to {json_output_path}")
 
@@ -89,9 +86,7 @@ canvas_parsed, camera_parsed = json_parser.parse(scene_json)
 # Render the loaded scene with matplotlib to visually verify it was loaded correctly
 #
 matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-rendered_loaded_image_png_data = matplotlib_renderer.render(
-    canvas=canvas_parsed, camera=camera_parsed
-)
+rendered_loaded_image_png_data = matplotlib_renderer.render(canvas=canvas_parsed, camera=camera_parsed)
 
 # save the rendered loaded image to a file
 rendered_loaded_image_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_parsed_image.png"

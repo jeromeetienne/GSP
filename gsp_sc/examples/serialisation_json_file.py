@@ -42,9 +42,9 @@ scene_json = json.dumps(scene_dict, indent=4)
 
 
 # save to file as json
-json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_scene.json"
-with open(json_output_path, 'w') as msgpack_file:
-    msgpack_file.write(scene_json)
+json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}.gsp.json"
+with open(json_output_path, "w") as file_writer:
+    file_writer.write(scene_json)
 
 print(f"Scene exported to JSON and saved to {json_output_path}. length={len(scene_json)}")
 
@@ -53,12 +53,13 @@ print(f"Scene exported to JSON and saved to {json_output_path}. length={len(scen
 #
 
 import json
+
 scene_json_obj = json.loads(scene_json)
-msgpack_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_scene.msgpack"
+msgpack_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}.gsp.msgpack"
 from typing import cast
+
 scene_msgpack = cast(bytes, msgpack.packb(scene_json_obj, use_bin_type=True))
-with open(msgpack_output_path, 'wb') as msgpack_file:
-    msgpack_file.write(scene_msgpack)
+with open(msgpack_output_path, "wb") as file_writer:
+    file_writer.write(scene_msgpack)
 
 print(f"Scene exported to MessagePack and saved to {msgpack_output_path}. length={len(scene_msgpack)}")
-
