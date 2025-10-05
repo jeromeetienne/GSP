@@ -1,11 +1,5 @@
-# stdlib imports
-import io
-from typing import Callable
-
 # pip imports
-import numpy as np
 import matplotlib.pyplot
-import matplotlib.image
 import matplotlib.animation
 import matplotlib.artist
 
