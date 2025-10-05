@@ -1,9 +1,9 @@
-from gsp_sc.src.diffable_ndarray.ndarray_like import (
+from gsp_sc.src.types.ndarray_like import (
     NdarrayLikeSerializedType,
     NdarrayLikeVariableType,
 )
-from gsp_sc.src.diffable_ndarray.ndarray_like import NdarrayLikeUtils
-from gsp_sc.src.diffable_ndarray.diffable_ndarray import DiffableNdarray
+from gsp_sc.src.types.ndarray_like import NdarrayLikeUtils
+from gsp_sc.src.types.diffable_ndarray import DiffableNdarray
 import numpy as np
 
 

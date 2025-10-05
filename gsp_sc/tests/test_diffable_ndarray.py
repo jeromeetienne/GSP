@@ -1,5 +1,5 @@
 import numpy as np
-from gsp_sc.src.diffable_ndarray.diffable_ndarray import DiffableNdarray
+from gsp_sc.src.types.diffable_ndarray import DiffableNdarray
 
 
 def test_diffable_ndarray_setitem_and_diff_tracking() -> None:
@@ -38,6 +38,7 @@ def test_diffable_ndarray_clear_diff() -> None:
     # The array should no longer be marked as modified
     assert arr.is_modified() is False
 
+
 def test_diffable_ndarray_apply_patch() -> None:
     # Create a 3x3 DiffableNdarray initialized with zeros
     arr = DiffableNdarray(np.zeros((3, 3), dtype=int))
@@ -54,6 +55,7 @@ def test_diffable_ndarray_apply_patch() -> None:
     assert arr.get_diff_slices() == patch_slices
     # The diff data should match the patch data
     assert np.array_equal(arr.get_diff_data(), patch_data)
+
 
 def test_diffable_ndarray_no_modifications() -> None:
     arr = DiffableNdarray(np.zeros((2, 2), dtype=int))
@@ -76,6 +78,7 @@ def test_diffable_ndarray_no_modifications() -> None:
         assert str(e) == "No modifications to get diff data from (use is_modified() to check)"
     else:
         assert False, "Expected an AssertionError when getting diff data from unmodified array"
+
 
 def test_diffable_ndarray_copy() -> None:
     # Create a DiffableNdarray

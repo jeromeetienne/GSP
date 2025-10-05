@@ -12,7 +12,7 @@ __version__ = "0.1.0"
 from . import core
 from . import renderer
 from . import visuals
-from . import diffable_ndarray
-from . constants import Constants
+from . import types
+from .constants import Constants
 
 from . import transform

@@ -51,8 +51,8 @@ class DiffableNdarray(np.ndarray):
 
     def __setitem__(self, key, value) -> None:
         # Update diff bounds
-        idx = self._normalize_key(key)
-        self._update_diff_minmax(idx)
+        indexes = self._normalize_key(key)
+        self._update_diff_minmax(indexes)
         super().__setitem__(key, value)
 
     def _normalize_key(self, key) -> list[tuple[int, int]]:
@@ -60,19 +60,19 @@ class DiffableNdarray(np.ndarray):
         if not isinstance(key, tuple):
             key = (key,)
         key = list(key) + [slice(None)] * (self.ndim - len(key))
-        idx = []
+        indexes = []
         for i, k in enumerate(key):
             if isinstance(k, int):
-                idx.append((k, k + 1))
+                indexes.append((k, k + 1))
             elif isinstance(k, slice):
                 start, stop, step = k.indices(self.shape[i])
-                idx.append((start, stop))
+                indexes.append((start, stop))
             else:
                 raise TypeError(f"Unsupported index type: {type(k)}")
-        return idx
+        return indexes
 
-    def _update_diff_minmax(self, idx) -> None:
-        for axis, (start, stop) in enumerate(idx):
+    def _update_diff_minmax(self, indexes: list[tuple[int, int]]) -> None:
+        for axis, (start, stop) in enumerate(indexes):
             if self._diff_min[axis] is None or start < self._diff_min[axis]:
                 self._diff_min[axis] = start
             if self._diff_max[axis] is None or stop > self._diff_max[axis]:

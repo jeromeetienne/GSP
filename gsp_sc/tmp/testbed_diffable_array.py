@@ -1,6 +1,7 @@
-from gsp_sc.src.diffable_ndarray.diffable_ndarray import DiffableNdarray
-from gsp_sc.src.diffable_ndarray.diffable_ndarray_serialisation import DiffableNdarraySerialisation
+from gsp_sc.src.types.diffable_ndarray import DiffableNdarray
+from gsp_sc.src.types.diffable_ndarray_serialisation import DiffableNdarraySerialisation
 import numpy as np
+
 
 def test_apply_patch() -> None:
     arr = DiffableNdarray(np.arange(16).reshape(4, 4))
@@ -10,8 +11,8 @@ def test_apply_patch() -> None:
     arr2 = DiffableNdarray(np.arange(16).reshape(4, 4))
     arr2.apply_patch(arr.get_diff_slices(), arr.get_diff_data())
 
-
     assert np.array_equal(arr, arr2)
+
 
 def test_workflow() -> None:
     arr = DiffableNdarray(np.arange(16).reshape(4, 4))
@@ -32,6 +33,3 @@ if __name__ == "__main__":
 
     arr = DiffableNdarray(np.arange(16).reshape(4, 4))
     print("Initial array:\n", arr)
-
-
-
