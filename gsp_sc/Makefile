@@ -4,6 +4,9 @@ help: ## Show this help message
 clean_output: ## Remove all generated output files
 	rm -f examples/output/*
 
+validate_json: ## Validate all .gsp.json files against the gsp.schema.json
+	python scripts/validate_gsp_schema.py
+
 ###############################################################################
 
 pytest: ## Run pytest on the tests/ directory
