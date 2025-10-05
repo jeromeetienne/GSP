@@ -4,6 +4,7 @@ Basic example of creating and rendering a simple GSP scene with matplotlib.
 
 import numpy as np
 import os
+import time
 import gsp_sc.src as gsp_sc
 from gsp_sc.examples.common.gsp_animator.gsp_animator_network import GSPAnimatorNetwork
 
@@ -43,6 +44,20 @@ viewport.add(pixels)
 camera = gsp_sc.core.Camera(camera_type="perspective")
 network_renderer = gsp_sc.renderer.network.NetworkRenderer(server_url="http://localhost:5000/")
 
+# =============================================================================
+# Code to measure FPS
+# =============================================================================
+time_previous_render = None
+
+
+def monitor_fps() -> None:
+    global time_previous_render
+    time_now = time.time()
+    if time_previous_render is not None:
+        fps = 1.0 / (time_now - time_previous_render)
+        print(f"FPS: {fps:.2f}")
+    time_previous_render = time_now
+
 
 # =============================================================================
 # Animate the scene with matplotlib thru the network renderer
@@ -51,6 +66,9 @@ def animate() -> list[gsp_sc.core.VisualBase]:
     new_sizes = np.random.uniform(10, 100, (n_points,)).astype(np.float32)
     # copy inplace to avoid reallocations
     sizes_np[:] = new_sizes
+
+    # measure FPS to monitor performance
+    monitor_fps()
 
     changed_visuals: list[gsp_sc.core.VisualBase] = [pixels]
     return changed_visuals

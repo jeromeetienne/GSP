@@ -2,11 +2,11 @@
 Basic example of creating and rendering a simple GSP scene with matplotlib.
 """
 
+import time
 import numpy as np
 import os
-from typing import Callable
 import gsp_sc.src as gsp_sc
-from gsp_sc.examples.common.gsp_animator.gsp_animator_matplotlib import GspAnimatorMatplotlib
+from gsp_sc.examples.common.gsp_animator import GspAnimatorMatplotlib
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 # Set random seed for reproducibility
@@ -44,6 +44,20 @@ camera = gsp_sc.core.Camera(camera_type="perspective")
 renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 renderer.render(canvas, camera)
 
+# =============================================================================
+# Code to measure FPS
+# =============================================================================
+time_previous_render = None
+
+
+def monitor_fps() -> None:
+    global time_previous_render
+    time_now = time.time()
+    if time_previous_render is not None:
+        fps = 1.0 / (time_now - time_previous_render)
+        print(f"FPS: {fps:.2f}")
+    time_previous_render = time_now
+
 
 # =============================================================================
 # Animate the scene with matplotlib
@@ -52,6 +66,9 @@ def animator_callback() -> list[gsp_sc.core.VisualBase]:
     new_sizes = np.random.uniform(10, 100, (n_points,)).astype(np.float32)
     # copy inplace to avoid reallocations
     sizes_np[:] = new_sizes
+
+    # measure FPS to monitor performance
+    monitor_fps()
 
     changed_visuals: list[gsp_sc.core.VisualBase] = [pixels]
     return changed_visuals
