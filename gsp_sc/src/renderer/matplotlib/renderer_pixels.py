@@ -8,13 +8,14 @@ import mpl3d.glm
 # local imports
 from ...core.camera import Camera
 from ...visuals.pixels import Pixels
-from ...transform import TransformOrNdarray
+from ...types.ndarray_like import NdarrayLikeVariableType, NdarrayLikeSerializedType, NdarrayLikeUtils
 from .renderer import MatplotlibRenderer
+
 
 class MatplotlibRendererPixels:
     @staticmethod
     def render(
-        renderer: 'MatplotlibRenderer',
+        renderer: "MatplotlibRenderer",
         axes: matplotlib.axes.Axes,
         pixels: Pixels,
         full_uuid: str,
@@ -31,7 +32,7 @@ class MatplotlibRendererPixels:
             renderer._pathCollections[full_uuid] = pathCollection
 
         # compute positions
-        pixels_positions = TransformOrNdarray.to_ndarray(pixels.positions)
+        pixels_positions = NdarrayLikeUtils.to_numpy(pixels.positions)
 
         # apply camera transform to positions
         transformed_positions: np.ndarray = mpl3d.glm.transform(pixels_positions, camera.transform)
@@ -46,8 +47,8 @@ class MatplotlibRendererPixels:
         )
 
         pathCollection.set_offsets(transformed_positions)
-        pathCollection.set_sizes(TransformOrNdarray.to_ndarray(pixels.sizes))
-        pathCollection.set_color(TransformOrNdarray.to_ndarray(pixels.colors).tolist())
+        pathCollection.set_sizes(NdarrayLikeUtils.to_numpy(pixels.sizes))
+        pathCollection.set_color(NdarrayLikeUtils.to_numpy(pixels.colors).tolist())
         # pathCollection.set_edgecolor([0,0,0,1])
 
         # Notify post-rendering event

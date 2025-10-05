@@ -12,7 +12,7 @@ from ...core.types import SceneDict
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...visuals.mesh import Mesh
-from ...transform import TransformOrNdarray
+from ...types.ndarray_like import NdarrayLikeUtils
 
 
 class JsonRenderer:
@@ -32,7 +32,7 @@ class JsonRenderer:
                 "height": canvas.height,
                 "dpi": canvas.dpi,
                 "viewports": [],
-            }
+            },
         }
 
         for viewport in canvas.viewports:
@@ -52,9 +52,9 @@ class JsonRenderer:
                     visual_dict = {
                         "type": "Pixels",
                         "uuid": pixels.uuid,
-                        "positions": TransformOrNdarray.to_json(pixels.positions),
-                        "sizes": TransformOrNdarray.to_json(pixels.sizes),
-                        "colors": TransformOrNdarray.to_json(pixels.colors),
+                        "positions": NdarrayLikeUtils.to_json(pixels.positions),
+                        "sizes": NdarrayLikeUtils.to_json(pixels.sizes),
+                        "colors": NdarrayLikeUtils.to_json(pixels.colors),
                     }
                 elif isinstance(visual, Image):
                     image: Image = visual

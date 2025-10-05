@@ -14,7 +14,8 @@ from ...core.types import SceneDict
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...visuals.mesh import Mesh
-from ...transform import TransformOrNdarray
+from ...types.ndarray_like import NdarrayLikeUtils
+
 
 class JsonParser:
     """
@@ -25,7 +26,7 @@ class JsonParser:
         pass
 
     def parse(self, _scene: str | SceneDict) -> tuple[Canvas, Camera]:
-        if(isinstance(_scene, dict)):
+        if isinstance(_scene, dict):
             scene_dict: SceneDict = _scene
         else:
             scene_dict: SceneDict = json.loads(_scene)
@@ -53,9 +54,9 @@ class JsonParser:
             for visual_info in viewport_info["visuals"]:
                 if visual_info["type"] == "Pixels":
                     pixels = Pixels(
-                        positions=TransformOrNdarray.from_json(visual_info["positions"]),
-                        sizes=TransformOrNdarray.from_json(visual_info["sizes"]),
-                        colors=TransformOrNdarray.from_json(visual_info["colors"]),
+                        positions=NdarrayLikeUtils.from_json(visual_info["positions"]),
+                        sizes=NdarrayLikeUtils.from_json(visual_info["sizes"]),
+                        colors=NdarrayLikeUtils.from_json(visual_info["colors"]),
                     )
                     # restore the original uuid
                     pixels.uuid = visual_info["uuid"]

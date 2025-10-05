@@ -2,20 +2,21 @@ import numpy as np
 import nptyping
 
 from ..core.visual_base import VisualBase
-from ..transform import TransformLinkBase
+from ..types.ndarray_like import NdarrayLikeVariableType
+
 
 class Pixels(VisualBase):
     __slots__ = ("positions", "sizes", "colors")
 
     def __init__(
         self,
-        positions: TransformLinkBase | nptyping.NDArray[nptyping.Shape["*, 3"], nptyping.Float],
-        sizes: TransformLinkBase | nptyping.NDArray[nptyping.Shape["*"], nptyping.Float] = np.array([5.0]),
-        colors: TransformLinkBase | nptyping.NDArray[nptyping.Shape["*, 4"], nptyping.Float] = np.array([[0.0, 0.0, 1.0, 1.0]]),
+        positions: NdarrayLikeVariableType,
+        sizes: NdarrayLikeVariableType,
+        colors: NdarrayLikeVariableType,
     ) -> None:
         """
         Initialize a Pixels visual.
-        
+
         :param positions: np.ndarray of shape (N, 3) representing the 3D positions of the pixels
         :type positions: nptyping.NDArray[nptyping.Shape["*, 3"], nptyping.Float]
         :param sizes: np.ndarray of shape (N,) representing the sizes of the pixels

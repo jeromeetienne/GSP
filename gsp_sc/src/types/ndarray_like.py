@@ -9,8 +9,8 @@ import numpy as np
 from ..transform import TransformSerialisation
 from ..transform.transform_link_base import TransformLinkBase
 from ..transform import TransformLinkImmediate, TransformLinkLambda
-from .diffable_ndarray import DiffableNdarray
-from .diffable_ndarray_serialisation import DiffableNdarraySerialisation
+from .diffable_ndarray.diffable_ndarray import DiffableNdarray
+from .diffable_ndarray.diffable_ndarray_serialisation import DiffableNdarraySerialisation
 
 NdarrayLikeVariableType = TransformLinkBase | DiffableNdarray | np.ndarray
 

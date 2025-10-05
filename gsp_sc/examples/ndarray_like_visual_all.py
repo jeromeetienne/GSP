@@ -13,6 +13,7 @@ import matplotlib.image
 
 # local imports
 import gsp_sc.src as gsp_sc
+from gsp_sc.src.types.diffable_ndarray.diffable_ndarray import DiffableNdarray
 from gsp_sc.src.transform import TransformChain
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
@@ -40,16 +41,19 @@ canvas.add(viewport=viewport)
 n_points = 300
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float64)
 # Use TransformChain to scale and translate positions
-position_chain = TransformChain(positions_np).math_op('mul', 1/3) .math_op('add', 0.2).complete()
+# position_ndarray_like = TransformChain(positions_np).math_op("mul", 1 / 3).math_op("add", 0.2).complete()
+position_ndarray_like = DiffableNdarray(positions_np)
+
 
 sizes_np = np.array([10])
 colors_np = np.array([gsp_sc.Constants.Green])
-pixels = gsp_sc.visuals.Pixels(positions=position_chain, sizes=sizes_np, colors=colors_np)
+pixels = gsp_sc.visuals.Pixels(positions=position_ndarray_like, sizes=sizes_np, colors=colors_np)
 viewport.add(pixels)
 
-###############################################################################
+# =============================================================================
 # Add an image to viewport
-#
+# =============================================================================
+
 image_path = f"{__dirname__}/images/UV_Grid_Sm.jpg"
 image_data_np = matplotlib.image.imread(image_path)
 image = gsp_sc.visuals.Image(
@@ -59,9 +63,9 @@ image = gsp_sc.visuals.Image(
 )
 viewport.add(image)
 
-###############################################################################
-# Add a mesh
-#
+# =============================================================================
+# Add a mesh to viewport
+# =============================================================================
 obj_mesh_path = f"{__dirname__}/data/bunny.obj"
 mesh = gsp_sc.visuals.Mesh.from_obj_file(
     obj_mesh_path,
@@ -70,9 +74,9 @@ mesh = gsp_sc.visuals.Mesh.from_obj_file(
 )
 viewport.add(mesh)
 
-###############################################################################
+# =============================================================================
 # Export the scene to JSON
-
+# =============================================================================
 camera = gsp_sc.core.Camera("perspective")
 json_renderer = gsp_sc.renderer.json.JsonRenderer()
 scene_dict = json_renderer.render(canvas, camera)
@@ -80,7 +84,7 @@ scene_json = json.dumps(scene_dict, indent=4)
 
 # save to file as json
 json_output_path = f"{__dirname__}/output/{os.path.basename(__file__).replace('.py', '')}_scene.json"
-with open(json_output_path, 'w') as msgpack_file:
+with open(json_output_path, "w") as msgpack_file:
     msgpack_file.write(scene_json)
 
 print(f"Scene exported to JSON and saved to {json_output_path}. length={len(scene_json)}")
