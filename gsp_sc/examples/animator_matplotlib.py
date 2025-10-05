@@ -29,7 +29,7 @@ canvas.add(viewport=viewport)
 ###############################################################################
 # Add some random points
 #
-n_points = 4
+n_points = 2000
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.array([50 for _ in range(n_points)], np.float32)
 colors_np = np.array([gsp_sc.Constants.Green for _ in range(n_points)], np.float32)
@@ -55,7 +55,7 @@ def monitor_fps() -> None:
     time_now = time.time()
     if time_previous_render is not None:
         fps = 1.0 / (time_now - time_previous_render)
-        print(f"FPS: {fps:.2f}")
+        print(f"Frame per second: {fps:.2f}")
     time_previous_render = time_now
 
 
