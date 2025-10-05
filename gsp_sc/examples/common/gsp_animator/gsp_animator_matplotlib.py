@@ -15,10 +15,11 @@ from .gsp_animator_types import GSPAnimatorFunc
 
 
 class GspAnimatorMatplotlib:
+    """
+    Animator for GSP scenes using a matplotlib renderer.
+    """
+
     def __init__(self, matplotlib_renderer: gsp_sc.renderer.matplotlib.MatplotlibRenderer):
-        """
-        Animator for GSP scenes using a matplotlib renderer.
-        """
         self._matplotlib_renderer = matplotlib_renderer
 
     def animate(self, canvas: gsp_sc.core.Canvas, camera: gsp_sc.core.Camera, animator_callbacks: list[GSPAnimatorFunc]):
