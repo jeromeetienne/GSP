@@ -30,7 +30,7 @@ canvas.add(viewport=viewport)
 ###############################################################################
 # Add some random points
 #
-n_points = 300
+n_points = 3_000
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.array([50 for _ in range(n_points)], np.float32)
 colors_np = np.array([gsp_sc.Constants.Green for _ in range(n_points)], np.float32)
@@ -42,7 +42,7 @@ viewport.add(pixels)
 # Render the scene with matplotlib
 #
 camera = gsp_sc.core.Camera(camera_type="perspective")
-network_renderer = gsp_sc.renderer.network.NetworkRenderer(server_url="http://localhost:5000/")
+network_renderer = gsp_sc.renderer.network.NetworkRenderer(server_url="http://localhost:5000/", diff_allowed=True)
 
 # =============================================================================
 # Code to measure FPS
@@ -63,9 +63,8 @@ def monitor_fps() -> None:
 # Animate the scene with matplotlib thru the network renderer
 # =============================================================================
 def animate() -> list[gsp_sc.core.VisualBase]:
-    new_sizes = np.random.uniform(10, 100, (n_points,)).astype(np.float32)
     # copy inplace to avoid reallocations
-    sizes_np[:] = new_sizes
+    sizes_np[:] = np.random.uniform(10, 100, (n_points,)).astype(np.float32)
 
     # measure FPS to monitor performance
     monitor_fps()
