@@ -13,13 +13,13 @@
 		"metadata": {
 			"type": "object",
 			"description": "Optional free-form metadata about the export.",
-			"additionalProperties": true
+			"additionalProperties": false
 		}
 	},
 	"required": [
 		"canvas"
 	],
-	"additionalProperties": true,
+	"additionalProperties": false,
 	"definitions": {
 		"camera": {
 			"type": "object",
@@ -47,7 +47,7 @@
 					"$ref": "#/definitions/vec3"
 				}
 			},
-			"additionalProperties": true
+			"additionalProperties": false
 		},
 		"canvas": {
 			"type": "object",
@@ -77,7 +77,7 @@
 				"width",
 				"height"
 			],
-			"additionalProperties": true
+			"additionalProperties": false
 		},
 		"viewport": {
 			"type": "object",
@@ -118,7 +118,7 @@
 				"width",
 				"height"
 			],
-			"additionalProperties": true
+			"additionalProperties": false
 		},
 		"visual": {
 			"oneOf": [
@@ -177,7 +177,7 @@
 				"sizes",
 				"colors"
 			],
-			"additionalProperties": true
+			"additionalProperties": false
 		},
 		"visual_image": {
 			"type": "object",
@@ -217,7 +217,7 @@
 				"image_data_shape",
 				"image_data"
 			],
-			"additionalProperties": true
+			"additionalProperties": false
 		},
 		"visual_mesh": {
 			"type": "object",
@@ -280,7 +280,7 @@
 				"vertices",
 				"faces"
 			],
-			"additionalProperties": true
+			"additionalProperties": false
 		},
 		"vec3": {
 			"type": "array",
