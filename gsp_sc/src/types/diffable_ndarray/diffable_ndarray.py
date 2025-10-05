@@ -73,9 +73,11 @@ class DiffableNdarray(np.ndarray):
 
     def _update_diff_minmax(self, indexes: list[tuple[int, int]]) -> None:
         for axis, (start, stop) in enumerate(indexes):
-            if self._diff_min[axis] is None or start < self._diff_min[axis]:
+            diff_min = self._diff_min[axis]
+            diff_max = self._diff_max[axis]
+            if diff_min is None or start < diff_min:
                 self._diff_min[axis] = start
-            if self._diff_max[axis] is None or stop > self._diff_max[axis]:
+            if diff_max is None or stop > diff_max:
                 self._diff_max[axis] = stop
 
     def _get_diff_slices(self) -> None | tuple[slice, ...]:
