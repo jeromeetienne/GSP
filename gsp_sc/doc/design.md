@@ -1,5 +1,15 @@
 # GSP 
 
+# What is GSP
+- GSP stands for Graphical Server Protocol
+  - the goal is to have a protocol to describe graphical scenes
+  - thus it is abstract enough to be used in different contexts
+  - people can easily implement various renderers for it
+  - we provide a reference implementation in python using matplotlib
+    - python is widely used in the data science community
+    - matplotlib is a widely used plotting library in python
+    - numpy is used for numerical computations in python
+  - datoviz presents another implementation in C++/python using Vulkan
 # Design 
 
 There are three main design goals for GSP:
@@ -8,6 +18,12 @@ There are three main design goals for GSP:
 - **Maintainability**: the protocol should be simple enough to be easily understood and modified
 
 ## Portable 
+
+
+### Origin
+
+> "GSP is for graphics what LSP is for languages"
+
 - comes from LSP in vscode
   - https://symflower.com/en/company/blog/2022/lsp-in-vscode-extension/
   - https://code.visualstudio.com/api/language-extensions/language-server-extension-guide
@@ -18,15 +34,7 @@ There are three main design goals for GSP:
   - the vscode client can then communicate with any language server that implements the protocol
   - their solution is very successful and is now widely adopted
   - their solution is similar in principle to what we want to do with GSP
-- GSP stands for Graphical Server Protocol
-  - the goal is to have a protocol to describe graphical scenes
-  - thus it is abstract enough to be used in different contexts
-  - people can easily implement various renderers for it
-  - we provide a reference implementation in python using matplotlib
-    - python is widely used in the data science community
-    - matplotlib is a widely used plotting library in python
-    - numpy is used for numerical computations in python
-  - datoviz presents another implementation in C++/python using Vulkan
+
 
 
 # Remote data

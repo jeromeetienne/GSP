@@ -82,7 +82,7 @@ class NdarrayLikeUtils:
             raise TypeError("Input list elements must be either dicts or numeric types.")
 
     @staticmethod
-    def to_numpy(data: np.ndarray | TransformLinkBase | DiffableNdarray) -> np.ndarray:
+    def to_numpy(data: NdarrayLikeVariableType) -> np.ndarray:
         """
         Convert the input data to a numpy ndarray.
         """

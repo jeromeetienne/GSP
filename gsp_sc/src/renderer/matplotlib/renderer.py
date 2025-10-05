@@ -102,21 +102,20 @@ class MatplotlibRenderer:
             for mpl3d_camera in mpl3d_cameras:
                 mpl3d_camera.disconnect()
 
-
         # return the PNG image data if requested else return empty bytes
         return image_png_data
 
     ###########################################################################
     ###########################################################################
-    # .__render() 
+    # .__render()
     ###########################################################################
     ###########################################################################
 
     def __render(
         self,
         canvas: Canvas,
-        viewports: typing.List[Viewport],
-        cameras: typing.List[Camera],
+        viewports: list[Viewport],
+        cameras: list[Camera],
     ) -> None:
         # Create the matplotlib figure from the canvas if it does not exist yet
         if canvas.uuid in self._figures:
@@ -148,10 +147,10 @@ class MatplotlibRenderer:
                 axes.get_xaxis().set_visible(False)
                 axes.get_yaxis().set_visible(False)
                 # Remove the borders
-                axes.spines['top'].set_visible(False)
-                axes.spines['right'].set_visible(False)
-                axes.spines['bottom'].set_visible(False)
-                axes.spines['left'].set_visible(False)
+                axes.spines["top"].set_visible(False)
+                axes.spines["right"].set_visible(False)
+                axes.spines["bottom"].set_visible(False)
+                axes.spines["left"].set_visible(False)
                 # cache the axes
                 self._axes[viewport.uuid] = axes
 
@@ -159,6 +158,7 @@ class MatplotlibRenderer:
                 full_uuid = visual.uuid + viewport.uuid
                 if isinstance(visual, Pixels):
                     from .renderer_pixels import MatplotlibRendererPixels
+
                     MatplotlibRendererPixels.render(
                         self,
                         axes,
@@ -168,6 +168,7 @@ class MatplotlibRenderer:
                     )
                 elif isinstance(visual, Image):
                     from .renderer_image import MatplotlibRendererImage
+
                     MatplotlibRendererImage.render(
                         self,
                         axes,
@@ -177,6 +178,7 @@ class MatplotlibRenderer:
                     )
                 elif isinstance(visual, Mesh):
                     from .renderer_mesh import MatplotlibRendererMesh
+
                     MatplotlibRendererMesh.render(
                         self,
                         axes,

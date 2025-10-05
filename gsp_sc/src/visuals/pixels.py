@@ -1,5 +1,5 @@
+from typing import TypeAlias
 import numpy as np
-import nptyping
 
 from ..core.visual_base import VisualBase
 from ..types.ndarray_like import NdarrayLikeVariableType
@@ -28,11 +28,17 @@ class Pixels(VisualBase):
 
         # sanity check - np.ndarray type checking at runtime
         if type(positions) is np.ndarray:
-            assert positions.shape[1:] == (3,), "Positions must have shape (N, 3) where N is the number of positions."
+            assert positions.shape[1:] == (
+                3,
+            ), "Positions must have shape (N, 3) where N is the number of positions."
         if type(sizes) is np.ndarray:
-            assert sizes.shape.__len__() == 1, "Sizes must have shape (N, 1) where N is the number of sizes."
+            assert (
+                sizes.shape.__len__() == 1
+            ), "Sizes must have shape (N, 1) where N is the number of sizes."
         if type(colors) is np.ndarray:
-            assert colors.shape[1:] == (4,), "Colors must be a numpy array of shape (4,)"
+            assert colors.shape[1:] == (
+                4,
+            ), "Colors must be a numpy array of shape (4,)"
 
         self.positions = positions
         self.sizes = sizes

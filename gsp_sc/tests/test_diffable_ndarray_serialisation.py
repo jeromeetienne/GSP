@@ -1,6 +1,8 @@
 import numpy as np
-from gsp_sc.src.types.diffable_ndarray import DiffableNdarray
-from gsp_sc.src.types.diffable_ndarray_serialisation import DiffableNdarraySerialisation
+from gsp_sc.src.types.diffable_ndarray.diffable_ndarray import DiffableNdarray
+from gsp_sc.src.types.diffable_ndarray.diffable_ndarray_serialisation import (
+    DiffableNdarraySerialisation,
+)
 
 
 def test_diffable_ndarray_serialisation_no_modifications() -> None:
@@ -26,7 +28,9 @@ def test_diffable_ndarray_serialisation_no_modifications() -> None:
     assert new_arr.is_modified() is False
 
 
-def test_diffable_ndarray_serialisation_with_modifications_without_previous_arr() -> None:
+def test_diffable_ndarray_serialisation_with_modifications_without_previous_arr() -> (
+    None
+):
     # Create a DiffableNdarray with a 4x4 array of values 0..15
     arr = DiffableNdarray(np.arange(16).reshape(4, 4))
 
@@ -42,14 +46,18 @@ def test_diffable_ndarray_serialisation_with_modifications_without_previous_arr(
 
     # Assert that the serialized data matches the modified region of the array
     diff_slices = arr.get_diff_slices()
-    assert json_dict["slices"] == DiffableNdarraySerialisation._slice_to_json(diff_slices)
+    assert json_dict["slices"] == DiffableNdarraySerialisation._slice_to_json(
+        diff_slices
+    )
 
     # Assert that the serialized data matches the modified region of the array
     diff_data = arr.get_diff_data()
     assert json_dict["data"] == diff_data.tolist()
 
     # Deserialize the JSON back into a DiffableNdarray using the original array as previous_arr
-    new_arr = DiffableNdarraySerialisation.from_json(json_dict, previous_arr=arr, in_place=False)
+    new_arr = DiffableNdarraySerialisation.from_json(
+        json_dict, previous_arr=arr, in_place=False
+    )
 
     # Assert that the deserialized array matches the modified original array
     assert np.array_equal(new_arr, arr)
@@ -74,7 +82,9 @@ def test_diffable_ndarray_serialisation_with_modifications_with_previous_arr() -
 
     # Assert that the serialized data matches the modified region of the array
     diff_slices = arr.get_diff_slices()
-    assert json_dict["slices"] == DiffableNdarraySerialisation._slice_to_json(diff_slices)
+    assert json_dict["slices"] == DiffableNdarraySerialisation._slice_to_json(
+        diff_slices
+    )
 
     # Assert that the serialized data matches the modified region of the array
     diff_data = arr.get_diff_data()
@@ -84,7 +94,9 @@ def test_diffable_ndarray_serialisation_with_modifications_with_previous_arr() -
     previous_arr = DiffableNdarray(np.arange(16).reshape(4, 4))
 
     # Deserialize the JSON back into a DiffableNdarray using previous_arr
-    new_arr = DiffableNdarraySerialisation.from_json(json_dict, previous_arr=previous_arr)
+    new_arr = DiffableNdarraySerialisation.from_json(
+        json_dict, previous_arr=previous_arr
+    )
 
     # Assert that the deserialized array matches the modified original array
     assert np.array_equal(new_arr, arr)
