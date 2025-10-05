@@ -22,14 +22,16 @@ class NetworkPayload(TypedDict):
     """Unique client ID for the server to identify the client."""
     type: Literal["absolute", "json_diff"]  # or other literal string values if any
     """Type of rendering to perform. "absolute" to always render the full scene, "json_diff" to only render changes since last call."""
-    data: SceneDict|Any  # or a more specific type if you know the structure of scene_json
+    data: SceneDict | Any  # or a more specific type if you know the structure of scene_json
     """The scene data in JSON format."""
+
 
 ###############################################################################
 #   Network Renderer
 #
 class NetworkRenderer:
-    __slots__ = ("__server_url","__client_id", "__diff_allowed", "__absolute_scene")
+    __slots__ = ("__server_url", "__client_id", "__diff_allowed", "__absolute_scene")
+
     def __init__(self, server_url: str, diff_allowed: bool = False) -> None:
         """
         Renderer that sends the scene to a network server for rendering.
@@ -59,7 +61,8 @@ class NetworkRenderer:
         # Build the payload
         if self.__diff_allowed and self.__absolute_scene is not None:
             # Diff rendering - compute the diff between the current scene and the last absolute scene
-            scene_diff = str(jsonpatch.JsonPatch.from_diff(self.__absolute_scene, scene_dict))
+            json_patch = jsonpatch.JsonPatch.from_diff(self.__absolute_scene, scene_dict)
+            scene_diff = str(json_patch)
             payload: NetworkPayload = {
                 "client_id": self.__client_id,
                 "type": "json_diff",
@@ -80,10 +83,15 @@ class NetworkRenderer:
 
         # If diff rendering is allowed, but the server responds with 410, resend as absolute
         # - this may happen if the server has lost the previous state
-        gone_status_code = 410 # HTTP status code for "Gone" - https://developer.mozilla.org/fr/docs/Web/HTTP/Reference/Status/410
+        gone_status_code = 410  # HTTP status code for "Gone" - https://developer.mozilla.org/fr/docs/Web/HTTP/Reference/Status/410
         if response.status_code == gone_status_code and self.__diff_allowed:
+            # Absolute rendering
+            payload: NetworkPayload = {
+                "client_id": self.__client_id,
+                "type": "absolute",
+                "data": scene_dict,
+            }
             # The server does not have the previous state, resend as absolute
-            payload["type"] = "absolute"
             response = requests.post(call_url, data=json.dumps(payload), headers=headers)
 
         # Check the response status
