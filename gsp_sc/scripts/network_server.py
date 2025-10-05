@@ -4,6 +4,7 @@ Server example using Flask to render a scene from JSON input.
 - use Flask to create a simple web server
 - render with matplotlib
 """
+
 # stdlib imports
 import io
 
@@ -14,7 +15,7 @@ import jsonpatch
 # local imports
 import argparse
 import gsp_sc.src as gsp_sc
-from gsp_sc.src.renderer.network.renderer import  NetworkPayload
+from gsp_sc.src.renderer.network.renderer import NetworkPayload
 from gsp_sc.src.core.types import SceneDict
 
 flask_app = Flask(__name__)
@@ -49,7 +50,7 @@ def render_scene_json() -> Response:
         # Reconstruct the absolute scene by applying the diff
         scene_diff = payload["data"]
         scene_dict = jsonpatch.apply_patch(old_scene_dict, scene_diff)
-        # Update the stored absolute scene 
+        # Update the stored absolute scene
         absolute_scenes[client_id] = scene_dict
         # log the operation
         print(f"Rendering diff scene for client_id={client_id}. Diff size: {len(str(scene_diff))} bytes, Full scene size: {len(str(scene_dict))} bytes")
@@ -66,9 +67,10 @@ def render_scene_json() -> Response:
     # Render the loaded scene with matplotlib
     #
     matplotlib_renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
-    image_png_data = matplotlib_renderer.render(
-        canvas=canvas_parsed, camera=camera_parsed, show_image=False
-    )
+    image_png_data = matplotlib_renderer.render(canvas=canvas_parsed, camera=camera_parsed, show_image=False)
+    matplotlib_renderer.close()  # free memory
+
+    print(f"Rendered image size: {len(image_png_data)} bytes")
 
     ###############################################################################
     # Return the rendered image as a PNG file
