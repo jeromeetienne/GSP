@@ -16,7 +16,7 @@ NdarrayLikeVariableType = TransformLinkBase | DiffableNdarray | np.ndarray
 
 NdarrayLikeSerializedType = dict[str, Any]
 
-
+# TODO make it cleaner, more understandable by non experts
 from_json_diffable_ndarray_db: dict[str, DiffableNdarray] = {}
 """A simple in-memory database to store DiffableNdarray instances by their UUIDs during deserialization."""
 
