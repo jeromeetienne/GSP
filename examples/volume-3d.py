@@ -37,9 +37,7 @@ volume_data = volume_data / 255.0
 # Create canvas+viewport for the GSP scene
 #
 canvas = core.Canvas(width=512, height=512, dpi=250.0)
-viewport = core.Viewport(
-    canvas=canvas, x=0, y=0, width=512, height=512, color=(0, 0, 0, 1)
-)
+viewport = core.Viewport(canvas=canvas, x=0, y=0, width=512, height=512, color=(0, 0, 0, 1))
 
 ######################################################
 # Create a texture from the volume data
@@ -64,7 +62,4 @@ volume = visual.Volume(
 
 ############################
 
-from common.camera import Camera
-camera = Camera("perspective", theta=0, phi=0)
-camera.connect(viewport, "motion", volume.render)
-camera.run()
+render(canvas, [viewport], [volume])
