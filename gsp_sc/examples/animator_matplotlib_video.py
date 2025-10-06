@@ -1,10 +1,13 @@
 """
 Basic example of creating and rendering a simple GSP scene with matplotlib.
 """
-
-import mpl3d
-import numpy as np
+# stdlib imports
 import os
+
+# pip imports
+import numpy as np
+
+# local imports
 import gsp_sc.src as gsp_sc
 from gsp_sc.examples.common.gsp_animator import GspAnimatorMatplotlib
 
@@ -57,10 +60,11 @@ renderer.render(canvas, camera)
 # Animate the scene with matplotlib
 # =============================================================================
 current_time = 0.0
+target_fps = 60
 def animator_callback() -> list[gsp_sc.core.VisualBase]:
     # Update the time tracking
     global current_time
-    delta_time = 1.0 / 60.0  # assuming 60 FPS
+    delta_time = 1.0 / target_fps
     current_time += delta_time
 
     # update positions with velocities
@@ -85,7 +89,7 @@ def animator_callback() -> list[gsp_sc.core.VisualBase]:
     return changed_visuals
 
 
-video_path = os.path.join(__dirname__, 'output/animator_matplotlib.mp4')
+video_path = os.path.join(__dirname__, f"output/{os.path.basename(__file__).replace('.py', '')}.mp4")
 print(f"Saving video to {video_path}")
-animator_matplotlib = GspAnimatorMatplotlib(renderer, target_fps=60, video_path=video_path)
-animator_matplotlib.animate(canvas, camera, [animator_callback])
+animator = GspAnimatorMatplotlib(renderer, target_fps=target_fps, video_path=video_path)
+animator.animate(canvas, camera, [animator_callback])

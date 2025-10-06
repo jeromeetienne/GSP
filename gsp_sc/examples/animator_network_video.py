@@ -2,12 +2,15 @@
 Basic example of creating and rendering a simple GSP scene with matplotlib.
 """
 
-import mpl3d
-import numpy as np
+# stdlib imports
 import os
+
+# pip imports
+import numpy as np
+
+# local imports
 import gsp_sc.src as gsp_sc
-from gsp_sc.examples.common.gsp_animator import GspAnimatorNetwork, GspAnimatorMatplotlib
-from gsp_sc.src.types.diffable_ndarray.diffable_ndarray import DiffableNdarray
+from gsp_sc.examples.common.gsp_animator import GspAnimatorNetwork
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
 # Set random seed for reproducibility
@@ -52,7 +55,6 @@ for i in range(n_points):
 #
 camera = gsp_sc.core.Camera(camera_type="ortho")
 renderer = gsp_sc.renderer.network.NetworkRenderer(server_url="http://localhost:5000/", diff_allowed=True)
-# renderer = gsp_sc.renderer.matplotlib.MatplotlibRenderer()
 renderer.render(canvas, camera)
 
 # =============================================================================
@@ -66,22 +68,23 @@ def animator_callback() -> list[gsp_sc.core.VisualBase]:
     delta_time = 1.0 / target_fps
     current_time += delta_time
 
-    print(f"Current time: {current_time:.2f} sec")
-
     # update positions with velocities
-    sizes_np[0] = 300 + 200 * np.sin(current_time * 2 * np.pi)
-    colors_np[0] = gsp_sc.Constants.Blue
+    positions_np[:] += velocities_np * delta_time
+
+    # bounce on the walls
+    wall_limit = 1
+    out_of_bounds_x = np.abs(positions_np[:, 0]) > wall_limit
+    out_of_bounds_y = np.abs(positions_np[:, 1]) > wall_limit
+    out_of_bounds_z = np.abs(positions_np[:, 2]) > wall_limit
+    velocities_np[out_of_bounds_x, 0] *= -1
+    velocities_np[out_of_bounds_y, 1] *= -1
+    velocities_np[out_of_bounds_z, 2] *= -1
 
     changed_visuals: list[gsp_sc.core.VisualBase] = [pixels]
     return changed_visuals
 
 
-# video_path = os.path.join(__dirname__, 'output/animator_network.mp4')
-# print(f"Saving video to {video_path}")
-video_path = None
-
-animator_network = GspAnimatorNetwork(renderer, target_fps=target_fps, video_path=video_path)
-animator_network.animate(canvas, camera, [animator_callback])
-
-# animator_matplotlib = GspAnimatorMatplotlib(renderer, target_fps=target_fps, video_path=video_path)
-# animator_matplotlib.animate(canvas, camera, [animator_callback])
+video_path = os.path.join(__dirname__, f"output/{os.path.basename(__file__).replace('.py', '')}.mp4")
+print(f"Saving video to {video_path}")
+animator = GspAnimatorNetwork(renderer, target_fps=target_fps, video_path=video_path)
+animator.animate(canvas, camera, [animator_callback])
