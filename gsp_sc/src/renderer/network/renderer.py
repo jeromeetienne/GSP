@@ -30,9 +30,9 @@ class NetworkPayload(TypedDict):
 #   Network Renderer
 #
 class NetworkRenderer:
-    __slots__ = ("__server_url", "__client_id", "__diff_allowed", "__absolute_scene")
+    __slots__ = ("__server_url", "__client_id", "__jsondiff_allowed", "__absolute_scene", "__renderer_json")
 
-    def __init__(self, server_url: str, diff_allowed: bool = False) -> None:
+    def __init__(self, server_url: str, jsondiff_allowed: bool = False) -> None:
         """
         Renderer that sends the scene to a network server for rendering.
 
@@ -47,19 +47,21 @@ class NetworkRenderer:
         self.__client_id = str(uuid.uuid4())
         """Unique client ID for the server to identify the client."""
 
-        self.__diff_allowed = diff_allowed
+        self.__jsondiff_allowed = jsondiff_allowed
         """True to allow diff rendering, False to always render the full scene."""
 
         self.__absolute_scene: SceneDict | None = None
         """The last absolute scene data sent to the server, or None if none has been sent."""
 
+        self.__renderer_json = JsonRenderer()
+        """JSON renderer to convert the scene to JSON format."""
+
     def render(self, canvas: Canvas, camera: Camera) -> bytes:
         # Convert the canvas to JSON
-        renderer_json = JsonRenderer()
-        scene_dict = renderer_json.render(canvas, camera)
+        scene_dict = self.__renderer_json.render(canvas, camera)
 
         # Build the payload
-        if self.__diff_allowed and self.__absolute_scene is not None:
+        if self.__jsondiff_allowed and self.__absolute_scene is not None:
             # Diff rendering - compute the diff between the current scene and the last absolute scene
             json_patch = jsonpatch.JsonPatch.from_diff(self.__absolute_scene, scene_dict)
             scene_diff = str(json_patch)
@@ -81,11 +83,15 @@ class NetworkRenderer:
         headers = {"Content-Type": "application/json"}
         response = requests.post(call_url, data=json.dumps(payload), headers=headers)
 
-        # If diff rendering is allowed, but the server responds with 410, resend as absolute
+        # If the server responds with 410, clear json renderer cache and resend as "absolute"
         # - this may happen if the server has lost the previous state
         gone_status_code = 410  # HTTP status code for "Gone" - https://developer.mozilla.org/fr/docs/Web/HTTP/Reference/Status/410
-        if response.status_code == gone_status_code and self.__diff_allowed:
-            # Absolute rendering
+        if response.status_code == gone_status_code:
+            # Clear the JSON renderer cache to avoid sending diffs based on old data - typically when using DiffableNdarray
+            self.__renderer_json.clear_cache()
+            # Rebuild the scene dict from scratch
+            scene_dict = self.__renderer_json.render(canvas, camera)
+            # rebuild the payload as absolute rendering
             payload: NetworkPayload = {
                 "client_id": self.__client_id,
                 "type": "absolute",

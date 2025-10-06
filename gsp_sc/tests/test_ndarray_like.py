@@ -1,46 +1,119 @@
-from gsp_sc.src.types.ndarray_like import (
-    NdarrayLikeVariableType,
-)
-from gsp_sc.src.types.ndarray_like import NdarrayLikeUtils
-from gsp_sc.src.types.diffable_ndarray.diffable_ndarray import DiffableNdarray
+# stdlib imports
+import typing
+
+# pip imports
 import numpy as np
 
-
-def test_ndarray_like_to_json() -> None:
-    ndarray_like: NdarrayLikeVariableType = DiffableNdarray(np.arange(9).reshape(3, 3))
-    serialized = NdarrayLikeUtils.to_json(ndarray_like)
-    assert "uuid" in serialized["data"], "UUID should be included in the serialized output"
-    assert serialized["type"] == "delta_ndarray", "Type should be 'delta_ndarray'"
-    assert isinstance(serialized["data"], dict), "Data should be a dictionary"
+# local imports
+from gsp_sc.src.transform.links.link_immediate import TransformLinkImmediate
+from gsp_sc.src.types.ndarray_like import NdarrayLikeVariableType
+from gsp_sc.src.types.ndarray_like import NdarrayLikeUtils
+from gsp_sc.src.types.diffable_ndarray.diffable_ndarray import DiffableNdarray
 
 
-def test_ndarray_like_to_from_json() -> None:
-    ndarray_like_src: NdarrayLikeVariableType = DiffableNdarray(np.arange(9).reshape(3, 3))
+# =============================================================================
+# Basic from/to_json tests on all three types : TransformLinkBase, DiffableNdarray, np.ndarray
+# =============================================================================
+def test_ndarray_like_to_from_json_transform() -> None:
+    arr_original = np.array([10, 20, 30])
+    transform: NdarrayLikeVariableType = TransformLinkImmediate(arr_original)
+    serialized = NdarrayLikeUtils.to_json(transform)
+    deserialized_transform = typing.cast(TransformLinkImmediate, NdarrayLikeUtils.from_json(serialized))
+    arr_from_deserialized = deserialized_transform.run()
+    assert np.array_equal(arr_from_deserialized, arr_original), "Deserialized array should match the original"
+
+def test_ndarray_like_to_from_json_diffable_ndarray() -> None:
+    arr: NdarrayLikeVariableType = DiffableNdarray(np.arange(9).reshape(3, 3))
+    serialized = NdarrayLikeUtils.to_json(arr)
+    deserialized_arr = typing.cast(DiffableNdarray, NdarrayLikeUtils.from_json(serialized))
+    assert np.array_equal(deserialized_arr, arr), "Deserialized array should match the original"
+
+def test_ndarray_like_to_from_json_plain_ndarray() -> None:
+    arr: NdarrayLikeVariableType = np.arange(9).reshape(3, 3)
+    serialized = NdarrayLikeUtils.to_json(arr)
+    deserialized_arr = typing.cast(np.ndarray, NdarrayLikeUtils.from_json(serialized))
+    assert np.array_equal(deserialized_arr, arr), "Deserialized array should match the original"
+
+# =============================================================================
+# DiffableNdarray specific tests
+# =============================================================================
+
+def test_ndarray_like_diffable_ndarray_to_from_json_zero_modification() -> None:
+    arr: NdarrayLikeVariableType = DiffableNdarray(np.arange(9).reshape(3, 3))
+    arr[2, 2] = 100
 
     # Serialize the original array
-    serialized1 = NdarrayLikeUtils.to_json(ndarray_like_src)
-    assert serialized1["type"] == "delta_ndarray", "Type should be 'delta_ndarray'"
-    assert serialized1["data"]["slices"] == None, "Slices should be None for unmodified array"
-    assert isinstance(serialized1["data"], dict), "Data should be a dictionary"
+    serialized1 = NdarrayLikeUtils.to_json(arr)
 
     # Deserialize the original array
-    deserialized1 = NdarrayLikeUtils.from_json(serialized1)
-    assert np.array_equal(deserialized1, ndarray_like_src), "Deserialized array should match the original"
-    assert isinstance(deserialized1, DiffableNdarray), "Deserialized object should be a DiffableNdarray"
-    assert deserialized1.get_uuid() != ndarray_like_src.get_uuid(), "UUIDs should not match after deserialization"
+    deserialized1 = typing.cast(DiffableNdarray, NdarrayLikeUtils.from_json(serialized1))
+    assert deserialized1.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized1.is_modified() == False, "Deserialized array should not be marked as modified"
+    assert np.array_equal(deserialized1, arr), "Deserialized array should match the original"
 
-    # Modify the original array to create a diff
-    ndarray_like_src[1, 1] = -10  # Modify the array to create a diff
-    assert ndarray_like_src.is_modified() == True, "Array should be marked as modified"
+    # Dont modify the original array
+    assert arr.is_modified() == False, "Array should not be marked as modified"
 
     # Serialize the modified array
-    serialized2 = NdarrayLikeUtils.to_json(ndarray_like_src)
-    assert ndarray_like_src.is_modified() == False, "Array should be unmodified after serialization"
-    assert serialized2["type"] == "delta_ndarray", "Type should be 'delta_ndarray'"
-    assert serialized2["data"]["slices"] != None, "Slices should not be None for modified array"
+    serialized2 = NdarrayLikeUtils.to_json(arr)
+    assert arr.is_modified() == False, "Array should be unmodified after serialization"
 
     # Deserialize the modified array
-    deserialized2 = NdarrayLikeUtils.from_json(serialized2)
-    assert np.array_equal(deserialized2, ndarray_like_src), "Deserialized array should match the modified original"
-    assert deserialized2.get_uuid() != ndarray_like_src.get_uuid(), "UUIDs should not match after deserialization"
-    assert deserialized2.get_uuid() == deserialized1.get_uuid(), "UUIDs should match the first deserialized array"
+    deserialized_arr_2 = typing.cast(DiffableNdarray, NdarrayLikeUtils.from_json(serialized2))
+    assert np.array_equal(deserialized_arr_2, arr), "Deserialized array should match the modified original"
+    assert deserialized_arr_2.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized_arr_2.get_uuid() == deserialized1.get_uuid(), "UUIDs should match the first deserialized array"
+
+def test_ndarray_like_diffable_ndarray_to_from_json_one_modification() -> None:
+    arr: NdarrayLikeVariableType = DiffableNdarray(np.arange(9).reshape(3, 3))
+    arr[2, 2] = 100
+
+    # Serialize the original array
+    serialized1 = NdarrayLikeUtils.to_json(arr)
+
+    # Deserialize the original array
+    deserialized1 = typing.cast(DiffableNdarray, NdarrayLikeUtils.from_json(serialized1))
+    assert deserialized1.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized1.is_modified() == False, "Deserialized array should not be marked as modified"
+    assert np.array_equal(deserialized1, arr), "Deserialized array should match the original"
+
+    # Modify the original array to create a diff
+    arr[1, 1] = -10  # Modify the array to create a diff
+    assert arr.is_modified() == True, "Array should be marked as modified"
+
+    # Serialize the modified array
+    serialized2 = NdarrayLikeUtils.to_json(arr)
+    assert arr.is_modified() == False, "Array should be unmodified after serialization"
+
+    # Deserialize the modified array
+    deserialized_arr_2 = typing.cast(DiffableNdarray, NdarrayLikeUtils.from_json(serialized2))
+    assert np.array_equal(deserialized_arr_2, arr), "Deserialized array should match the modified original"
+    assert deserialized_arr_2.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized_arr_2.get_uuid() == deserialized1.get_uuid(), "UUIDs should match the first deserialized array"
+
+def test_ndarray_like_diffable_ndarray_to_from_json_full_modification() -> None:
+    arr: NdarrayLikeVariableType = DiffableNdarray(np.arange(9).reshape(3, 3))
+    arr[2, 2] = 100
+
+    # Serialize the original array
+    serialized1 = NdarrayLikeUtils.to_json(arr)
+
+    # Deserialize the original array
+    deserialized1 = typing.cast(DiffableNdarray, NdarrayLikeUtils.from_json(serialized1))
+    assert deserialized1.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized1.is_modified() == False, "Deserialized array should not be marked as modified"
+    assert np.array_equal(deserialized1, arr), "Deserialized array should match the original"
+
+    # Modify the original array completly
+    arr[:] = np.arange(100, 109).reshape(3, 3) 
+    assert arr.is_modified() == True, "Array should be marked as modified"
+
+    # Serialize the modified array
+    serialized2 = NdarrayLikeUtils.to_json(arr)
+    assert arr.is_modified() == False, "Array should be unmodified after serialization"
+
+    # Deserialize the modified array
+    deserialized_arr_2 = typing.cast(DiffableNdarray, NdarrayLikeUtils.from_json(serialized2))
+    assert np.array_equal(deserialized_arr_2, arr), "Deserialized array should match the modified original"
+    assert deserialized_arr_2.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized_arr_2.get_uuid() == deserialized1.get_uuid(), "UUIDs should match the first deserialized array"

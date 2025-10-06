@@ -6,7 +6,8 @@ import numpy as np
 import os
 import time
 import gsp_sc.src as gsp_sc
-from gsp_sc.examples.common.gsp_animator.gsp_animator_network import GspAnimatorNetwork
+from gsp_sc.examples.common.gsp_animator import GspAnimatorNetwork
+from gsp_sc.src.types import DiffableNdarray
 
 
 __dirname__ = os.path.dirname(os.path.abspath(__file__))
@@ -28,21 +29,25 @@ viewport = gsp_sc.core.Viewport(
 canvas.add(viewport=viewport)
 
 ###############################################################################
-# Add some random points
+# Add some random pointsq
 #
-n_points = 3_000
+n_points = 100
 positions_np = np.random.uniform(-0.5, 0.5, (n_points, 3)).astype(np.float32)
 sizes_np = np.array([50 for _ in range(n_points)], np.float32)
 colors_np = np.array([gsp_sc.Constants.Green for _ in range(n_points)], np.float32)
+
+positions_np = DiffableNdarray(positions_np)
+sizes_np = DiffableNdarray(sizes_np)
+colors_np = DiffableNdarray(colors_np)
+
 pixels = gsp_sc.visuals.Pixels(positions_np, sizes_np, colors_np)
 viewport.add(pixels)
-
 
 ###############################################################################
 # Render the scene with matplotlib
 #
 camera = gsp_sc.core.Camera(camera_type="perspective")
-network_renderer = gsp_sc.renderer.network.NetworkRenderer(server_url="http://localhost:5000/", jsondiff_allowed=True)
+network_renderer = gsp_sc.renderer.network.NetworkRenderer(server_url="http://localhost:5000/", jsondiff_allowed=False)
 
 # =============================================================================
 # Code to measure FPS
@@ -64,7 +69,8 @@ def monitor_fps() -> None:
 # =============================================================================
 def animate() -> list[gsp_sc.core.VisualBase]:
     # copy inplace to avoid reallocations
-    sizes_np[:] = np.random.uniform(10, 100, (n_points,)).astype(np.float32)
+    # sizes_np[:] = np.random.uniform(10, 100, (n_points,)).astype(np.float32)
+    sizes_np[0] = np.random.uniform(10, 100)
 
     # measure FPS to monitor performance
     monitor_fps()

@@ -145,6 +145,7 @@ class DiffableNdarray(np.ndarray):
 
         return diff_data
 
+    # TODO to rename .clear_modifications() ?
     def clear_diff(self) -> None:
         """
         Clear the modification tracking.

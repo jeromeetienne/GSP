@@ -57,7 +57,7 @@ print(f"Image saved to {local_image_path}")
 #
 network_renderer = gsp_sc.renderer.network.NetworkRenderer(
     server_url="http://localhost:5000/",
-    diff_allowed=True,
+    jsondiff_allowed=True,
 )
 image_png_data = network_renderer.render(canvas, camera)
 

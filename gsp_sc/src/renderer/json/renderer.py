@@ -5,6 +5,9 @@ import json
 # pip imports
 import numpy as np
 
+from gsp_sc.src.types.diffable_ndarray.diffable_ndarray_serialisation import DiffableNdarraySerialisation
+
+
 # local imports
 from ...core.canvas import Canvas
 from ...core.camera import Camera
@@ -12,12 +15,12 @@ from ...core.types import SceneDict
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...visuals.mesh import Mesh
-from ...types.ndarray_like import NdarrayLikeUtils
+from ...types import NdarrayLikeUtils, DiffableNdarrayDb
 
 
 class JsonRenderer:
     def __init__(self) -> None:
-        pass
+        self._diffable_ndarray_db = DiffableNdarrayDb()
 
     def render(self, canvas: Canvas, camera: Camera) -> SceneDict:
 
@@ -52,9 +55,9 @@ class JsonRenderer:
                     visual_dict = {
                         "type": "Pixels",
                         "uuid": pixels.uuid,
-                        "positions": NdarrayLikeUtils.to_json(pixels.positions),
-                        "sizes": NdarrayLikeUtils.to_json(pixels.sizes),
-                        "colors": NdarrayLikeUtils.to_json(pixels.colors),
+                        "positions": NdarrayLikeUtils.to_json(pixels.positions, self._diffable_ndarray_db),
+                        "sizes": NdarrayLikeUtils.to_json(pixels.sizes, self._diffable_ndarray_db),
+                        "colors": NdarrayLikeUtils.to_json(pixels.colors, self._diffable_ndarray_db),
                     }
                 elif isinstance(visual, Image):
                     image: Image = visual
@@ -87,3 +90,6 @@ class JsonRenderer:
             scene_dict["canvas"]["viewports"].append(viewport_dict)
 
         return scene_dict
+
+    def clear_cache(self) -> None:
+        DiffableNdarraySerialisation.reset_db(self._diffable_ndarray_db)

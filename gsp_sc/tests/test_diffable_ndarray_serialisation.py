@@ -1,105 +1,94 @@
+# stdlib imports
+import typing
+
+# pip imports
 import numpy as np
+
+# local imports
 from gsp_sc.src.types.diffable_ndarray.diffable_ndarray import DiffableNdarray
-from gsp_sc.src.types.diffable_ndarray.diffable_ndarray_serialisation import (
-    DiffableNdarraySerialisation,
-)
+from gsp_sc.src.types.diffable_ndarray.diffable_ndarray_serialisation import DiffableNdarraySerialisation, DiffableNdarrayDb
 
 
-def test_diffable_ndarray_serialisation_no_modifications() -> None:
-    # Create a DiffableNdarray with a 4x4 array of values 0..15
-    arr = DiffableNdarray(np.arange(16).reshape(4, 4))
-
-    # Serialize the DiffableNdarray to JSON with diff_allowed=True
-    json_dict = DiffableNdarraySerialisation.to_json(arr, diff_allowed=True)
-
-    # Assert that no slices (no modifications) are present in the serialization
-    assert json_dict["slices"] is None
-
-    # Assert that the serialized data matches the original array's list representation
-    assert json_dict["data"] == arr.tolist()
-
-    # Deserialize the JSON back into a DiffableNdarray
-    new_arr = DiffableNdarraySerialisation.from_json(json_dict, previous_arr=None)
-
-    # Assert that the deserialized array matches the original array
-    assert np.array_equal(new_arr, arr)
-
-    # Assert that the new array is not marked as modified
-    assert new_arr.is_modified() is False
+def test_diffable_ndarray_to_from_json_zero_modification() -> None:
+    diffable_ndarray_db = DiffableNdarrayDb()
+    arr = DiffableNdarray(np.arange(9).reshape(3, 3))
+    arr[2, 2] = 100
 
 
-def test_diffable_ndarray_serialisation_with_modifications_without_previous_arr() -> (
-    None
-):
-    # Create a DiffableNdarray with a 4x4 array of values 0..15
-    arr = DiffableNdarray(np.arange(16).reshape(4, 4))
+    # Serialize the original array
+    serialized1 = DiffableNdarraySerialisation.to_json(arr, diffable_ndarray_db)
 
-    # Modify some elements in the array
-    arr[1, 2] = -7
-    arr[2, 1] = -8
+    # Deserialize the original array
+    deserialized1 = typing.cast(DiffableNdarray, DiffableNdarraySerialisation.from_json(serialized1, diffable_ndarray_db))
+    assert deserialized1.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized1.is_modified() == False, "Deserialized array should not be marked as modified"
+    assert np.array_equal(deserialized1, arr), "Deserialized array should match the original"
 
-    # Serialize the DiffableNdarray to JSON with diff_allowed=True
-    json_dict = DiffableNdarraySerialisation.to_json(arr, diff_allowed=True)
+    # Dont modify the original array
+    assert arr.is_modified() == False, "Array should not be marked as modified"
 
-    # Assert that slices (modifications) are present in the serialization
-    assert json_dict["slices"] is not None
+    # Serialize the modified array
+    serialized2 = DiffableNdarraySerialisation.to_json(arr, diffable_ndarray_db)
+    assert arr.is_modified() == False, "Array should be unmodified after serialization"
 
-    # Assert that the serialized data matches the modified region of the array
-    diff_slices = arr.get_diff_slices()
-    assert json_dict["slices"] == DiffableNdarraySerialisation._slice_to_json(
-        diff_slices
-    )
+    # Deserialize the modified array
+    deserialized_arr_2 = typing.cast(DiffableNdarray, DiffableNdarraySerialisation.from_json(serialized2, diffable_ndarray_db))
+    assert np.array_equal(deserialized_arr_2, arr), "Deserialized array should match the modified original"
+    assert deserialized_arr_2.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized_arr_2.get_uuid() == deserialized1.get_uuid(), "UUIDs should match the first deserialized array"
 
-    # Assert that the serialized data matches the modified region of the array
-    diff_data = arr.get_diff_data()
-    assert json_dict["data"] == diff_data.tolist()
+def test_diffable_ndarray_to_from_json_one_modification() -> None:
+    diffable_ndarray_db = DiffableNdarrayDb()
+    arr = DiffableNdarray(np.arange(9).reshape(3, 3))
+    arr[2, 2] = 100
 
-    # Deserialize the JSON back into a DiffableNdarray using the original array as previous_arr
-    new_arr = DiffableNdarraySerialisation.from_json(
-        json_dict, previous_arr=arr, in_place=False
-    )
+    # Serialize the original array
+    serialized1 = DiffableNdarraySerialisation.to_json(arr, diffable_ndarray_db)
 
-    # Assert that the deserialized array matches the modified original array
-    assert np.array_equal(new_arr, arr)
+    # Deserialize the original array
+    deserialized1 = typing.cast(DiffableNdarray, DiffableNdarraySerialisation.from_json(serialized1, diffable_ndarray_db))
+    assert deserialized1.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized1.is_modified() == False, "Deserialized array should not be marked as modified"
+    assert np.array_equal(deserialized1, arr), "Deserialized array should match the original"
 
-    # Assert that the new array is marked as modified
-    assert new_arr.is_modified() is True
+    # Modify the original array to create a diff
+    arr[1, 1] = -10  # Modify the array to create a diff
+    assert arr.is_modified() == True, "Array should be marked as modified"
 
+    # Serialize the modified array
+    serialized2 = DiffableNdarraySerialisation.to_json(arr, diffable_ndarray_db)
+    assert arr.is_modified() == False, "Array should be unmodified after serialization"
 
-def test_diffable_ndarray_serialisation_with_modifications_with_previous_arr() -> None:
-    # Create a DiffableNdarray with a 4x4 array of values 0..15
-    arr = DiffableNdarray(np.arange(16).reshape(4, 4))
+    # Deserialize the modified array
+    deserialized_arr_2 = typing.cast(DiffableNdarray, DiffableNdarraySerialisation.from_json(serialized2, diffable_ndarray_db))
+    assert np.array_equal(deserialized_arr_2, arr), "Deserialized array should match the modified original"
+    assert deserialized_arr_2.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized_arr_2.get_uuid() == deserialized1.get_uuid(), "UUIDs should match the first deserialized array"
 
-    # Modify some elements in the array
-    arr[1, 2] = -7
-    arr[2, 1] = -8
+def test_diffable_ndarray_to_from_json_full_modification() -> None:
+    diffable_ndarray_db = DiffableNdarrayDb()
+    arr = DiffableNdarray(np.arange(9).reshape(3, 3))
+    arr[2, 2] = 100
 
-    # Serialize the DiffableNdarray to JSON with diff_allowed=True
-    json_dict = DiffableNdarraySerialisation.to_json(arr, diff_allowed=True)
+    # Serialize the original array
+    serialized1 = DiffableNdarraySerialisation.to_json(arr, diffable_ndarray_db)
 
-    # Assert that slices (modifications) are present in the serialization
-    assert json_dict["slices"] is not None
+    # Deserialize the original array
+    deserialized1 = typing.cast(DiffableNdarray, DiffableNdarraySerialisation.from_json(serialized1, diffable_ndarray_db))
+    assert deserialized1.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized1.is_modified() == False, "Deserialized array should not be marked as modified"
+    assert np.array_equal(deserialized1, arr), "Deserialized array should match the original"
 
-    # Assert that the serialized data matches the modified region of the array
-    diff_slices = arr.get_diff_slices()
-    assert json_dict["slices"] == DiffableNdarraySerialisation._slice_to_json(
-        diff_slices
-    )
+    # Modify the original array completly
+    arr[:] = np.arange(100, 109).reshape(3, 3) 
+    assert arr.is_modified() == True, "Array should be marked as modified"
 
-    # Assert that the serialized data matches the modified region of the array
-    diff_data = arr.get_diff_data()
-    assert json_dict["data"] == diff_data.tolist()
+    # Serialize the modified array
+    serialized2 = DiffableNdarraySerialisation.to_json(arr, diffable_ndarray_db)
+    assert arr.is_modified() == False, "Array should be unmodified after serialization"
 
-    # Create a previous array identical to the original unmodified array
-    previous_arr = DiffableNdarray(np.arange(16).reshape(4, 4))
-
-    # Deserialize the JSON back into a DiffableNdarray using previous_arr
-    new_arr = DiffableNdarraySerialisation.from_json(
-        json_dict, previous_arr=previous_arr
-    )
-
-    # Assert that the deserialized array matches the modified original array
-    assert np.array_equal(new_arr, arr)
-
-    # Assert that the new array is marked as modified
-    assert new_arr.is_modified() is True
+    # Deserialize the modified array
+    deserialized_arr_2 = typing.cast(DiffableNdarray, DiffableNdarraySerialisation.from_json(serialized2, diffable_ndarray_db))
+    assert np.array_equal(deserialized_arr_2, arr), "Deserialized array should match the modified original"
+    assert deserialized_arr_2.get_uuid() != arr.get_uuid(), "UUIDs should not match after deserialization"
+    assert deserialized_arr_2.get_uuid() == deserialized1.get_uuid(), "UUIDs should match the first deserialized array"

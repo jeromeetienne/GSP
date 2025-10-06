@@ -14,7 +14,7 @@ from ...core.types import SceneDict
 from ...visuals.pixels import Pixels
 from ...visuals.image import Image
 from ...visuals.mesh import Mesh
-from ...types.ndarray_like import NdarrayLikeUtils
+from ...types.ndarray_like import NdarrayLikeUtils, DiffableNdarrayDb
 
 
 class JsonParser:
@@ -23,7 +23,7 @@ class JsonParser:
     """
 
     def __init__(self) -> None:
-        pass
+        self._diffable_ndarray_db = DiffableNdarrayDb()
 
     def parse(self, _scene: str | SceneDict) -> tuple[Canvas, Camera]:
         if isinstance(_scene, dict):
@@ -54,9 +54,9 @@ class JsonParser:
             for visual_info in viewport_info["visuals"]:
                 if visual_info["type"] == "Pixels":
                     pixels = Pixels(
-                        positions=NdarrayLikeUtils.from_json(visual_info["positions"]),
-                        sizes=NdarrayLikeUtils.from_json(visual_info["sizes"]),
-                        colors=NdarrayLikeUtils.from_json(visual_info["colors"]),
+                        positions=NdarrayLikeUtils.from_json(visual_info["positions"], self._diffable_ndarray_db),
+                        sizes=NdarrayLikeUtils.from_json(visual_info["sizes"], self._diffable_ndarray_db),
+                        colors=NdarrayLikeUtils.from_json(visual_info["colors"], self._diffable_ndarray_db),
                     )
                     # restore the original uuid
                     pixels.uuid = visual_info["uuid"]

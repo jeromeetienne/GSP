@@ -17,6 +17,7 @@ import argparse
 import gsp_sc.src as gsp_sc
 from gsp_sc.src.renderer.network.renderer import NetworkPayload
 from gsp_sc.src.core.types import SceneDict
+from gsp_sc.src.types import DiffableNdarraySerialisationError
 
 flask_app = Flask(__name__)
 
@@ -24,6 +25,7 @@ flask_app = Flask(__name__)
 absolute_scenes: dict[str, SceneDict] = {}
 """Dictionary mapping client IDs to their last absolute scene data."""
 
+json_parser = gsp_sc.renderer.json.JsonParser()
 
 @flask_app.route("/render_scene", methods=["POST"])
 def render_scene_json() -> Response:
@@ -46,7 +48,7 @@ def render_scene_json() -> Response:
         old_scene_dict = absolute_scenes.get(client_id)
         # If no previous absolute scene exists, return an error
         if old_scene_dict is None:
-            return Response("Diff resource not found. Resend as 'absolute'.", status=410)
+            return Response("json_diff resource not found. Resend as 'absolute'.", status=410)
         # Reconstruct the absolute scene by applying the diff
         scene_diff = payload["data"]
         scene_dict = jsonpatch.apply_patch(old_scene_dict, scene_diff)
@@ -60,8 +62,10 @@ def render_scene_json() -> Response:
     ###############################################################################
     # Load the scene from JSON
     #
-    json_parser = gsp_sc.renderer.json.JsonParser()
-    canvas_parsed, camera_parsed = json_parser.parse(scene_dict)
+    try:
+        canvas_parsed, camera_parsed = json_parser.parse(scene_dict)
+    except DiffableNdarraySerialisationError as e:
+        return Response("DiffableNdarray not found.", status=410)
 
     ###############################################################################
     # Render the loaded scene with matplotlib

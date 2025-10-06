@@ -54,7 +54,7 @@ for i in range(n_points):
 # Render the scene with matplotlib
 #
 camera = gsp_sc.core.Camera(camera_type="ortho")
-renderer = gsp_sc.renderer.network.NetworkRenderer(server_url="http://localhost:5000/", diff_allowed=True)
+renderer = gsp_sc.renderer.network.NetworkRenderer(server_url="http://localhost:5000/", jsondiff_allowed=True)
 renderer.render(canvas, camera)
 
 # =============================================================================
