@@ -6,13 +6,12 @@ import numpy as np
 from gsp import visual
 from gsp.io.command import command
 from gsp.transform import Transform
-from gsp.core import  Buffer, Color, Matrix
+from gsp.core import Buffer, Color, Matrix
 import matplotlib.image as mpl_img
 from gsp_matplotlib import glm
 from gsp_matplotlib.core.viewport import Viewport
 from gsp_matplotlib.core.texture import Texture
 
-# FIXME doesnt handle the generation of commands for visual.Image
 
 class Image(visual.Image):
     __doc__ = visual.Image.__doc__
@@ -23,7 +22,7 @@ class Image(visual.Image):
         positions: Transform | Buffer,
         texture_2d: Texture,
         image_extent: tuple = (-1, 1, -1, 1),
-    )->None:
+    ) -> None:
         """
         Initialize an Image object.
 
