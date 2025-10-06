@@ -1,5 +1,6 @@
 # stdlib imports
 import io
+import os
 from typing import Callable
 
 # pip imports
@@ -14,7 +15,7 @@ from gsp_sc.src.core import canvas
 from .gsp_animator_types import GSPAnimatorFunc
 
 
-class GSPAnimatorNetwork:
+class GspAnimatorNetwork:
     """
     Animator for GSP scenes using a network renderer and matplotlib for display.
 
@@ -22,8 +23,26 @@ class GSPAnimatorNetwork:
     Note: it uses pip matplotlib, not the GSP matplotlib renderer.
     """
 
-    def __init__(self, network_renderer: gsp_sc.renderer.network.NetworkRenderer):
+    def __init__(self, network_renderer: gsp_sc.renderer.network.NetworkRenderer  ,      target_fps: int = 30,
+        video_path: str | None = None,
+        video_writer: str | None = None,):
         self._network_renderer = network_renderer
+        self._target_fps = target_fps
+        self._video_path = video_path
+        self._video_writer: str | None = None   
+
+        # guess the video writer from the file extension if not provided
+        if self._video_path is not None:
+            if video_writer is not None:
+                self._video_writer = video_writer
+            else:
+                video_ext = os.path.splitext(self._video_path)[1].lower()
+                if video_ext in [".mp4", ".m4v", ".mov"]:
+                    self._video_writer = "ffmpeg"
+                elif video_ext in [".gif", '.apng', '.webp']:
+                    self._video_writer = "pillow"
+                else:
+                    raise ValueError(f"Unsupported video format: {video_ext}")
 
     def animate(self, canvas: gsp_sc.core.Canvas, camera: gsp_sc.core.Camera, animator_callbacks: list[GSPAnimatorFunc]):
         """
@@ -45,8 +64,8 @@ class GSPAnimatorNetwork:
         def mpl_animate(frame_index: int):
             # notify all animator callbacks
             changed_visuals: list[gsp_sc.core.VisualBase] = []
-            for callback in animator_callbacks:
-                _changed_visuals = callback()
+            for animator_callback in animator_callbacks:
+                _changed_visuals = animator_callback()
                 changed_visuals.extend(_changed_visuals)
 
             # render the scene to get the new image
@@ -61,7 +80,13 @@ class GSPAnimatorNetwork:
             changed_mpl_artists = [axes_image]
             return changed_mpl_artists
 
-        anim = matplotlib.animation.FuncAnimation(figure, mpl_animate, frames=100, interval=1000.0 / 30)
+        # =============================================================================
+        # Initialize the animation
+        # =============================================================================
+        anim = matplotlib.animation.FuncAnimation(figure, mpl_animate, frames=100, interval=1000.0 / self._target_fps)
+        # save the animation if a path is provided
+        if self._video_path is not None:
+            anim.save(self._video_path, writer=self._video_writer, fps=self._target_fps)
 
-        matplotlib.pyplot.axis("off")
+        # show the animation
         matplotlib.pyplot.show()

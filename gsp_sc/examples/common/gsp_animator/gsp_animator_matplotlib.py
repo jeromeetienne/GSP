@@ -1,4 +1,5 @@
 # pip imports
+import os
 import matplotlib.pyplot
 import matplotlib.animation
 import matplotlib.artist
@@ -13,8 +14,30 @@ class GspAnimatorMatplotlib:
     Animator for GSP scenes using a matplotlib renderer.
     """
 
-    def __init__(self, matplotlib_renderer: gsp_sc.renderer.matplotlib.MatplotlibRenderer):
+    def __init__(
+        self,
+        matplotlib_renderer: gsp_sc.renderer.matplotlib.MatplotlibRenderer,
+        target_fps: int = 30,
+        video_path: str | None = None,
+        video_writer: str | None = None,
+    ):
         self._matplotlib_renderer = matplotlib_renderer
+        self._target_fps = target_fps
+        self._video_path = video_path
+        self._video_writer: str | None = None   
+
+        # guess the video writer from the file extension if not provided
+        if self._video_path is not None:
+            if video_writer is not None:
+                self._video_writer = video_writer
+            else:
+                video_ext = os.path.splitext(self._video_path)[1].lower()
+                if video_ext in [".mp4", ".m4v", ".mov"]:
+                    self._video_writer = "ffmpeg"
+                elif video_ext in [".gif", '.apng', '.webp']:
+                    self._video_writer = "pillow"
+                else:
+                    raise ValueError(f"Unsupported video format: {video_ext}")
 
     def animate(self, canvas: gsp_sc.core.Canvas, camera: gsp_sc.core.Camera, animator_callbacks: list[GSPAnimatorFunc]):
         """
@@ -40,9 +63,19 @@ class GspAnimatorMatplotlib:
             return changed_mpl_artists
 
         figure = matplotlib.pyplot.gcf()
-        anim = matplotlib.animation.FuncAnimation(figure, mpl_animate, frames=100, interval=1000.0 / 30)
+
+        # =============================================================================
+        # Initialize the animation
+        # =============================================================================
+        anim = matplotlib.animation.FuncAnimation(figure, mpl_animate, frames=100, interval=1000.0 / self._target_fps)
+        # save the animation if a path is provided
+        if self._video_path is not None:
+            anim.save(self._video_path, writer=self._video_writer, fps=self._target_fps)
+
+        # show the animation
         matplotlib.pyplot.show()
 
+    # TODO move that in the matplotlib renderer?
     def _get_mpl_artists(self, canvas: gsp_sc.core.Canvas, visual_base: gsp_sc.core.VisualBase) -> matplotlib.artist.Artist:
         """
         Get the matplotlib artists corresponding to a given visual in the canvas.

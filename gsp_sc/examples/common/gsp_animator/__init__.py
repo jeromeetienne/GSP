@@ -1,3 +1,3 @@
 from .gsp_animator_matplotlib import GspAnimatorMatplotlib
-from .gsp_animator_network import GSPAnimatorNetwork
+from .gsp_animator_network import GspAnimatorNetwork
 from .gsp_animator_types import GSPAnimatorFunc
