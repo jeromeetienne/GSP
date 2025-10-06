@@ -123,7 +123,7 @@ def textured_triangle(
 # =============================================================================
 # init matplotlib figure
 # =============================================================================
-mpl_figure = matplotlib.pyplot.figure(figsize=(1, 1), dpi=100)
+mpl_figure = matplotlib.pyplot.figure(figsize=(3, 3), dpi=100)
 mpl_axes = mpl_figure.add_axes((0, 0, 1, 1))
 mpl_axes.set_xlim(-1, 1)
 mpl_axes.set_xticks([])
